@@ -1,8 +1,0 @@
-koalanlp
-========
-
-.. toctree::
-   :maxdepth: 4
-
-   api
-   data

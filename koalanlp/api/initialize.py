@@ -3,7 +3,7 @@
 
 from jip import commands
 from jip.maven import Artifact
-from .const import API
+from .const import API, _artifactName
 from typing import List
 import os
 
@@ -118,9 +118,8 @@ def initialize(packages=[API.EUNJEON, API.KKMA],
         jnius_config.add_options(*java_options)
         initialized = True
 
-        deps = [_ArtifactClsf('kr.bydelta', 'koalanlp-%s_2.12' % pack.value, version,
-                             None if pack in not_assembly else "assembly"
-                             ) for pack in packages]
+        deps = [_ArtifactClsf('kr.bydelta', 'koalanlp-%s_2.12' % _artifactName(pack), version,
+                              None if pack in not_assembly else "assembly") for pack in packages]
         exclusions = [_ArtifactClsf('com.jsuereth', 'sbt-pgp', '1.1.0')]
 
         commands.repos_manager.add_repos('maven-central', 'http://central.maven.org/maven2/', 'remote')
@@ -135,6 +134,7 @@ def initialize(packages=[API.EUNJEON, API.KKMA],
             classpaths.append(os.path.join(local_path, artifact.to_jip_name()))
 
         commands.pool.join()
+        commands.logger.info("Initialization procedure is completed.")
         jnius_config.add_classpath(*classpaths)
     else:
         raise Exception("JVM cannot be initialized more than once!")

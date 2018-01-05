@@ -55,6 +55,7 @@ Dependency 추가
 
 .. code:: shell
 
+    $ pip install Cython
     $ pip install koalanlp
 
 만약, 설치에 문제가 생기면, ``Cython``, ``pyjnius``, ``jip``\ 를 먼저

@@ -47,8 +47,7 @@ $ pip install koalanlp
 
 다음과 같이 사용합니다.
 ```python
-from koalanlp.api import *
-from koalanlp.data import POS
+from koalanlp import *
 
 # 초기화 합니다.
 initialize(packages=[API.KKMA, API.EUNJEON], version="1.9.1", java_options="-Xmx4g")

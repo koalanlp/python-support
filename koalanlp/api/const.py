@@ -13,3 +13,21 @@ class API(Enum):
     ARIRANG = 'arirang'  #: 아리랑
     RHINO = 'rhino'      #: 라이노
     TWITTER = 'twt'      #: 트위터
+
+def _artifactName(api):
+    if api == API.HANNANUM:
+        return 'hannanum'
+    elif api == API.KOMORAN:
+        return 'komoran'
+    elif api == API.KKMA:
+        return 'kkma'
+    elif api == API.EUNJEON:
+        return 'eunjeon'
+    elif api == API.ARIRANG:
+        return 'arirang'
+    elif api == API.RHINO:
+        return 'rhino'
+    elif api == API.TWITTER:
+        return 'twitter'
+    else:
+        return 'core'
