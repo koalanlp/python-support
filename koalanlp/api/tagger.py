@@ -17,7 +17,6 @@ def _convert_word(result, widx):
                             morphs.tag().toString(),
                             morphs.rawTag(),
                             i)
-        print(morpheme)
         morphemes.append(morpheme)
 
     word = Word(surface, morphemes, widx)
