@@ -1,0 +1,22 @@
+data package
+============
+
+Submodules
+----------
+
+data\.POS module
+----------------
+
+.. automodule:: data.POS
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: data
+    :members:
+    :undoc-members:
+    :show-inheritance:

@@ -1,0 +1,741 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>koalanlp.data package &mdash; KoalaNLP 1.0.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="색인"
+              href="genindex.html"/>
+        <link rel="search" title="검색" href="search.html"/>
+    <link rel="top" title="KoalaNLP 1.0.0 documentation" href="index.html"/>
+        <link rel="up" title="koalanlp package" href="koalanlp.html"/>
+        <link rel="prev" title="koalanlp.api package" href="koalanlp.api.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> KoalaNLP
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="koalanlp.html">koalanlp package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="koalanlp.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="koalanlp.api.html">koalanlp.api package</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">koalanlp.data package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-koalanlp.data.POS">koalanlp.data.POS module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-koalanlp.data.data">koalanlp.data.data module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-koalanlp.data">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="koalanlp.html#module-koalanlp">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">KoalaNLP</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="modules.html">&lt;no title&gt;</a> &raquo;</li>
+        
+          <li><a href="koalanlp.html">koalanlp package</a> &raquo;</li>
+        
+      <li>koalanlp.data package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/koalanlp.data.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="koalanlp-data-package">
+<h1>koalanlp.data package<a class="headerlink" href="#koalanlp-data-package" title="제목 주소">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="제목 주소">¶</a></h2>
+</div>
+<div class="section" id="module-koalanlp.data.POS">
+<span id="koalanlp-data-pos-module"></span><h2>koalanlp.data.POS module<a class="headerlink" href="#module-koalanlp.data.POS" title="제목 주소">¶</a></h2>
+<dl class="function">
+<dt id="koalanlp.data.POS.is_affix">
+<code class="descclassname">koalanlp.data.POS.</code><code class="descname">is_affix</code><span class="sig-paren">(</span><em>tag</em><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#koalanlp.data.POS.is_affix" title="정의 주소">¶</a></dt>
+<dd><p>주어진 품사표기/형태소가 접사인지 확인합니다.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">매개 변수:</th><td class="field-body"><strong>tag</strong> (<em>Union</em><em>[</em><a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a><em>,</em><a class="reference internal" href="#koalanlp.data.data.Morpheme" title="koalanlp.data.data.Morpheme"><em>Morpheme</em></a><em>]</em>) -- 확인할 품사 또는 형태소.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return bool:</th><td class="field-body">접사이면 True</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="koalanlp.data.POS.is_ending">
+<code class="descclassname">koalanlp.data.POS.</code><code class="descname">is_ending</code><span class="sig-paren">(</span><em>tag</em><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#koalanlp.data.POS.is_ending" title="정의 주소">¶</a></dt>
+<dd><p>주어진 품사표기/형태소가 어미인지 확인합니다.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">매개 변수:</th><td class="field-body"><strong>tag</strong> (<em>Union</em><em>[</em><a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a><em>,</em><a class="reference internal" href="#koalanlp.data.data.Morpheme" title="koalanlp.data.data.Morpheme"><em>Morpheme</em></a><em>]</em>) -- 확인할 품사 또는 형태소.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return bool:</th><td class="field-body">어미이면 True</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="koalanlp.data.POS.is_modifier">
+<code class="descclassname">koalanlp.data.POS.</code><code class="descname">is_modifier</code><span class="sig-paren">(</span><em>tag</em><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#koalanlp.data.POS.is_modifier" title="정의 주소">¶</a></dt>
+<dd><p>주어진 품사표기/형태소가 수식언(관형사,부사)인지 확인합니다.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">매개 변수:</th><td class="field-body"><strong>tag</strong> (<em>Union</em><em>[</em><a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a><em>,</em><a class="reference internal" href="#koalanlp.data.data.Morpheme" title="koalanlp.data.data.Morpheme"><em>Morpheme</em></a><em>]</em>) -- 확인할 품사 또는 형태소.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return bool:</th><td class="field-body">수식언이면 True</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="koalanlp.data.POS.is_noun">
+<code class="descclassname">koalanlp.data.POS.</code><code class="descname">is_noun</code><span class="sig-paren">(</span><em>tag</em><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#koalanlp.data.POS.is_noun" title="정의 주소">¶</a></dt>
+<dd><p>주어진 품사표기/형태소가 체언(명사,대명사,의존명사,수사)인지 확인합니다.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">매개 변수:</th><td class="field-body"><strong>tag</strong> (<em>Union</em><em>[</em><a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a><em>,</em><a class="reference internal" href="#koalanlp.data.data.Morpheme" title="koalanlp.data.data.Morpheme"><em>Morpheme</em></a><em>]</em>) -- 확인할 품사 또는 형태소.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return bool:</th><td class="field-body">체언이면 True</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="koalanlp.data.POS.is_postposition">
+<code class="descclassname">koalanlp.data.POS.</code><code class="descname">is_postposition</code><span class="sig-paren">(</span><em>tag</em><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#koalanlp.data.POS.is_postposition" title="정의 주소">¶</a></dt>
+<dd><p>주어진 품사표기/형태소가 관계언(조사)인지 확인합니다.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">매개 변수:</th><td class="field-body"><strong>tag</strong> (<em>Union</em><em>[</em><a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a><em>,</em><a class="reference internal" href="#koalanlp.data.data.Morpheme" title="koalanlp.data.data.Morpheme"><em>Morpheme</em></a><em>]</em>) -- 확인할 품사 또는 형태소.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return bool:</th><td class="field-body">관계언이면 True</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="koalanlp.data.POS.is_predicate">
+<code class="descclassname">koalanlp.data.POS.</code><code class="descname">is_predicate</code><span class="sig-paren">(</span><em>tag</em><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#koalanlp.data.POS.is_predicate" title="정의 주소">¶</a></dt>
+<dd><p>주어진 품사표기/형태소가 용언(동사,형용사)인지 확인합니다.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">매개 변수:</th><td class="field-body"><strong>tag</strong> (<em>Union</em><em>[</em><a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a><em>,</em><a class="reference internal" href="#koalanlp.data.data.Morpheme" title="koalanlp.data.data.Morpheme"><em>Morpheme</em></a><em>]</em>) -- 확인할 품사 또는 형태소.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return bool:</th><td class="field-body">용언이면 True</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="koalanlp.data.POS.is_suffix">
+<code class="descclassname">koalanlp.data.POS.</code><code class="descname">is_suffix</code><span class="sig-paren">(</span><em>tag</em><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#koalanlp.data.POS.is_suffix" title="정의 주소">¶</a></dt>
+<dd><p>주어진 품사표기/형태소가 접미사인지 확인합니다.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">매개 변수:</th><td class="field-body"><strong>tag</strong> (<em>Union</em><em>[</em><a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a><em>,</em><a class="reference internal" href="#koalanlp.data.data.Morpheme" title="koalanlp.data.data.Morpheme"><em>Morpheme</em></a><em>]</em>) -- 확인할 품사 또는 형태소.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return bool:</th><td class="field-body">접미사이면 True</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="koalanlp.data.POS.is_symbol">
+<code class="descclassname">koalanlp.data.POS.</code><code class="descname">is_symbol</code><span class="sig-paren">(</span><em>tag</em><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#koalanlp.data.POS.is_symbol" title="정의 주소">¶</a></dt>
+<dd><p>주어진 품사표기/형태소가 기호인지 확인합니다.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">매개 변수:</th><td class="field-body"><strong>tag</strong> (<em>Union</em><em>[</em><a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a><em>,</em><a class="reference internal" href="#koalanlp.data.data.Morpheme" title="koalanlp.data.data.Morpheme"><em>Morpheme</em></a><em>]</em>) -- 확인할 품사 또는 형태소.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return bool:</th><td class="field-body">기호이면 True</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="koalanlp.data.POS.is_unknown">
+<code class="descclassname">koalanlp.data.POS.</code><code class="descname">is_unknown</code><span class="sig-paren">(</span><em>tag</em><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#koalanlp.data.POS.is_unknown" title="정의 주소">¶</a></dt>
+<dd><p>주어진 품사표기/형태소가 분석되지 않은 미상의 형태소인지 확인합니다.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">매개 변수:</th><td class="field-body"><strong>tag</strong> (<em>Union</em><em>[</em><a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a><em>,</em><a class="reference internal" href="#koalanlp.data.data.Morpheme" title="koalanlp.data.data.Morpheme"><em>Morpheme</em></a><em>]</em>) -- 확인할 품사 또는 형태소.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return bool:</th><td class="field-body">미상의 형태소이면 True</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-koalanlp.data.data">
+<span id="koalanlp-data-data-module"></span><h2>koalanlp.data.data module<a class="headerlink" href="#module-koalanlp.data.data" title="제목 주소">¶</a></h2>
+<dl class="class">
+<dt id="koalanlp.data.data.Morpheme">
+<em class="property">class </em><code class="descclassname">koalanlp.data.data.</code><code class="descname">Morpheme</code><span class="sig-paren">(</span><em>surface: str</em>, <em>tag: str</em>, <em>raw_tag: str</em>, <em>index: int</em><span class="sig-paren">)</span><a class="headerlink" href="#koalanlp.data.data.Morpheme" title="정의 주소">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>형태소 객체.</p>
+<dl class="method">
+<dt id="koalanlp.data.data.Morpheme.equals_without_tag">
+<code class="descname">equals_without_tag</code><span class="sig-paren">(</span><em>morph</em><span class="sig-paren">)</span><a class="headerlink" href="#koalanlp.data.data.Morpheme.equals_without_tag" title="정의 주소">¶</a></dt>
+<dd><p>주어진 형태소와 표면형이 일치하는지 확인합니다.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">매개 변수:</th><td class="field-body"><strong>morph</strong> -- 비교할 형태소</td>
+</tr>
+<tr class="field-even field"><th class="field-name">반환:</th><td class="field-body">일치하면, True</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="koalanlp.data.data.Morpheme.has_raw_tag">
+<code class="descname">has_raw_tag</code><span class="sig-paren">(</span><em>tag</em><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#koalanlp.data.data.Morpheme.has_raw_tag" title="정의 주소">¶</a></dt>
+<dd><p>주어진 형태소와 원본품사가 일치하는지 확인합니다.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">매개 변수:</th><td class="field-body"><strong>tag</strong> (<em>Union</em><em>[</em><em>list</em><em>[</em><a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a><em>]</em><em>,</em><a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a><em>]</em>) -- 일치하는지 확인할 품사 또는 품사의 목록.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">반환:</th><td class="field-body">하나라도 일치하면 True.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="koalanlp.data.data.Morpheme.has_tag">
+<code class="descname">has_tag</code><span class="sig-paren">(</span><em>tag</em><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#koalanlp.data.data.Morpheme.has_tag" title="정의 주소">¶</a></dt>
+<dd><p>주어진 형태소와 일치하는지 확인합니다.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">매개 변수:</th><td class="field-body"><strong>tag</strong> (<em>Union</em><em>[</em><em>list</em><em>[</em><a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a><em>]</em><em>,</em><a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a><em>]</em>) -- 일치하는지 확인할 품사 또는 품사의 목록.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">반환:</th><td class="field-body">하나라도 일치하면 True.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="koalanlp.data.data.Morpheme.to_dict">
+<code class="descname">to_dict</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; dict<a class="headerlink" href="#koalanlp.data.data.Morpheme.to_dict" title="정의 주소">¶</a></dt>
+<dd><p>형태소를 dict 객체로 변환합니다.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return dict:</th><td class="field-body">표면형, 품사, 원본품사, 위치를 담은 dict.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="koalanlp.data.data.Relationship">
+<em class="property">class </em><code class="descclassname">koalanlp.data.data.</code><code class="descname">Relationship</code><span class="sig-paren">(</span><em>head: int</em>, <em>relation: str</em>, <em>raw_rel: str</em>, <em>target: int</em><span class="sig-paren">)</span><a class="headerlink" href="#koalanlp.data.data.Relationship" title="정의 주소">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>의존관계 객체.</p>
+<dl class="method">
+<dt id="koalanlp.data.data.Relationship.to_dict">
+<code class="descname">to_dict</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; dict<a class="headerlink" href="#koalanlp.data.data.Relationship.to_dict" title="정의 주소">¶</a></dt>
+<dd><p>의존관계를 dict 객체로 변환합니다.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return dict:</th><td class="field-body">지배소, 피지배소, 관계, 원본관계를 담은 dict.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="koalanlp.data.data.Sentence">
+<em class="property">class </em><code class="descclassname">koalanlp.data.data.</code><code class="descname">Sentence</code><span class="sig-paren">(</span><em>words</em><span class="sig-paren">)</span><a class="headerlink" href="#koalanlp.data.data.Sentence" title="정의 주소">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>문장 객체.</p>
+<dl class="method">
+<dt id="koalanlp.data.data.Sentence.exists">
+<code class="descname">exists</code><span class="sig-paren">(</span><em>fn</em><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#koalanlp.data.data.Sentence.exists" title="정의 주소">¶</a></dt>
+<dd><p>주어진 어절/조건에 일치하는 어절이 있는지 확인합니다.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">매개 변수:</th><td class="field-body"><strong>fn</strong> (<em>Union</em><em>[</em><a class="reference internal" href="#koalanlp.data.data.Word" title="koalanlp.data.data.Word"><em>Word</em></a><em>,</em><em>function</em><em>[</em><a class="reference internal" href="#koalanlp.data.data.Word" title="koalanlp.data.data.Word"><em>Word</em></a><em>,</em><a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a><em>]</em><em>]</em>) -- 찾을 어절/조건.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return bool:</th><td class="field-body">일치하는 어절이 있다면, True</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="koalanlp.data.data.Sentence.find">
+<code class="descname">find</code><span class="sig-paren">(</span><em>fn</em><span class="sig-paren">)</span><a class="headerlink" href="#koalanlp.data.data.Sentence.find" title="정의 주소">¶</a></dt>
+<dd><p>주어진 어절/조건에 일치하는 어절을 찾습니다.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">매개 변수:</th><td class="field-body"><strong>fn</strong> (<em>Union</em><em>[</em><a class="reference internal" href="#koalanlp.data.data.Word" title="koalanlp.data.data.Word"><em>Word</em></a><em>,</em><em>function</em><em>[</em><a class="reference internal" href="#koalanlp.data.data.Word" title="koalanlp.data.data.Word"><em>Word</em></a><em>,</em><a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a><em>]</em><em>]</em>) -- 찾을 어절/조건.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return Word:</th><td class="field-body">일치하는 어절.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="koalanlp.data.data.Sentence.matches">
+<code class="descname">matches</code><span class="sig-paren">(</span><em>tag</em><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#koalanlp.data.data.Sentence.matches" title="정의 주소">¶</a></dt>
+<dd><p>문장 내 형태소의 순서가 주어진 순서와 일치하는지 확인합니다.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">매개 변수:</th><td class="field-body"><strong>tag</strong> (<em>list</em><em>[</em><em>list</em><em>[</em><a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a><em>]</em><em>]</em>) -- 확인할 품사의 순서. 품사의 묶음(어절)의 묶음</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return bool:</th><td class="field-body">순서가 일치하면, True (연속할 필요는 없음)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="koalanlp.data.data.Sentence.modifiers">
+<code class="descname">modifiers</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#koalanlp.data.data.Sentence.modifiers" title="정의 주소">¶</a></dt>
+<dd><p>문장 내 수식언(관형사,부사)을 포함한 어절의 목록.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name" colspan="2">Return list[word]:</th></tr>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body">수식언 어절 목록</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="koalanlp.data.data.Sentence.nouns">
+<code class="descname">nouns</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#koalanlp.data.data.Sentence.nouns" title="정의 주소">¶</a></dt>
+<dd><p>문장 내 체언(명사,대명사,의존명사,수사)을 포함한 어절의 목록.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name" colspan="2">Return list[word]:</th></tr>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body">체언 어절 목록</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="koalanlp.data.data.Sentence.single_line_string">
+<code class="descname">single_line_string</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#koalanlp.data.data.Sentence.single_line_string" title="정의 주소">¶</a></dt>
+<dd><p>문장의 품사 분석 결과를 한 행으로 만듭니다.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return str:</th><td class="field-body">&quot;형태소1/품사1+형태소2/품사2...&quot;로 표현된 어절을 빈칸으로 구분한 한 행짜리 문자열.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="koalanlp.data.data.Sentence.surface_string">
+<code class="descname">surface_string</code><span class="sig-paren">(</span><em>delimiter: str = ' '</em><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#koalanlp.data.data.Sentence.surface_string" title="정의 주소">¶</a></dt>
+<dd><p>문장의 표면형을 모아 한 행으로 만듭니다.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">매개 변수:</th><td class="field-body"><strong>delimiter</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) -- 어절을 구분할 구분자. (기본 = Space)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return str:</th><td class="field-body">delimiter로 구분된 문장의 표면형.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="koalanlp.data.data.Sentence.to_dict">
+<code class="descname">to_dict</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; dict<a class="headerlink" href="#koalanlp.data.data.Sentence.to_dict" title="정의 주소">¶</a></dt>
+<dd><p>문장을 dict로 변환.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return dict:</th><td class="field-body">어절과 최상위 의존관계를 포함한 dict.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="koalanlp.data.data.Sentence.verbs">
+<code class="descname">verbs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#koalanlp.data.data.Sentence.verbs" title="정의 주소">¶</a></dt>
+<dd><p>문장 내 용언(동사,형용사)을 포함한 어절의 목록.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name" colspan="2">Return list[word]:</th></tr>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body">용언 어절 목록</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="koalanlp.data.data.Word">
+<em class="property">class </em><code class="descclassname">koalanlp.data.data.</code><code class="descname">Word</code><span class="sig-paren">(</span><em>surface: str = None</em>, <em>morphemes=None</em>, <em>index: int = None</em><span class="sig-paren">)</span><a class="headerlink" href="#koalanlp.data.data.Word" title="정의 주소">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>어절 객체</p>
+<dl class="method">
+<dt id="koalanlp.data.data.Word.equals_without_tag">
+<code class="descname">equals_without_tag</code><span class="sig-paren">(</span><em>another</em><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#koalanlp.data.data.Word.equals_without_tag" title="정의 주소">¶</a></dt>
+<dd><p>두 어절이 표면형이 일치하는지 확인합니다.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">매개 변수:</th><td class="field-body"><strong>another</strong> -- 비교할 어절</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return bool:</th><td class="field-body">표면형이 일치하면, True</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="koalanlp.data.data.Word.exists">
+<code class="descname">exists</code><span class="sig-paren">(</span><em>fn</em><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#koalanlp.data.data.Word.exists" title="정의 주소">¶</a></dt>
+<dd><p>주어진 형태소/조건에 일치하는 형태소가 있는지 확인합니다.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">매개 변수:</th><td class="field-body"><strong>fn</strong> (<em>Union</em><em>[</em><a class="reference internal" href="#koalanlp.data.data.Morpheme" title="koalanlp.data.data.Morpheme"><em>Morpheme</em></a><em>,</em><em>function</em><em>[</em><a class="reference internal" href="#koalanlp.data.data.Morpheme" title="koalanlp.data.data.Morpheme"><em>Morpheme</em></a><em>,</em><a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a><em>]</em><em>]</em>) -- 찾을 형태소/조건.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return bool:</th><td class="field-body">일치하는 형태소가 있다면, True</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="koalanlp.data.data.Word.find">
+<code class="descname">find</code><span class="sig-paren">(</span><em>fn</em><span class="sig-paren">)</span><a class="headerlink" href="#koalanlp.data.data.Word.find" title="정의 주소">¶</a></dt>
+<dd><p>주어진 형태소/조건에 일치하는 형태소를 찾습니다.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">매개 변수:</th><td class="field-body"><strong>fn</strong> (<em>Union</em><em>[</em><a class="reference internal" href="#koalanlp.data.data.Morpheme" title="koalanlp.data.data.Morpheme"><em>Morpheme</em></a><em>,</em><em>function</em><em>[</em><a class="reference internal" href="#koalanlp.data.data.Morpheme" title="koalanlp.data.data.Morpheme"><em>Morpheme</em></a><em>,</em><a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a><em>]</em><em>]</em>) -- 찾을 형태소/조건.</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Return Morpheme:</th></tr>
+<tr class="field-even field"><td>&#160;</td><td class="field-body">일치하는 형태소.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="koalanlp.data.data.Word.matches">
+<code class="descname">matches</code><span class="sig-paren">(</span><em>tag</em><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#koalanlp.data.data.Word.matches" title="정의 주소">¶</a></dt>
+<dd><p>어절 내 형태소의 순서가 주어진 순서와 일치하는지 확인합니다.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">매개 변수:</th><td class="field-body"><strong>tag</strong> (<em>list</em><em>[</em><a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a><em>]</em>) -- 확인할 품사의 순서.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return bool:</th><td class="field-body">순서가 일치하면, True (연속할 필요는 없음)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="koalanlp.data.data.Word.single_line_string">
+<code class="descname">single_line_string</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#koalanlp.data.data.Word.single_line_string" title="정의 주소">¶</a></dt>
+<dd><p>형태소 분석 결과를 한 행에 표현합니다.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return str:</th><td class="field-body">&quot;형태소1/품사1+형태소2/품사2...&quot; 형태의 문자열.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="koalanlp.data.data.Word.to_dict">
+<code class="descname">to_dict</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; dict<a class="headerlink" href="#koalanlp.data.data.Word.to_dict" title="정의 주소">¶</a></dt>
+<dd><p>어절을 dict 객체로, 변환합니다.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return dict:</th><td class="field-body">표면형, 형태소, 의존관계, 위치를 담은 dict</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-koalanlp.data">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-koalanlp.data" title="제목 주소">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="koalanlp.api.html" class="btn btn-neutral" title="koalanlp.api package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Bugeun Kim.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'1.0.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="_static/translations.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

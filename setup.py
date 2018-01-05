@@ -10,7 +10,7 @@ setup(
     install_requires=[
         "Cython>=0.27.3", "pyjnius>=1.1.1", "jip>=0.9.13"
     ],
-    packages=find_packages(),
+    packages=find_packages(exclude=["docs"]),
     keywords=['korean', 'natural language processing', 'koalanlp', 'sentence', 'parser', 'tagger'],
     python_requires='>=3.5',
     package_data={},

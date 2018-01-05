@@ -3,6 +3,7 @@
 [![PyPI](https://img.shields.io/pypi/v/koalanlp.svg?style=flat-square)](https://github.com/nearbydelta/py-koalanlp)
 [![분석기별 품사비교표](https://img.shields.io/badge/%ED%92%88%EC%82%AC-%EB%B9%84%EA%B5%90%ED%91%9C-blue.svg?style=flat-square)](https://docs.google.com/spreadsheets/d/1OGM4JDdLk6URuegFKXg1huuKWynhg_EQnZYgTmG4h0s/edit?usp=sharing)
 [![MIT License](https://img.shields.io/badge/license-MIT-green.svg?style=flat-square)](https://tldrlegal.com/license/mit-license)
+[![Sphinx doc](https://img.shields.io/badge/Python-Doc-blue.svg?style=flat-square)](https://nearbydelta.github.io/py-koalanlp/docs/build/)
 
 # 소개
 한국어 형태소 및 구문 분석기의 모음인, [KoalaNLP](https://github.com/nearbydelta/koalanlp)의 Python 판본입니다.
@@ -25,6 +26,7 @@ KoalaNLP의 Contributor가 되고 싶으시다면, 언제든지 Issue에 등록�
 또한, 추가하고자 하는 새로운 프로젝트가 있으시면, Issue에 등록해주십시오.
 
 # 사용법
+API 문서는 [![Sphinx doc](https://img.shields.io/badge/Python-Doc-blue.svg?style=flat-square)](https://nearbydelta.github.io/py-koalanlp/docs/build/)에서 보실 수 있습니다.
 
 ## Dependency 추가
 * `Java` 8 이상이 설치되어 있고, `JAVA_HOME`이 설정되어 있어야 합니다.
@@ -32,6 +34,7 @@ KoalaNLP의 Contributor가 되고 싶으시다면, 언제든지 Issue에 등록�
 
 아래와 같이 `koalanlp`를 추가해주세요.
 ```shell
+$ pip install Cython
 $ pip install koalanlp
 ```
 
@@ -41,8 +44,6 @@ $ pip install koalanlp
 `koalanlp`는, `pyjnius` 및 `jip` 패키지의 도움을 받아, 필요한 java dependency를 자동으로 가져옵니다.
 
 > [참고] 최초 사용시 또는, 최신 패키지로 업데이트 되는 경우, dependency를 찾아오는 데 시간이 소요될 수 있습니다.
-> 다운로드 진행 중에 취소하시면 다운로드 된 패키지가 corrupt 될 수 있습니다.
-> 이 경우, Maven repository 저장 공간인 (`~/.m2`) 폴더에서 오류가 나는 패키지를 삭제하시고 다시 시작하십시오.
 
 다음과 같이 사용합니다.
 ```python

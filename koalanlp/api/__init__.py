@@ -1,3 +1,6 @@
-from ._const import API
-from ._initialize import initialize
-from ._tagger import Parser, Tagger
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+from .const import API
+from .initialize import initialize
+from .tagger import Parser, Tagger

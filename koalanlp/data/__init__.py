@@ -1,2 +1,5 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 from . import POS
-from ._data import *
+from .data import *

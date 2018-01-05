@@ -1,10 +1,14 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 from jip import commands
 from jip.maven import Artifact
-from ._const import API
+from .const import API
+from typing import List
 import os
 
 
-class ArtifactClsf(Artifact):
+class _ArtifactClsf(Artifact):
     def to_maven_name(self, ext):
         if self.classifier is None or ext == "pom":
             return super().to_maven_name(ext)
@@ -28,6 +32,7 @@ class ArtifactClsf(Artifact):
         self.classifier = classifier
 
 
+# JIP 코드 참조하여 변경함.
 def _find_pom(artifact):
     """ find pom and repos contains pom """
     # lookup cache first
@@ -44,6 +49,7 @@ def _find_pom(artifact):
         return None
 
 
+# JIP 코드 참조하여 변경함.
 def _resolve_artifacts_modified(artifacts, exclusions=[]):
     # download queue
     download_list = []
@@ -96,6 +102,14 @@ not_assembly = [API.EUNJEON, API.KOMORAN, API.TWITTER]
 def initialize(packages=[API.EUNJEON, API.KKMA],
                version="1.9.0",
                java_options="-Xmx4g"):
+    """
+    초기화 함수. 필요한 Java library를 다운받습니다.
+
+    :param List[API] packages: 사용할 분석기 API의 목록. (기본값: [API.EUNJEON, API.KKMA])
+    :param str version: 사용할 분석기의 버전. (기본값: "1.9.0")
+    :param str java_options: 자바 JVM option (기본값: "-Xmx4g")
+    :raise Exception: JVM이 2회 이상 초기화 될때 Exception.
+    """
     global initialized, not_assembly
     if not initialized:
         import jnius_config
@@ -104,10 +118,10 @@ def initialize(packages=[API.EUNJEON, API.KKMA],
         jnius_config.add_options(*java_options)
         initialized = True
 
-        deps = [ArtifactClsf('kr.bydelta', 'koalanlp-%s_2.12' % pack.value, version,
+        deps = [_ArtifactClsf('kr.bydelta', 'koalanlp-%s_2.12' % pack.value, version,
                              None if pack in not_assembly else "assembly"
                              ) for pack in packages]
-        exclusions = [ArtifactClsf('com.jsuereth', 'sbt-pgp', '1.1.0')]
+        exclusions = [_ArtifactClsf('com.jsuereth', 'sbt-pgp', '1.1.0')]
 
         commands.repos_manager.add_repos('maven-central', 'http://central.maven.org/maven2/', 'remote')
         commands.repos_manager.add_repos('jitpack.io', 'https://jitpack.io/', 'remote')

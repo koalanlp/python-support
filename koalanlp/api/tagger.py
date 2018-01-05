@@ -1,7 +1,12 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 from koalanlp.data import *
+from .const import API
+from typing import List
 
 
-def convert_word(result, widx):
+def _convert_word(result, widx):
     w_length = result.length()
     morphemes = []
     surface = result.surface()
@@ -30,13 +35,13 @@ def convert_word(result, widx):
     return word
 
 
-def convert_sentence(result):
+def _convert_sentence(result):
     s_length = result.length()
     words = []
 
     for i in range(s_length):
         word = result.apply(i)
-        words.append(convert_word(word, i))
+        words.append(_convert_word(word, i))
 
     sentence = Sentence(words)
     dependents = result.root().deps().toSeq()
@@ -53,13 +58,13 @@ def convert_sentence(result):
     return sentence
 
 
-def converter(result):
+def _converter(result):
     p_length = result.size()
     para = []
 
     for i in range(p_length):
         sentence = result.apply(i)
-        para.append(convert_sentence(sentence))
+        para.append(_convert_sentence(sentence))
 
     return para
 
@@ -67,7 +72,7 @@ def converter(result):
 JString = None
 
 
-def jstr(s):
+def _jstr(s):
     global JString
     if JString is None:
         from jnius import autoclass
@@ -76,20 +81,44 @@ def jstr(s):
 
 
 class Tagger(object):
-    def __init__(self, tagger_type):
+    """
+    품사분석기를 초기화합니다.
+
+    :param API tagger_type: 사용할 품사분석기의 유형.
+    """
+    def __init__(self, tagger_type: API):
         from jnius import autoclass
         JTagger = autoclass("kr.bydelta.koala.%s.Tagger" % tagger_type.value)
         self.__tag = JTagger()
 
-    def tag(self, paragraph):
-        return converter(self.__tag.tag(jstr(paragraph)))
+    def tag(self, paragraph: str) -> List[Sentence]:
+        """
+        문단을 품사분석합니다.
 
-    def tag_sentence(self, sentence):
-        return convert_sentence(self.__tag.tagSentence(jstr(sentence)))
+        :param str paragraph: 분석할 문단.
+        :return List[Sentence]: 분석된 결과.
+        """
+        return _converter(self.__tag.tag(_jstr(paragraph)))
+
+    def tag_sentence(self, sentence: str) -> Sentence:
+        """
+        문장을 의존구문분석합니다.
+
+        :param str sentence: 분석할 문단.
+        :return Sentence: 분석된 결과.
+        """
+        return _convert_sentence(self.__tag.tagSentence(_jstr(sentence)))
 
 
 class Parser(object):
-    def __init__(self, parser_type, tagger_type=None):
+    """
+    의존구문분석기를 초기화합니다.
+
+    :param API parser_type: 사용할 의존구문분석기의 유형.
+    :param API tagger_type: 사용할 품사분석기의 유형. 지정하지 않을 경우, 의존구문분석기의 품사분석결과를 활용함.
+    """
+
+    def __init__(self, parser_type: API, tagger_type=None):
         from jnius import autoclass
         JParser = autoclass("kr.bydelta.koala.%s.Parser" % parser_type.value)
         self.__parse = JParser()
@@ -99,16 +128,28 @@ class Parser(object):
         else:
             self.__tag = None
 
-    def parse(self, paragraph):
-        if self.__tag is None:
-            return converter(self.__parse.parse(jstr(paragraph)))
-        else:
-            tagged = self.__tag.tag(jstr(paragraph))
-            return converter(self.__parse.parse(tagged))
+    def parse(self, paragraph: str) -> List[Sentence]:
+        """
+        문단을 의존구문분석합니다.
 
-    def parse_sentence(self, sentence):
+        :param str paragraph: 분석할 문단.
+        :return List[Sentence]: 분석된 결과.
+        """
         if self.__tag is None:
-            return convert_sentence(self.__parse.parseSentence(jstr(sentence)))
+            return _converter(self.__parse.parse(_jstr(paragraph)))
         else:
-            tagged = self.__tag.tagSentence(jstr(sentence))
-            return convert_sentence(self.__parse.parse(tagged))
+            tagged = self.__tag.tag(_jstr(paragraph))
+            return _converter(self.__parse.parse(tagged))
+
+    def parse_sentence(self, sentence: str) -> Sentence:
+        """
+        문장을 의존구문분석합니다.
+
+        :param str sentence: 분석할 문단.
+        :return Sentence: 분석된 결과.
+        """
+        if self.__tag is None:
+            return _convert_sentence(self.__parse.parseSentence(_jstr(sentence)))
+        else:
+            tagged = self.__tag.tagSentence(_jstr(sentence))
+            return _convert_sentence(self.__parse.parse(tagged))

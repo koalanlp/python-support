@@ -1,0 +1,443 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>koalanlp.api package &mdash; KoalaNLP 1.0.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="색인"
+              href="genindex.html"/>
+        <link rel="search" title="검색" href="search.html"/>
+    <link rel="top" title="KoalaNLP 1.0.0 documentation" href="index.html"/>
+        <link rel="up" title="koalanlp package" href="koalanlp.html"/>
+        <link rel="next" title="koalanlp.data package" href="koalanlp.data.html"/>
+        <link rel="prev" title="koalanlp package" href="koalanlp.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> KoalaNLP
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="koalanlp.html">koalanlp package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="koalanlp.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">koalanlp.api package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-koalanlp.api.const">koalanlp.api.const module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-koalanlp.api.initialize">koalanlp.api.initialize module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-koalanlp.api.tagger">koalanlp.api.tagger module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-koalanlp.api">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="koalanlp.data.html">koalanlp.data package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="koalanlp.html#module-koalanlp">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">KoalaNLP</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="modules.html">&lt;no title&gt;</a> &raquo;</li>
+        
+          <li><a href="koalanlp.html">koalanlp package</a> &raquo;</li>
+        
+      <li>koalanlp.api package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/koalanlp.api.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="koalanlp-api-package">
+<h1>koalanlp.api package<a class="headerlink" href="#koalanlp-api-package" title="제목 주소">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="제목 주소">¶</a></h2>
+</div>
+<div class="section" id="module-koalanlp.api.const">
+<span id="koalanlp-api-const-module"></span><h2>koalanlp.api.const module<a class="headerlink" href="#module-koalanlp.api.const" title="제목 주소">¶</a></h2>
+<dl class="class">
+<dt id="koalanlp.api.const.API">
+<em class="property">class </em><code class="descclassname">koalanlp.api.const.</code><code class="descname">API</code><a class="headerlink" href="#koalanlp.api.const.API" title="정의 주소">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">enum.Enum</span></code></p>
+<p>지원하는 분석기의 종류.</p>
+<dl class="attribute">
+<dt id="koalanlp.api.const.API.ARIRANG">
+<code class="descname">ARIRANG</code><em class="property"> = 'arirang'</em><a class="headerlink" href="#koalanlp.api.const.API.ARIRANG" title="정의 주소">¶</a></dt>
+<dd><p>아리랑</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="koalanlp.api.const.API.EUNJEON">
+<code class="descname">EUNJEON</code><em class="property"> = 'eunjeon'</em><a class="headerlink" href="#koalanlp.api.const.API.EUNJEON" title="정의 주소">¶</a></dt>
+<dd><p>은전한닢</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="koalanlp.api.const.API.HANNANUM">
+<code class="descname">HANNANUM</code><em class="property"> = 'hnn'</em><a class="headerlink" href="#koalanlp.api.const.API.HANNANUM" title="정의 주소">¶</a></dt>
+<dd><p>한나눔</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="koalanlp.api.const.API.KKMA">
+<code class="descname">KKMA</code><em class="property"> = 'kkma'</em><a class="headerlink" href="#koalanlp.api.const.API.KKMA" title="정의 주소">¶</a></dt>
+<dd><p>꼬꼬마</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="koalanlp.api.const.API.KOMORAN">
+<code class="descname">KOMORAN</code><em class="property"> = 'kmr'</em><a class="headerlink" href="#koalanlp.api.const.API.KOMORAN" title="정의 주소">¶</a></dt>
+<dd><p>코모란</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="koalanlp.api.const.API.RHINO">
+<code class="descname">RHINO</code><em class="property"> = 'rhino'</em><a class="headerlink" href="#koalanlp.api.const.API.RHINO" title="정의 주소">¶</a></dt>
+<dd><p>라이노</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="koalanlp.api.const.API.TWITTER">
+<code class="descname">TWITTER</code><em class="property"> = 'twt'</em><a class="headerlink" href="#koalanlp.api.const.API.TWITTER" title="정의 주소">¶</a></dt>
+<dd><p>트위터</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-koalanlp.api.initialize">
+<span id="koalanlp-api-initialize-module"></span><h2>koalanlp.api.initialize module<a class="headerlink" href="#module-koalanlp.api.initialize" title="제목 주소">¶</a></h2>
+<dl class="function">
+<dt id="koalanlp.api.initialize.initialize">
+<code class="descclassname">koalanlp.api.initialize.</code><code class="descname">initialize</code><span class="sig-paren">(</span><em>packages=[&lt;API.EUNJEON: 'eunjeon'&gt;, &lt;API.KKMA: 'kkma'&gt;], version='1.9.0', java_options='-Xmx4g'</em><span class="sig-paren">)</span><a class="headerlink" href="#koalanlp.api.initialize.initialize" title="정의 주소">¶</a></dt>
+<dd><p>초기화 함수. 필요한 Java library를 다운받습니다.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">매개 변수:</th><td class="field-body"><ul class="first simple">
+<li><strong>packages</strong> (<em>List</em><em>[</em><a class="reference internal" href="#koalanlp.api.const.API" title="koalanlp.api.const.API"><em>API</em></a><em>]</em>) -- 사용할 분석기 API의 목록. (기본값: [API.EUNJEON, API.KKMA])</li>
+<li><strong>version</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) -- 사용할 분석기의 버전. (기본값: &quot;1.9.0&quot;)</li>
+<li><strong>java_options</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) -- 자바 JVM option (기본값: &quot;-Xmx4g&quot;)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">예외:</th><td class="field-body"><p class="first last"><strong>Exception</strong> -- JVM이 2회 이상 초기화 될때 Exception.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-koalanlp.api.tagger">
+<span id="koalanlp-api-tagger-module"></span><h2>koalanlp.api.tagger module<a class="headerlink" href="#module-koalanlp.api.tagger" title="제목 주소">¶</a></h2>
+<dl class="class">
+<dt id="koalanlp.api.tagger.Parser">
+<em class="property">class </em><code class="descclassname">koalanlp.api.tagger.</code><code class="descname">Parser</code><span class="sig-paren">(</span><em>parser_type: koalanlp.api.const.API</em>, <em>tagger_type=None</em><span class="sig-paren">)</span><a class="headerlink" href="#koalanlp.api.tagger.Parser" title="정의 주소">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>의존구문분석기를 초기화합니다.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">매개 변수:</th><td class="field-body"><ul class="first last simple">
+<li><strong>parser_type</strong> (<a class="reference internal" href="#koalanlp.api.const.API" title="koalanlp.api.const.API"><em>API</em></a>) -- 사용할 의존구문분석기의 유형.</li>
+<li><strong>tagger_type</strong> (<a class="reference internal" href="#koalanlp.api.const.API" title="koalanlp.api.const.API"><em>API</em></a>) -- 사용할 품사분석기의 유형. 지정하지 않을 경우, 의존구문분석기의 품사분석결과를 활용함.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="koalanlp.api.tagger.Parser.parse">
+<code class="descname">parse</code><span class="sig-paren">(</span><em>paragraph: str</em><span class="sig-paren">)</span> &#x2192; typing.List[koalanlp.data.data.Sentence]<a class="headerlink" href="#koalanlp.api.tagger.Parser.parse" title="정의 주소">¶</a></dt>
+<dd><p>문단을 의존구문분석합니다.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">매개 변수:</th><td class="field-body"><strong>paragraph</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) -- 분석할 문단.</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Return List[Sentence]:</th></tr>
+<tr class="field-even field"><td>&#160;</td><td class="field-body">분석된 결과.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="koalanlp.api.tagger.Parser.parse_sentence">
+<code class="descname">parse_sentence</code><span class="sig-paren">(</span><em>sentence: str</em><span class="sig-paren">)</span> &#x2192; koalanlp.data.data.Sentence<a class="headerlink" href="#koalanlp.api.tagger.Parser.parse_sentence" title="정의 주소">¶</a></dt>
+<dd><p>문장을 의존구문분석합니다.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">매개 변수:</th><td class="field-body"><strong>sentence</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) -- 분석할 문단.</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Return Sentence:</th></tr>
+<tr class="field-even field"><td>&#160;</td><td class="field-body">분석된 결과.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="koalanlp.api.tagger.Tagger">
+<em class="property">class </em><code class="descclassname">koalanlp.api.tagger.</code><code class="descname">Tagger</code><span class="sig-paren">(</span><em>tagger_type: koalanlp.api.const.API</em><span class="sig-paren">)</span><a class="headerlink" href="#koalanlp.api.tagger.Tagger" title="정의 주소">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>품사분석기를 초기화합니다.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">매개 변수:</th><td class="field-body"><strong>tagger_type</strong> (<a class="reference internal" href="#koalanlp.api.const.API" title="koalanlp.api.const.API"><em>API</em></a>) -- 사용할 품사분석기의 유형.</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="koalanlp.api.tagger.Tagger.tag">
+<code class="descname">tag</code><span class="sig-paren">(</span><em>paragraph: str</em><span class="sig-paren">)</span> &#x2192; typing.List[koalanlp.data.data.Sentence]<a class="headerlink" href="#koalanlp.api.tagger.Tagger.tag" title="정의 주소">¶</a></dt>
+<dd><p>문단을 품사분석합니다.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">매개 변수:</th><td class="field-body"><strong>paragraph</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) -- 분석할 문단.</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Return List[Sentence]:</th></tr>
+<tr class="field-even field"><td>&#160;</td><td class="field-body">분석된 결과.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="koalanlp.api.tagger.Tagger.tag_sentence">
+<code class="descname">tag_sentence</code><span class="sig-paren">(</span><em>sentence: str</em><span class="sig-paren">)</span> &#x2192; koalanlp.data.data.Sentence<a class="headerlink" href="#koalanlp.api.tagger.Tagger.tag_sentence" title="정의 주소">¶</a></dt>
+<dd><p>문장을 의존구문분석합니다.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">매개 변수:</th><td class="field-body"><strong>sentence</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) -- 분석할 문단.</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Return Sentence:</th></tr>
+<tr class="field-even field"><td>&#160;</td><td class="field-body">분석된 결과.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-koalanlp.api">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-koalanlp.api" title="제목 주소">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="koalanlp.data.html" class="btn btn-neutral float-right" title="koalanlp.data package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="koalanlp.html" class="btn btn-neutral" title="koalanlp package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Bugeun Kim.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'1.0.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="_static/translations.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
