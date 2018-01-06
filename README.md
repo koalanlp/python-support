@@ -5,6 +5,9 @@
 [![MIT License](https://img.shields.io/badge/license-MIT-green.svg?style=flat-square)](https://tldrlegal.com/license/mit-license)
 [![Sphinx doc](https://img.shields.io/badge/Python-Doc-blue.svg?style=flat-square)](https://nearbydelta.github.io/py-koalanlp/build/html/)
 
+[![scala-koalanlp](https://img.shields.io/badge/Scala-KoalaNLP-blue.svg?style=flat-square)](https://nearbydelta.github.io/KoalaNLP)
+[![nodejs-koalanlp](https://img.shields.io/badge/Nodejs-KoalaNLP-blue.svg?style=flat-square)](https://nearbydelta.github.io/nodejs-koalanlp)
+
 # 소개
 한국어 형태소 및 구문 분석기의 모음인, [KoalaNLP](https://github.com/nearbydelta/koalanlp)의 Python 판본입니다.
 
