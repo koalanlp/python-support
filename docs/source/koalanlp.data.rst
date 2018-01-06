@@ -19,12 +19,3 @@ koalanlp\.data\.data module
     :members:
     :undoc-members:
     :show-inheritance:
-
-
-Module contents
----------------
-
-.. automodule:: koalanlp.data
-    :members:
-    :undoc-members:
-    :show-inheritance:

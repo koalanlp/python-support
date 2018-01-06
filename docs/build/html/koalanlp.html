@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>koalanlp package &mdash; KoalaNLP 1.0.2 documentation</title>
+  <title>koalanlp package API &mdash; KoalaNLP 1.0.2 documentation</title>
   
 
   
@@ -36,9 +36,9 @@
               href="genindex.html"/>
         <link rel="search" title="검색" href="search.html"/>
     <link rel="top" title="KoalaNLP 1.0.2 documentation" href="index.html"/>
-        <link rel="up" title="&lt;no title&gt;" href="modules.html"/>
+        <link rel="up" title="API" href="modules.html"/>
         <link rel="next" title="koalanlp.api package" href="koalanlp.api.html"/>
-        <link rel="prev" title="&lt;no title&gt;" href="modules.html"/> 
+        <link rel="prev" title="API" href="modules.html"/> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -92,13 +92,17 @@
             
             
               <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">koalanlp package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#subpackages">Subpackages</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="koalanlp.api.html">koalanlp.api package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="koalanlp.data.html">koalanlp.data package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dependencies.html">설치하기</a></li>
+<li class="toctree-l1"><a class="reference internal" href="example.html">간단한 예시</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">API</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">koalanlp package API</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#subpackages">Subpackages</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="koalanlp.api.html">koalanlp.api package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="koalanlp.data.html">koalanlp.data package</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#module-koalanlp">Module contents</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -145,9 +149,9 @@
     
       <li><a href="index.html">Docs</a> &raquo;</li>
         
-          <li><a href="modules.html">&lt;no title&gt;</a> &raquo;</li>
+          <li><a href="modules.html">API</a> &raquo;</li>
         
-      <li>koalanlp package</li>
+      <li>koalanlp package API</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -166,8 +170,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="koalanlp-package">
-<h1>koalanlp package<a class="headerlink" href="#koalanlp-package" title="제목 주소">¶</a></h1>
+  <div class="section" id="koalanlp-package-api">
+<h1>koalanlp package API<a class="headerlink" href="#koalanlp-package-api" title="제목 주소">¶</a></h1>
 <div class="section" id="subpackages">
 <h2>Subpackages<a class="headerlink" href="#subpackages" title="제목 주소">¶</a></h2>
 <div class="toctree-wrapper compound">
@@ -177,21 +181,26 @@
 <li class="toctree-l2"><a class="reference internal" href="koalanlp.api.html#module-koalanlp.api.const">koalanlp.api.const module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="koalanlp.api.html#module-koalanlp.api.initialize">koalanlp.api.initialize module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="koalanlp.api.html#module-koalanlp.api.tagger">koalanlp.api.tagger module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="koalanlp.api.html#module-koalanlp.api">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="koalanlp.data.html">koalanlp.data package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="koalanlp.data.html#submodules">Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="koalanlp.data.html#module-koalanlp.data.POS">koalanlp.data.POS module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="koalanlp.data.html#module-koalanlp.data.data">koalanlp.data.data module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="koalanlp.data.html#module-koalanlp.data">Module contents</a></li>
 </ul>
 </li>
 </ul>
 </div>
+<p><strong>[참고]</strong>
+<code class="docutils literal"><span class="pre">koalanlp.api</span></code>, <code class="docutils literal"><span class="pre">koalanlp.data</span></code>의 모듈은 모두, <code class="docutils literal"><span class="pre">koalanlp</span></code>에서도 import 할 수 있습니다.
+즉, 아래 두 코드 블록은 동일한 구문입니다.</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">koalanlp</span> <span class="k">import</span> <span class="o">*</span>
+</pre></div>
 </div>
-<div class="section" id="module-koalanlp">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-koalanlp" title="제목 주소">¶</a></h2>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">koalanlp.api</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">koalanlp.data</span> <span class="k">import</span> <span class="o">*</span>
+</pre></div>
+</div>
 </div>
 </div>
 
@@ -208,7 +217,7 @@
         <a href="koalanlp.api.html" class="btn btn-neutral float-right" title="koalanlp.api package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="modules.html" class="btn btn-neutral" title="&lt;no title&gt;" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="modules.html" class="btn btn-neutral" title="API" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

@@ -27,12 +27,3 @@ koalanlp\.api\.tagger module
     :members:
     :undoc-members:
     :show-inheritance:
-
-
-Module contents
----------------
-
-.. automodule:: koalanlp.api
-    :members:
-    :undoc-members:
-    :show-inheritance:

@@ -1,2 +1,5 @@
+API
+===
+
 .. toctree::
-   koalanlp
+    koalanlp
