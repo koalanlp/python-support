@@ -4,7 +4,7 @@ koalanlp\.data package
 Submodules
 ----------
 
-koalanlp\.data\.POS module
+POS Tags
 --------------------------
 
 .. automodule:: koalanlp.data.POS
@@ -12,7 +12,7 @@ koalanlp\.data\.POS module
     :undoc-members:
     :show-inheritance:
 
-koalanlp\.data\.data module
+Data Classes
 ---------------------------
 
 .. automodule:: koalanlp.data.data

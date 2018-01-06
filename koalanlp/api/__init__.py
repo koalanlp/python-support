@@ -3,4 +3,4 @@
 
 from .const import API
 from .initialize import initialize
-from .tagger import Parser, Tagger
+from .tagger import Parser, Tagger, SentenceSplitter, sentenceSplitByKoala, Dictionary

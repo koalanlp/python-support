@@ -87,17 +87,17 @@ print(sentence.verbs()) # 문장에서 용언만 추출합니다.
 
 ## Utilities
 
-### `koalanlp.api.API`
+### `koalanlp.API`
 분석기 패키지의 Enum형입니다.
 
-### `koalanlp.api.initialize(packages, version, java_options)`
+### `koalanlp.initialize(packages, version, java_options)`
 분석기 초기화 함수입니다. (사용 전, 초기화 **필수**)
 
 - `packages`: API의 list (필수). 사용할 분석기의 목록입니다.
 - `version`: string (기본값 `1.9.1`). 사용할 KoalaNLP 버전 지정. [최신 버전 확인](https://nearbydelta.github.io/KoalaNLP)
 - `java_options`: string (기본값 `-Xmx4g`). 자바JVM 실행 option.
 
-### `koalanlp.data.POS`
+### `koalanlp.POS`
 품사 분석을 도와주는 도구입니다.
 
 - `POS.is_noun(obj)` 주어진 객체가 체언(명사/대명사/수사)인지 확인함.
@@ -114,7 +114,21 @@ print(sentence.verbs()) # 문장에서 용언만 추출합니다.
 - `string`: 이 경우, `obj`는 품사표기(POS tag) 자체로 인식됩니다.
 - `Morpheme`: 이 경우, `obj`는 품사가 표기된 형태소 객체(Morpheme)로 인식됩니다.
 
-## `koalanlp.api.Tagger` 클래스 (품사분석기)
+## `koalanlp.sentenceSplitByKoala(paragraph)`
+paragraph로 지정된 품사분석 결과를 문장으로 분리합니다.
+
+- `paragraph`: `Sentence` 객체로, 분리할 문단입니다. (문단을 1개 문장으로 간주하고 품사표기한 결과입니다.)
+- 반환값은, `Sentence`의 list입니다.
+
+## `koalanlp.SentenceSplitter` 클래스 (품사표기 전 문장분리)
+- 생성자 `__init__(self, splitter_type)`: 해당하는 문장분리기를 생성합니다.
+  - `splitter_type`: 문장분리에 사용될 API를 지정합니다.
+- `SentenceSplitter#sentences(text)` 문단을 문장으로 분리.
+
+위의 method가 취하는 argument는 다음과 같습니다.
+- `text`: string (필수). 분석할 문단.
+
+## `koalanlp.Tagger` 클래스 (품사분석기)
 - 생성자 `__init__(self, tagger_type)`: API형 `tagger_type`값에 해당하는 Tagger를 생성합니다.
 - `Tagger#tag(text)` 문단 단위의 분석.
 - `Tagger#tag_sentence(text)` 1개 문장으로 강제하여 분석.
@@ -122,7 +136,7 @@ print(sentence.verbs()) # 문장에서 용언만 추출합니다.
 위의 method가 취하는 argument는 다음과 같습니다.
 - `text`: string (필수). 분석할 문단/문장.
 
-## `koalanlp.api.Parser` 클래스 (의존구문분석기)
+## `koalanlp.Parser` 클래스 (의존구문분석기)
 - 생성자 `__init__(self, parser_type, tagger_type)`: 해당하는 Parser를 생성합니다.
   - `parser_type`: 의존구문분석에 사용될 parser API를 지정합니다.
   - `tagger_type`: (기본값 `None`) 의존구문분석 전에 품사분석을 수행할 tagger API를 지정합니다. (None일 경우, parser의 tagger를 사용합니다.)
@@ -134,6 +148,20 @@ print(sentence.verbs()) # 문장에서 용언만 추출합니다.
 
 위의 method가 취하는 argument는 다음과 같습니다.
 - `text`: string (필수). 분석할 문단/문장.
+
+## `koalanlp.Dictionary` 클래스 (사용자정의 사전)
+- 생성자 `__init__(self, dict_type)`: 해당하는 사전을 연결합니다.
+  - `dict_type`: 사용될 사용자 사전 API를 지정합니다.
+- `Dictionary#add_user_dictionary(morph, tag)`: 새 형태소-품사를 등록합니다.
+  - `morph`: string 또는 string list. 형태소입니다.
+  - `tag`: string 또는 string list. 세종 품사표기입니다.
+  - 둘 다 string이거나, 둘 다 같은 길이의 string list여야 합니다.
+- `Dictionary#contains(morph, *tags)`: 사전에 형태소가 해당 품사로 등록되어있는지 확인합니다.
+  - `morph`: string. 확인할 형태소입니다.
+  - `tags` : string list. 형태소가 존재하는지 확인할 품사입니다.
+- `Dictionary#get_not_exists(only_system_dic, *pairs)`: 사전에 등재되지 않은 품사만 남깁니다.
+  - `only_system_dic`: 분석기 내장 사전만 검색하려는 경우 True, 사용자사전을 포함하려는 경우 False.
+  - `pairs`: (string, string) list. (형태소, 품사)의 목록입니다.
 
 ## Data classes
 결과값은, 다음과 같은 Data Class에 담겨 전송됩니다.

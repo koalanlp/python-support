@@ -4,7 +4,7 @@ koalanlp\.api package
 Submodules
 ----------
 
-koalanlp\.api\.const module
+Constants
 ---------------------------
 
 .. automodule:: koalanlp.api.const
@@ -12,7 +12,7 @@ koalanlp\.api\.const module
     :undoc-members:
     :show-inheritance:
 
-koalanlp\.api\.initialize module
+Initializers
 --------------------------------
 
 .. automodule:: koalanlp.api.initialize
@@ -20,7 +20,7 @@ koalanlp\.api\.initialize module
     :undoc-members:
     :show-inheritance:
 
-koalanlp\.api\.tagger module
+Text Processing Units
 ----------------------------
 
 .. automodule:: koalanlp.api.tagger

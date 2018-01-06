@@ -321,15 +321,17 @@ class Word(object):
 class Sentence(object):
     """ 문장 객체. """
 
-    def __init__(self, words):
+    def __init__(self, words, reference):
         """
         문장 객체를 생성합니다.
 
         :param list[Word] words: 문장을 구성하는 어절의 목록.
+        :param reference: KoalaNLP(Java)가 분석한 결과.
         """
         assert type(words) is list, type(words[0]) is Word
         self.words = words
         self.root = Word()
+        self.reference = reference
 
     def matches(self, tag) -> bool:
         """
