@@ -15,20 +15,29 @@ KoalaNLP
 판본입니다.
 
 이 프로젝트는 **서로 다른 형태의 형태소 분석기를** 모아, **동일한
-인터페이스** 아래에서 사용할 수 있도록 하는 것이 목적입니다. \*
-Hannanum: KAIST의 `한나눔 형태소
-분석기 <http://kldp.net/projects/hannanum/>`__\ 와 `NLP\_HUB
-구문분석기 <http://semanticweb.kaist.ac.kr/home/index.php/NLP_HUB>`__ \*
-KKMA: 서울대의 `꼬꼬마 형태소/구문
-분석기 <http://kkma.snu.ac.kr/documents/index.jsp>`__ \* KOMORAN: Junsoo
-Shin님의 `코모란 v3.x <https://github.com/shin285/KOMORAN>`__ \*
-Twitter: OpenKoreanText의 `오픈 소스 한국어
-처리기 <http://openkoreantext.org>`__ (구 Twitter 한국어 분석기)1-1 \*
-Eunjeon: 은전한닢 프로젝트의
-`SEunjeon(S은전) <https://bitbucket.org/eunjeon/seunjeon>`__ \* Arirang:
-이수명님의 `Arirang Morpheme
-Analyzer <http://cafe.naver.com/korlucene>`__ 1-2 \* RHINO: 최석재님의
-`RHINO v2.5.4 <https://github.com/SukjaeChoi/RHINO>`__
+인터페이스** 아래에서 사용할 수 있도록 하는 것이 목적입니다.
+
+-  Hannanum: KAIST의 `한나눔 형태소
+   분석기 <http://kldp.net/projects/hannanum/>`__\ 와 `NLP\_HUB
+   구문분석기 <http://semanticweb.kaist.ac.kr/home/index.php/NLP_HUB>`__
+
+-  KKMA: 서울대의 `꼬꼬마 형태소/구문
+   분석기 <http://kkma.snu.ac.kr/documents/index.jsp>`__
+
+-  KOMORAN: Junsoo
+   Shin님의 `코모란 v3.x <https://github.com/shin285/KOMORAN>`__
+
+-  Twitter: OpenKoreanText의 `오픈 소스 한국어
+   처리기 <http://openkoreantext.org>`__ (구 Twitter 한국어 분석기) 1-1
+
+-  Eunjeon: 은전한닢 프로젝트의
+   `SEunjeon(S은전) <https://bitbucket.org/eunjeon/seunjeon>`__
+-  Arirang:
+   이수명님의 `Arirang Morpheme
+   Analyzer <http://cafe.naver.com/korlucene>`__ 1-2
+
+-  RHINO: 최석재님의
+   `RHINO v2.5.4 <https://github.com/SukjaeChoi/RHINO>`__
 
     주1-1 이전 코드와의 연속성을 위해서, OpenKoreanText의 패키지 명칭은
     twitter로 유지합니다.
