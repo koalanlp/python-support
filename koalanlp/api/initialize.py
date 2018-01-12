@@ -55,47 +55,47 @@ def _resolve_artifacts_modified(artifacts, exclusions=[]):
     download_list = []
 
     # dependency_set contains artifact objects to resolve
-    dependency_set = set()
+    dependency_stack = set()
 
     for a in artifacts:
-        dependency_set.add(a)
+        dependency_stack.add(a)
 
-    while len(dependency_set) > 0:
-        artifact = dependency_set.pop()
+    while len(dependency_stack) > 0:
+        artifact = dependency_stack.pop()
 
-        if not any(map(artifact.is_same_artifact, exclusions)):
-            if commands.index_manager.is_same_installed(artifact)\
-                    and artifact not in download_list:
-                continue
+        if commands.index_manager.is_same_installed(artifact) and artifact not in download_list:
+            continue
 
-            pominfo = _find_pom(artifact)
-            if pominfo is None:
-                commands.logger.error("[Error] Artifact not found: %s", artifact)
-                raise Exception()
+        pominfo = _find_pom(artifact)
+        if pominfo is None:
+            if not any(map(artifact.is_same_artifact, exclusions)):
+                commands.logger.warn("[Warning] Artifact is not found: %s", artifact)
+            # Ignore this unknown pom.
+            continue
 
-            if not commands.index_manager.is_installed(artifact):
-                pom, repos = pominfo
+        if not commands.index_manager.is_installed(artifact):
+            pom, repos = pominfo
 
-                # repos.download_jar(artifact, get_lib_path())
-                artifact.repos = repos
+            # repos.download_jar(artifact, get_lib_path())
+            artifact.repos = repos
 
+            if not any(map(artifact.is_same_artifact, exclusions)):
                 download_list.append(artifact)
                 commands.index_manager.add_artifact(artifact)
 
-                pom_obj = commands.Pom(pom)
-                for r in pom_obj.get_repositories():
-                    commands.repos_manager.add_repos(*r)
+            pom_obj = commands.Pom(pom)
+            for r in pom_obj.get_repositories():
+                commands.repos_manager.add_repos(*r)
 
-                more_dependencies = pom_obj.get_dependencies()
-                for d in more_dependencies:
-                    d.exclusions.extend(artifact.exclusions)
-                    if not commands.index_manager.is_same_installed(d):
-                        dependency_set.add(d)
+            more_dependencies = pom_obj.get_dependencies()
+            for d in more_dependencies:
+                d.exclusions.extend(artifact.exclusions)
+                if not commands.index_manager.is_same_installed(d):
+                    dependency_stack.add(d)
 
     return download_list
 
 
-initialized = False
 not_assembly = [API.EUNJEON, API.KOMORAN, API.TWITTER]
 
 
@@ -110,31 +110,59 @@ def initialize(packages=[API.EUNJEON, API.KKMA],
     :param str java_options: 자바 JVM option (기본값: "-Xmx4g")
     :raise Exception: JVM이 2회 이상 초기화 될때 Exception.
     """
-    global initialized, not_assembly
-    if not initialized:
-        import jnius_config
-        classpaths = []
+    import jnius_config
+    from pathlib import Path
+    global not_assembly
+    if not jnius_config.vm_running:
         java_options = java_options.split(" ")
         jnius_config.add_options(*java_options)
-        initialized = True
 
         deps = [_ArtifactClsf('kr.bydelta', 'koalanlp-%s_2.12' % _artifactName(pack), version,
                               None if pack in not_assembly else "assembly") for pack in packages]
-        exclusions = [_ArtifactClsf('com.jsuereth', 'sbt-pgp', '1.1.0')]
+        exclusions = [_ArtifactClsf('com.jsuereth', 'sbt-pgp', '*')]
 
-        commands.repos_manager.add_repos('maven-central', 'http://central.maven.org/maven2/', 'remote')
-        commands.repos_manager.add_repos('jitpack.io', 'https://jitpack.io/', 'remote')
+        # Local Maven repo
+        commands.repos_manager.add_repos('local-maven',
+                                         os.path.join(str(Path.home()), ".m2", "repository"), 'local',
+                                         order=0)
+        # Local Ivy2 repo
+        commands.repos_manager.add_repos('local-ivy2',
+                                         os.path.join(str(Path.home()), ".ivy2", "cache"), 'local',
+                                         order=1)
+        # Sonatype repo
+        commands.repos_manager.add_repos('sonatype',
+                                         'https://oss.sonatype.org/content/repositories/public/', 'remote',
+                                         order=2)
+        # Maven Central & its mirror
+        commands.repos_manager.add_repos('central1', 'http://repo1.maven.org/maven2/', 'remote',
+                                         order=3)
+        commands.repos_manager.add_repos('central2', 'http://central.maven.org/maven2/', 'remote',
+                                         order=4)
+        # Jitpack for Komoran v3
+        commands.repos_manager.add_repos('jitpack.io', 'https://jitpack.io/', 'remote',
+                                         order=5)
 
         down_list = _resolve_artifacts_modified(deps, exclusions=exclusions)
+        down_list.sort(key=lambda a: a.repos.uri)
 
         for artifact in down_list:
             local_path = commands.cache_manager.get_jar_path(artifact)
             if artifact.repos != commands.cache_manager.as_repos():
                 artifact.repos.download_jar(artifact, local_path)
-            classpaths.append(os.path.join(local_path, artifact.to_jip_name()))
 
+        classpaths = [commands.cache_manager.get_jar_path(artifact, filepath=True)
+                      for artifact in down_list]
         commands.pool.join()
-        commands.logger.info("Initialization procedure is completed.")
         jnius_config.add_classpath(*classpaths)
+
+        try:
+            # Test jvm
+            from jnius import autoclass
+            JString = autoclass("java.lang.String")
+            JString("")
+        except:
+            raise Exception("I think JVM has been initialized by other packages already. Please check!")
+
+        commands.logger.info("JVM initialization procedure is completed.")
     else:
-        raise Exception("JVM cannot be initialized more than once!")
+        raise Exception("I think JVM has been initialized by other packages already. Please check!")

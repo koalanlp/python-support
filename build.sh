@@ -7,3 +7,9 @@ make clean
 make html
 cd ..
 twine-3 upload dist/koalanlp-*.whl
+
+VERSION = `ls dist | grep koalanlp | cut -d- -f2`
+git add docs/
+git commit -m "Release: v${VERSION}"
+git tag v${VERSION}
+git push --tags

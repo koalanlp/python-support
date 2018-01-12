@@ -2,13 +2,13 @@ from setuptools import setup, find_packages
 
 setup(
     name='koalanlp',
-    version='1.1.0',
+    version='1.1.1',
     description='Python wrapper for KoalaNLP',
     author='Bugeun Kim',
     author_email='cd4209@gmail.com',
     url='https://nearbydelta.github.io/py-koalanlp',
     install_requires=[
-        "Cython>=0.27.3", "pyjnius>=1.1.1", "jip>=0.9.13"
+        "Cython~=0.27.3", "pyjnius~=1.1.1", "jip~=0.9.13"
     ],
     packages=find_packages(exclude=["docs"]),
     keywords=['korean', 'natural language processing', 'koalanlp', 'sentence', 'parser', 'tagger'],
