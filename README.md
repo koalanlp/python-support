@@ -29,7 +29,7 @@ KoalaNLP의 Contributor가 되고 싶으시다면, 언제든지 Issue에 등록�
 또한, 추가하고자 하는 새로운 프로젝트가 있으시면, Issue에 등록해주십시오.
 
 # 사용법
-API 문서는 [![Sphinx doc](https://img.shields.io/badge/Python-Doc-blue.svg?style=flat-square)](https://nearbydelta.github.io/py-koalanlp/build/html/)에서 보실 수 있습니다.
+API 문서는 [![Sphinx doc](https://img.shields.io/badge/Python-Doc-blue.svg?style=flat-square)](https://nearbydelta.github.io/py-koalanlp/build/html/)에서, 간단한 예시와 사용법은 [Wiki](https://github.com/nearbydelta/py-koalanlp/wiki)에서 보실 수 있습니다.
 
 ## Dependency 추가
 * `Java` 8 이상이 설치되어 있고, `JAVA_HOME`이 설정되어 있어야 합니다.
@@ -86,155 +86,16 @@ print(sentence.verbs()) # 문장에서 용언만 추출합니다.
 | 품사분석    | v1.4.0 | v2  | v3.3.3 | v1  | v2.1.2 | v1.1.3 | v2.5.4 |
 | 의존구문분석 | 지원안함 | 가능 | 지원안함 | 가능 | 지원안함 | 지원안함 | 지원안함 |
 
-# API
+# License 조항
+이 프로젝트 자체(py-KoalaNLP)와 인터페이스 통합을 위한 Java/Scala 코드는 [*MIT License*](https://tldrlegal.com/license/mit-license)을 따르며,
+각 분석기의 License와 저작권은 각 프로젝트에서 지정한 바를 따릅니다.
+* Hannanum: [GPL v3](https://tldrlegal.com/license/gnu-general-public-license-v3-(gpl-3))
+* KKMA: [GPL v2](https://tldrlegal.com/license/gnu-general-public-license-v2) (GPL v2를 따르지 않더라도, 상업적 이용시 별도 협의 가능)
+* KOMORAN: [Apache License 2.0](https://tldrlegal.com/license/apache-license-2.0-(apache-2.0))
+* Twitter: [Apache License 2.0](https://tldrlegal.com/license/apache-license-2.0-(apache-2.0))
+* Eunjeon: [Apache License 2.0](https://tldrlegal.com/license/apache-license-2.0-(apache-2.0))
+* Arirang: [Apache License 2.0](https://tldrlegal.com/license/apache-license-2.0-(apache-2.0))
+* RHINO: 비상업적 용도 사용가능.
 
-## Utilities
-
-### `koalanlp.API`
-분석기 패키지의 Enum형입니다.
-
-### `koalanlp.initialize(packages, version, java_options)`
-분석기 초기화 함수입니다. (사용 전, 초기화 **필수**)
-
-- `packages`: API의 list (필수). 사용할 분석기의 목록입니다.
-- `version`: string (기본값 `1.9.1`). 사용할 KoalaNLP 버전 지정. [최신 버전 확인](https://nearbydelta.github.io/KoalaNLP)
-- `java_options`: string (기본값 `-Xmx4g`). 자바JVM 실행 option.
-
-### `koalanlp.POS`
-품사 분석을 도와주는 도구입니다.
-
-- `POS.is_noun(obj)` 주어진 객체가 체언(명사/대명사/수사)인지 확인함.
-- `POS.is_predicate(obj)` 주어진 객체가 용언(동사/형용사)인지 확인함.
-- `POS.is_modifier(obj)` 주어진 객체가 수식언(관형사/부사)인지 확인함.
-- `POS.is_postposition(obj)` 주어진 객체가 관계언(조사)인지 확인함.
-- `POS.is_ending(obj)` 주어진 객체가 어미(어말어미/선어말어미/...)인지 확인함.
-- `POS.is_affix(obj)` 주어진 객체가 접사인지 확인함.
-- `POS.is_suffix(obj)` 주어진 객체가 접미사인지 확인함.
-- `POS.is_symbol(obj)` 주어진 객체가 기호(문장부호/화폐기호/...)인지 확인함.
-- `POS.is_unknown(obj)` 주어진 객체가 품사분석기가 분석하지 못한 내용인지 확인함.
-
-위의 모든 static method가 취하는 argument `obj`는 다음 타입을 가져야 합니다.
-- `string`: 이 경우, `obj`는 품사표기(POS tag) 자체로 인식됩니다.
-- `Morpheme`: 이 경우, `obj`는 품사가 표기된 형태소 객체(Morpheme)로 인식됩니다.
-
-## `koalanlp.sentenceSplitByKoala(paragraph)`
-paragraph로 지정된 품사분석 결과를 문장으로 분리합니다.
-
-- `paragraph`: `Sentence` 객체로, 분리할 문단입니다. (문단을 1개 문장으로 간주하고 품사표기한 결과입니다.)
-- 반환값은, `Sentence`의 list입니다.
-
-## `koalanlp.SentenceSplitter` 클래스 (품사표기 전 문장분리)
-- 생성자 `__init__(self, splitter_type)`: 해당하는 문장분리기를 생성합니다.
-  - `splitter_type`: 문장분리에 사용될 API를 지정합니다.
-- `SentenceSplitter#sentences(text)` 문단을 문장으로 분리.
-
-위의 method가 취하는 argument는 다음과 같습니다.
-- `text`: string (필수). 분석할 문단.
-
-## `koalanlp.Tagger` 클래스 (품사분석기)
-- 생성자 `__init__(self, tagger_type)`: API형 `tagger_type`값에 해당하는 Tagger를 생성합니다.
-- `Tagger#tag(text)` 문단 단위의 분석.
-- `Tagger#tag_sentence(text)` 1개 문장으로 강제하여 분석.
-
-위의 method가 취하는 argument는 다음과 같습니다.
-- `text`: string (필수). 분석할 문단/문장.
-
-## `koalanlp.Parser` 클래스 (의존구문분석기)
-- 생성자 `__init__(self, parser_type, tagger_type)`: 해당하는 Parser를 생성합니다.
-  - `parser_type`: 의존구문분석에 사용될 parser API를 지정합니다.
-  - `tagger_type`: (기본값 `None`) 의존구문분석 전에 품사분석을 수행할 tagger API를 지정합니다. (None일 경우, parser의 tagger를 사용합니다.)
-
-> [참고] Parser가 사용하는 품사분석결과는, tagger_type에 지정된 분석기를 따릅니다.
-
-- `Parser#parse(text)` 문단 단위의 분석.
-- `Parser#parse_sentence(text)` 1개 문장으로 강제하여 분석.
-
-위의 method가 취하는 argument는 다음과 같습니다.
-- `text`: string (필수). 분석할 문단/문장.
-
-## `koalanlp.Dictionary` 클래스 (사용자정의 사전)
-- 생성자 `__init__(self, dict_type)`: 해당하는 사전을 연결합니다.
-  - `dict_type`: 사용될 사용자 사전 API를 지정합니다.
-- `Dictionary#add_user_dictionary(morph, tag)`: 새 형태소-품사를 등록합니다.
-  - `morph`: string 또는 string list. 형태소입니다.
-  - `tag`: string 또는 string list. 세종 품사표기입니다.
-  - 둘 다 string이거나, 둘 다 같은 길이의 string list여야 합니다.
-- `Dictionary#contains(morph, *tags)`: 사전에 형태소가 해당 품사로 등록되어있는지 확인합니다.
-  - `morph`: string. 확인할 형태소입니다.
-  - `tags` : string list. 형태소가 존재하는지 확인할 품사입니다.
-- `Dictionary#get_not_exists(only_system_dic, *pairs)`: 사전에 등재되지 않은 품사만 남깁니다.
-  - `only_system_dic`: 분석기 내장 사전만 검색하려는 경우 True, 사용자사전을 포함하려는 경우 False.
-  - `pairs`: (string, string) list. (형태소, 품사)의 목록입니다.
-
-## Data classes
-결과값은, 다음과 같은 Data Class에 담겨 전송됩니다.
-
-### `koalanlp.data.Morpheme` 클래스 (형태소)
-- `Morpheme#surface` (string) 형태소 표면형입니다.
-- `Morpheme#tag` (string) 세종 품사 표기로 KoalaNLP가 변환한 결과입니다.
-- `Morpheme#raw_tag` (string) 사용한 품사 분석기가 명명한 원본 품사입니다. (세종 품사보다 범위가 넓거나 좁을 수 있습니다)
-- `Morpheme#index` (int) 어절 내에서의 위치입니다.
-- `Morpheme#has_tag(tag)` 주어진 tag가 형태소와 일치하면 true.
-  - `tag`가 `string`타입일 때, `Morpheme#tag`가 `tag`로 시작하는지 확인합니다.
-  - `tag`가 `string`의 list 타입일 때, `tag` 중의 하나라도 `Morpheme#tag`의 시작과 일치하는지 확인합니다.
-- `Morpheme#has_raw_tag(tag)` 주어진 tag가 원본 결과와 일치하면 true.
-- `Morpheme#equals_without_tag(morph)` 형태소의 표면형이 같은지 확인합니다.
-- `Morpheme#to_dict()` 형태소를 dict 객체로 변환합니다.
-- `morph1 == morph2` 형태소가 같은지 확인합니다.
-- `str(morph)` 형태소를 string으로 변환합니다.
-
-### `koalanlp.data.Relationship` 클래스 (의존관계)
-- `Relationship#head` (number) 이 관계의 지배소에 해당하는 어절의, 문장 내에서의 위치입니다.
-- `Relationship#target` (number) 이 관계의 피지배소에 해당하는 어절의, 문장 내에서의 위치입니다.
-- `Relationship#relation` (string) 두 어절 사이의 관계입니다.
-- `Relationship#raw_rel` (string) 의존구문분석기가 출력한 원본 관계입니다.
-- `Relationship#to_dict()` dict 객체로 변환합니다.
-- `str(rel)` string으로 변환합니다.
-- `rel1 == rel2` 의존관계가 같은지 확인합니다.
-
-### `koalanlp.data.Word` 클래스 (어절)
-- `Word#surface` (string) 어절의 표면형입니다.
-- `Word#morphemes` (Morpheme의 list) 어절을 구성하는 형태소의 목록입니다.
-- `Word#index` (number) 문장 내에서의 위치입니다.
-- `Word#dependents` (Relationship의 list) 현재 어절에 의존하는 관계의 목록입니다.
-- `Word#matches(tag)` 주어진 tag 목록이 어절과 순서가 일치하면 true.
-  - `tag`가 `string`의 `list` 타입일 때, 어절 내 형태소 품사 목록과 순서가 일치하면 true. (연속하지 않아도 됨)
-- `Word#find(fn)` 주어진 조건에 맞는 형태소를 찾습니다.
-  - `fn`이 `function` 타입일 때, `fn`이 true인 첫 형태소를 반환.
-  - `fn`이 `Morpheme` 타입일 때, `fn`과 `Morpheme#equal()`이 성립하는 첫 형태소를 반환.
-- `Word#exists(fn)` 주어진 조건에 맞는 형태소가 있는지 확인합니다. 있다면 true.
-  - `fn`이 `function` 타입일 때, `fn`이 하나라도 만족되면 true.
-  - `fn`이 `Morpheme` 타입일 때, `fn`과 `Morpheme#equal()`이 성립하는 형태소가 하나라도 있으면 true.
-- `Word#equals_without_tag(word)` 두 어절의 표면형이 같은지 확인합니다.
-- `Word#to_dict()` dict 객체로 변환합니다.
-- `Word#single_line_string()` 형태소 분석 결과를 한 줄로 반환합니다.
-- `word1 == word2` 두 어절이 위치와 형태소가 같은지 확인합니다.
-- `len(word)` 형태소의 개수를 돌려줍니다.
-- `word[idx]` 어절 내에서 `idx`번째에 위치한 형태소를 반환합니다.
-- `str(word)` string으로 변환합니다.
-- `morph in word` 형태소가 어절에 있는지 확인합니다.
-- `iter(word)`, `for morph in word` 어절 내 형태소를 순회합니다.
-
-### `koalanlp.data.Sentence` 클래스 (문장)
-- `Sentence#words` (Word의 list) 문장을 구성하는 어절의 목록입니다.
-- `Sentence#root` (Word) 문장의 의존관계를 표시하기 위한, 허상의 최상위 노드입니다. root에 의존하는 단어가 핵심어가 됩니다.
-- `Sentence#matches(tag)` 주어진 tag 목록이 문장과 순서가 일치하면 true.
-  - `tag`가 `string` list의 list 타입일 때, 문장 내 어절과 순서가 일치하면 true. (연속하지 않아도 됨)
-- `Sentence#find(fn)` 주어진 조건에 맞는 어절을 찾습니다.
-  - `fn`이 `function` 타입일 때, `fn`이 true인 첫 어절을 반환.
-  - `fn`이 `Word` 타입일 때, `fn`과 `Word#equal()`이 성립하는 첫 어절을 반환.
-- `Sentence#exists(fn)` 주어진 조건에 맞는 어절이 있는지 확인합니다. 있다면 true.
-  - `fn`이 `function` 타입일 때, `fn`이 하나라도 만족되면 true.
-  - `fn`이 `Word` 타입일 때, `fn`과 `Word#equal()`이 성립하는 형태소가 하나라도 있으면 true.
-- `Sentence#nouns()` 문장 내 체언을 포함한 어절의 목록을 반환합니다.
-- `Sentence#verbs()` 문장 내 용언을 포함한 어절의 목록을 반환합니다.
-- `Sentence#modifiers()` 문장 내 수식언을 포함한 어절의 목록을 반환합니다.
-- `Sentence#surface_string(delimiter)` 문장 내 어절의 표면형을 모아 원본 문장에 가깝게 구성합니다.
-  - `delimiter`는 선택으로, 지정하지 않으면 빈칸으로 어절이 구분됩니다.
-- `Sentence#to_dict()` dict 객체로 변환합니다.
-- `Sentence#single_line_string()` 형태소 분석 결과를 한 줄로 반환합니다.
-- `len(sentence)` 어절의 개수를 돌려줍니다.
-- `sentence[idx]` 문장 내에서 `idx`번째에 위치한 어절을 반환합니다.
-- `str(sentence)` string으로 변환합니다.
-- `word in sentence` 어절이 문장에 있는지 확인합니다.
-- `iter(sentence)`, `for word in sentence` 문장 내 어절을 순회합니다.
+# 결과 비교
+[Java/Scala Version KoalaNLP의 Wiki:결과비교](https://github.com/nearbydelta/KoalaNLP/wiki/4.-결과-비교)를 참조해주세요.
