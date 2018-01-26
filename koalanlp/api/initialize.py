@@ -100,14 +100,14 @@ not_assembly = [API.EUNJEON, API.KOMORAN, API.TWITTER]
 
 
 def initialize(packages=[API.EUNJEON, API.KKMA],
-               version="1.9.0",
-               java_options="-Xmx4g"):
+               version="1.9.2",
+               java_options="-Xmx4g -Dfile.encoding=utf-8"):
     """
     초기화 함수. 필요한 Java library를 다운받습니다.
 
     :param List[API] packages: 사용할 분석기 API의 목록. (기본값: [API.EUNJEON, API.KKMA])
-    :param str version: 사용할 분석기의 버전. (기본값: "1.9.0")
-    :param str java_options: 자바 JVM option (기본값: "-Xmx4g")
+    :param str version: 사용할 분석기의 버전. (기본값: "1.9.2")
+    :param str java_options: 자바 JVM option (기본값: "-Xmx4g -Dfile.encoding=utf-8")
     :raise Exception: JVM이 2회 이상 초기화 될때 Exception.
     """
     import jnius_config
@@ -161,8 +161,8 @@ def initialize(packages=[API.EUNJEON, API.KKMA],
             JString = autoclass("java.lang.String")
             JString("")
         except:
-            raise Exception("I think JVM has been initialized by other packages already. Please check!")
+            raise Exception("JVM cannot be initialized. I think JVM has been initialized by other packages already. Please check!")
 
         commands.logger.info("JVM initialization procedure is completed.")
     else:
-        raise Exception("I think JVM has been initialized by other packages already. Please check!")
+        raise Exception("JVM cannot be initialized. I think JVM has been initialized by other packages already. Please check!")

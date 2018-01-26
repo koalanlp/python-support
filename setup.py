@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='koalanlp',
-    version='1.1.1',
+    version='1.1.2',
     description='Python wrapper for KoalaNLP',
     author='Bugeun Kim',
     author_email='cd4209@gmail.com',

@@ -53,7 +53,7 @@ $ pip install koalanlp
 from koalanlp import *
 
 # 초기화 합니다.
-initialize(packages=[API.KKMA, API.EUNJEON], version="1.9.1", java_options="-Xmx4g")
+initialize(packages=[API.KKMA, API.EUNJEON], version="1.9.2", java_options="-Xmx4g -Dfile.encoding=utf-8")
 
 # 품사분석기 이용법
 tagger = Tagger(tagger_type=API.EUNJEON)
@@ -83,7 +83,7 @@ print(sentence.verbs()) # 문장에서 용언만 추출합니다.
 
 |         | 은전한닢(`EUNJEON`) | 꼬꼬마(`KKMA`) | 코모란(`KOMORAN`) | 한나눔(`HANNANUM`) | 오픈한글(`TWITTER`) | 아리랑(`ARIRANG`) | 라이노(`RHINO`) |
 |---------|-------------------|---------------|-----------------|------------------|--------------------|-----------------|---------------|
-| 품사분석    | v1.4.0 | v2  | v3.3.3 | v1  | v2.1.2 | v1.1.3 | v2.5.4 |
+| 품사분석    | 가능(v1.4.0) | 가능(v2.1)  | 가능(v3.3.3) | 가능(v1)  | 가능(v2.2.0) | 가능(v1.1.3) | 가능(v2.5.4) |
 | 의존구문분석 | 지원안함 | 가능 | 지원안함 | 가능 | 지원안함 | 지원안함 | 지원안함 |
 
 # License 조항
