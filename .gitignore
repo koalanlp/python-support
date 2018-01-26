@@ -1,0 +1,7 @@
+build/
+dist/
+koalanlp.egg-info/
+venv/
+.idea/
+
+**/__pycache__/
