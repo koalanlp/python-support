@@ -291,6 +291,11 @@
 <dt id="koalanlp.api.tagger.Dictionary.base_entries_of">
 <code class="descname">base_entries_of</code><span class="sig-paren">(</span><em>filter_fn=&lt;function is_noun&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#koalanlp.api.tagger.Dictionary.base_entries_of" title="정의 주소">¶</a></dt>
 <dd><p>원본 사전에 등재된 항목 중에서, 지정된 형태소의 항목만을 가져옵니다. (복합 품사 결합 형태는 제외)</p>
+<p>사용법
+.. code-block:: python</p>
+<blockquote>
+<div>entries = Dictionary.base_entries_of(lambda tag: tag.startswith(&quot;NN&quot;))
+next(entries)</div></blockquote>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -351,6 +356,10 @@
 <dt id="koalanlp.api.tagger.Dictionary.import_from">
 <code class="descname">import_from</code><span class="sig-paren">(</span><em>other</em>, <em>filter_fn=&lt;function is_noun&gt;</em>, <em>fast_append: bool = False</em><span class="sig-paren">)</span><a class="headerlink" href="#koalanlp.api.tagger.Dictionary.import_from" title="정의 주소">¶</a></dt>
 <dd><p>다른 사전을 참조하여, 선택된 사전에 없는 단어를 사용자사전으로 추가합니다.</p>
+<p>사용법
+.. code-block:: python</p>
+<blockquote>
+<div>Dictionary.import_from(Other_Dictionary, lambda tag: tag.startswith(&quot;NN&quot;), False)</div></blockquote>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />

@@ -286,9 +286,9 @@ class Dictionary(object):
         다른 사전을 참조하여, 선택된 사전에 없는 단어를 사용자사전으로 추가합니다.
 
         사용법
-        -----
         .. code-block:: python
-           Dictionary.import_from(Other_Dictionary, lambda tag: tag.startswith("NN"), False)
+
+            Dictionary.import_from(Other_Dictionary, lambda tag: tag.startswith("NN"), False)
 
         :param Dictionary other: 참조할 사전
         :param str->bool filter_fn: 추가할 품사를 지정하는 함수.
@@ -305,10 +305,10 @@ class Dictionary(object):
 
 
         사용법
-        -----
         .. code-block:: python
-           entries = Dictionary.base_entries_of(lambda tag: tag.startswith("NN"))
-           next(entries)
+
+            entries = Dictionary.base_entries_of(lambda tag: tag.startswith("NN"))
+            next(entries)
 
         :param str->bool filter_fn: 가져올 품사인지 판단하는 함수.
         :return generator: (형태소, 품사)의 generator
