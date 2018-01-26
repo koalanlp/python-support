@@ -64,12 +64,13 @@ _SUFX_SET = [XSN, XSV, XSM, XSO]
 _SYMB_SET = [SF, SP, SS, SE, SW, SO]
 _UNKN_SET = [NF, NV, NA]
 
+TAGS = [pos for pos in dir() if not pos.startswith('_') and pos.isupper()]
 
 def _finder(sets, tag) -> bool:
     if type(tag) is str:
-        return sets.index(tag) >= 0
+        return tag in sets
     elif type(tag) is Morpheme:
-        return sets.index(tag.tag) >= 0
+        return tag.tag in sets
     else:
         return False
 

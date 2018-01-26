@@ -223,6 +223,9 @@ class Dictionary(object):
         JDict = autoclass("kr.bydelta.koala.%s.JavaDictionary" % dic_type.value)
         self.__dictionary = JDict.get()
         self.__autoclass = autoclass
+        self.__POS = self.__autoclass('kr.bydelta.koala.POS')
+        self.__Predef = self.__autoclass('scala.Predef')
+        self.__Tuple2 = self.__autoclass('scala.Tuple2')
 
     def add_user_dictionary(self, morph: str, tag: str):
         """
@@ -235,19 +238,15 @@ class Dictionary(object):
         is_t_array = type(tag) is list
 
         assert is_m_array == is_t_array
-        POS = self.__autoclass('kr.bydelta.koala.POS')
 
         if is_m_array:
             assert len(morph) == len(tag)
-            Tuple2 = self.__autoclass('scala.Tuple2')
-            Predef = self.__autoclass('scala.Predef')
-
-            zipped = [Tuple2(_jstr(m), POS.withName(_jstr(t))) for (m, t) in zip(morph, tag)]
-            zipped = Predef.genericArrayOps(zipped).toSeq()
+            zipped = [self.__Tuple2(_jstr(m), self.__POS.withName(_jstr(t))) for (m, t) in zip(morph, tag)]
+            zipped = self.__Predef.genericArrayOps(zipped).toSeq()
 
             self.__dictionary.addUserDictionary(zipped)
         else:
-            self.__dictionary.addUserDictionary(_jstr(morph), POS.withName(_jstr(tag)))
+            self.__dictionary.addUserDictionary(_jstr(morph), self.__POS.withName(_jstr(tag)))
 
     def contains(self, word: str, *pos_tags: str) -> bool:
         """
@@ -261,10 +260,8 @@ class Dictionary(object):
             tags = pos_tags
         else:
             tags = ["NNP", "NNG"]
-        POS = self.__autoclass('kr.bydelta.koala.POS')
-        tags = [POS.withName(_jstr(t)) for t in tags]
-        Predef = self.__autoclass('scala.Predef')
-        pos_set = Predef.genericArrayOps(tags).toSet()
+        tags = [self.__POS.withName(_jstr(t)) for t in tags]
+        pos_set = self.__Predef.genericArrayOps(tags).toSet()
 
         return self.__dictionary.contains(_jstr(word), pos_set)
 
@@ -276,13 +273,50 @@ class Dictionary(object):
         :param List[(str,str)] word: 확인할 (형태소, 품사)들.
         :return List[(str,str)]: 사전에 없는 단어들.
         """
-        POS = self.__autoclass('kr.bydelta.koala.POS')
-        Tuple2 = self.__autoclass('scala.Tuple2')
-        Predef = self.__autoclass('scala.Predef')
 
-        zipped = [Tuple2(_jstr(m), POS.withName(_jstr(t))) for (m, t) in word]
-        zipped = Predef.genericArrayOps(zipped).toSeq()
+        zipped = [self.__Tuple2(_jstr(m), self.__POS.withName(_jstr(t))) for (m, t) in word]
+        zipped = self.__Predef.genericArrayOps(zipped).toSeq()
 
         not_exists = self.__dictionary.getNotExists(only_system_dic, zipped)
         not_exists = [not_exists.apply(i) for i in range(not_exists.size())]
         return [(m._1, m._2.toString()) for m in not_exists]
+
+    def import_from(self, other, filter_fn=POS.is_noun, fast_append:bool=False):
+        """
+        다른 사전을 참조하여, 선택된 사전에 없는 단어를 사용자사전으로 추가합니다.
+
+        사용법
+        -----
+        .. code-block:: python
+           Dictionary.import_from(Other_Dictionary, lambda tag: tag.startswith("NN"), False)
+
+        :param Dictionary other: 참조할 사전
+        :param str->bool filter_fn: 추가할 품사를 지정하는 함수.
+        :param bool fast_append: 선택된 사전에 존재하는지를 검사하지 않고 빠르게 추가하고자 할 때. (기본값 false)
+        """
+        tags = [self.__POS.withName(_jstr(tag)) for tag in POS.TAGS if filter_fn(tag)]
+        tag_set = self.__Predef.genericArrayOps(tags).toSet()
+
+        self.__dictionary.importFrom(other.__dictionary, tag_set, fast_append)
+
+    def base_entries_of(self, filter_fn=POS.is_noun):
+        """
+        원본 사전에 등재된 항목 중에서, 지정된 형태소의 항목만을 가져옵니다. (복합 품사 결합 형태는 제외)
+
+
+        사용법
+        -----
+        .. code-block:: python
+           entries = Dictionary.base_entries_of(lambda tag: tag.startswith("NN"))
+           next(entries)
+
+        :param str->bool filter_fn: 가져올 품사인지 판단하는 함수.
+        :return generator: (형태소, 품사)의 generator
+        """
+        tags = [self.__POS.withName(_jstr(tag)) for tag in POS.TAGS if filter_fn(tag)]
+        tag_set = self.__Predef.genericArrayOps(tags).toSet()
+
+        entries = self.__dictionary.baseEntriesOf(tag_set)
+        while entries.hasNext():
+            item = entries.next()
+            yield (item._1, item._2.toString())
