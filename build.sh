@@ -1,6 +1,6 @@
 #!/bin/bash
 
-pip install sphinx sphinx_rtd_theme twine
+pip install sphinx sphinx_rtd_theme twine pytest
 
 rm -r dist/
 python setup.py bdist_wheel

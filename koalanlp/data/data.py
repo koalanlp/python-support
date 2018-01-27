@@ -280,7 +280,7 @@ class Word(object):
         :return bool: 표면형과 위치가 일치하면, True
         """
         if type(other) is Word:
-            is_equal = other.id == self.index and len(self) == len(other)
+            is_equal = other.index == self.index and len(self) == len(other)
             for i in range(len(self)):
                 is_equal = is_equal and self[i] == other[i]
             return is_equal

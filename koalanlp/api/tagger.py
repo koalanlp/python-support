@@ -90,7 +90,7 @@ def _jstr(s):
     return JString(s.encode("UTF-8"))
 
 
-def sentenceSplitByKoala(paragraph: Sentence) -> List[Sentence]:
+def sentences(paragraph: Sentence) -> List[Sentence]:
     """
     KoalaNLP가 구현한 문장분리기를 사용하여, 문단을 문장으로 분리합니다.
 
@@ -227,7 +227,7 @@ class Dictionary(object):
         self.__Predef = self.__autoclass('scala.Predef')
         self.__Tuple2 = self.__autoclass('scala.Tuple2')
 
-    def add_user_dictionary(self, morph: str, tag: str):
+    def add_user_dictionary(self, morph, tag):
         """
         사용자 사전에, 표면형과 그 품사를 추가.
 

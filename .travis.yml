@@ -1,0 +1,19 @@
+language: python
+jdk:
+  - oraclejdk8
+python:
+  - "3.5"
+  - "3.6"
+  - "3.7"
+install:
+  - pip install Cython
+  - pip install pyjnius
+  - pip install pytest
+cache:
+  directories:
+  - $HOME/.jip
+script:
+  - pytest tests/dictionary_test.py
+  - pytest tests/parser_test.py
+  - pytest tests/segment_test.py
+  - pytest tests/tagger_test.py
