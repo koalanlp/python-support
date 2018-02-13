@@ -600,6 +600,30 @@
 </table>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="koalanlp.data.data.Morpheme.index">
+<code class="descname">index</code><em class="property"> = -1</em><a class="headerlink" href="#koalanlp.data.data.Morpheme.index" title="정의 주소">¶</a></dt>
+<dd><p>어절 내 위치</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="koalanlp.data.data.Morpheme.raw_tag">
+<code class="descname">raw_tag</code><em class="property"> = ''</em><a class="headerlink" href="#koalanlp.data.data.Morpheme.raw_tag" title="정의 주소">¶</a></dt>
+<dd><p>품사 분석기의 원본결과인 품사</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="koalanlp.data.data.Morpheme.surface">
+<code class="descname">surface</code><em class="property"> = ''</em><a class="headerlink" href="#koalanlp.data.data.Morpheme.surface" title="정의 주소">¶</a></dt>
+<dd><p>형태소의 표면형</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="koalanlp.data.data.Morpheme.tag">
+<code class="descname">tag</code><em class="property"> = ''</em><a class="headerlink" href="#koalanlp.data.data.Morpheme.tag" title="정의 주소">¶</a></dt>
+<dd><p>세종 품사</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="koalanlp.data.data.Morpheme.to_dict">
 <code class="descname">to_dict</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; dict<a class="headerlink" href="#koalanlp.data.data.Morpheme.to_dict" title="정의 주소">¶</a></dt>
@@ -621,6 +645,30 @@
 <em class="property">class </em><code class="descclassname">koalanlp.data.data.</code><code class="descname">Relationship</code><span class="sig-paren">(</span><em>head: int</em>, <em>relation: str</em>, <em>raw_rel: str</em>, <em>target: int</em><span class="sig-paren">)</span><a class="headerlink" href="#koalanlp.data.data.Relationship" title="정의 주소">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
 <p>의존관계 객체.</p>
+<dl class="attribute">
+<dt id="koalanlp.data.data.Relationship.head">
+<code class="descname">head</code><em class="property"> = -1</em><a class="headerlink" href="#koalanlp.data.data.Relationship.head" title="정의 주소">¶</a></dt>
+<dd><p>지배소의 문장 내 위치</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="koalanlp.data.data.Relationship.raw_rel">
+<code class="descname">raw_rel</code><em class="property"> = ''</em><a class="headerlink" href="#koalanlp.data.data.Relationship.raw_rel" title="정의 주소">¶</a></dt>
+<dd><p>의존구문분석기가 도출한 원본 의존관계</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="koalanlp.data.data.Relationship.relation">
+<code class="descname">relation</code><em class="property"> = ''</em><a class="headerlink" href="#koalanlp.data.data.Relationship.relation" title="정의 주소">¶</a></dt>
+<dd><p>의존관계</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="koalanlp.data.data.Relationship.target">
+<code class="descname">target</code><em class="property"> = -1</em><a class="headerlink" href="#koalanlp.data.data.Relationship.target" title="정의 주소">¶</a></dt>
+<dd><p>피지배소(의존소)의 문장 내 위치</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="koalanlp.data.data.Relationship.to_dict">
 <code class="descname">to_dict</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; dict<a class="headerlink" href="#koalanlp.data.data.Relationship.to_dict" title="정의 주소">¶</a></dt>
@@ -720,6 +768,18 @@
 </table>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="koalanlp.data.data.Sentence.reference">
+<code class="descname">reference</code><em class="property"> = None</em><a class="headerlink" href="#koalanlp.data.data.Sentence.reference" title="정의 주소">¶</a></dt>
+<dd><p>KoalaNLP(Java)가 분석한 결과.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="koalanlp.data.data.Sentence.root">
+<code class="descname">root</code><em class="property"> = None</em><a class="headerlink" href="#koalanlp.data.data.Sentence.root" title="정의 주소">¶</a></dt>
+<dd><p>문장의 핵심어(최상위 지배소)의 목록.</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="koalanlp.data.data.Sentence.single_line_string">
 <code class="descname">single_line_string</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#koalanlp.data.data.Sentence.single_line_string" title="정의 주소">¶</a></dt>
@@ -779,6 +839,12 @@
 </table>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="koalanlp.data.data.Sentence.words">
+<code class="descname">words</code><em class="property"> = []</em><a class="headerlink" href="#koalanlp.data.data.Sentence.words" title="정의 주소">¶</a></dt>
+<dd><p>문장을 구성하는 어절의 목록.</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="class">
@@ -786,6 +852,12 @@
 <em class="property">class </em><code class="descclassname">koalanlp.data.data.</code><code class="descname">Word</code><span class="sig-paren">(</span><em>surface: str = None</em>, <em>morphemes=None</em>, <em>index: int = None</em><span class="sig-paren">)</span><a class="headerlink" href="#koalanlp.data.data.Word" title="정의 주소">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
 <p>어절 객체</p>
+<dl class="attribute">
+<dt id="koalanlp.data.data.Word.dependents">
+<code class="descname">dependents</code><em class="property"> = []</em><a class="headerlink" href="#koalanlp.data.data.Word.dependents" title="정의 주소">¶</a></dt>
+<dd><p>어절에 의존하는 의존관계 목록.</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="koalanlp.data.data.Word.equals_without_tag">
 <code class="descname">equals_without_tag</code><span class="sig-paren">(</span><em>another</em><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#koalanlp.data.data.Word.equals_without_tag" title="정의 주소">¶</a></dt>
@@ -835,6 +907,12 @@
 </table>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="koalanlp.data.data.Word.index">
+<code class="descname">index</code><em class="property"> = -1</em><a class="headerlink" href="#koalanlp.data.data.Word.index" title="정의 주소">¶</a></dt>
+<dd><p>어절의 문장 내 위치.</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="koalanlp.data.data.Word.matches">
 <code class="descname">matches</code><span class="sig-paren">(</span><em>tag</em><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#koalanlp.data.data.Word.matches" title="정의 주소">¶</a></dt>
@@ -851,6 +929,12 @@
 </table>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="koalanlp.data.data.Word.morphemes">
+<code class="descname">morphemes</code><em class="property"> = []</em><a class="headerlink" href="#koalanlp.data.data.Word.morphemes" title="정의 주소">¶</a></dt>
+<dd><p>어절에 포함된 형태소 목록.</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="koalanlp.data.data.Word.single_line_string">
 <code class="descname">single_line_string</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#koalanlp.data.data.Word.single_line_string" title="정의 주소">¶</a></dt>
@@ -863,6 +947,12 @@
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="koalanlp.data.data.Word.surface">
+<code class="descname">surface</code><em class="property"> = '##ROOT##'</em><a class="headerlink" href="#koalanlp.data.data.Word.surface" title="정의 주소">¶</a></dt>
+<dd><p>어절의 표면형.</p>
 </dd></dl>
 
 <dl class="method">

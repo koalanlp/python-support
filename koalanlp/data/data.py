@@ -7,6 +7,11 @@ from . import POS
 class Morpheme(object):
     """ 형태소 객체. """
 
+    surface = ""    #: 형태소의 표면형
+    tag = ""        #: 세종 품사
+    raw_tag = ""    #: 품사 분석기의 원본결과인 품사
+    index = -1      #: 어절 내 위치
+
     def __init__(self, surface: str, tag: str, raw_tag: str, index: int):
         """
         형태소 객체를 생성합니다.
@@ -105,6 +110,11 @@ class Morpheme(object):
 class Relationship(object):
     """ 의존관계 객체. """
 
+    head = -1       #: 지배소의 문장 내 위치
+    relation = ""   #: 의존관계
+    raw_rel = ""    #: 의존구문분석기가 도출한 원본 의존관계
+    target = -1     #: 피지배소(의존소)의 문장 내 위치
+
     def __init__(self, head: int, relation: str, raw_rel: str, target: int):
         """
         의존관계 객체를 생성합니다.
@@ -156,6 +166,11 @@ class Relationship(object):
 class Word(object):
     """ 어절 객체 """
 
+    surface = "##ROOT##"    #: 어절의 표면형.
+    morphemes = []          #: 어절에 포함된 형태소 목록.
+    index = -1              #: 어절의 문장 내 위치.
+    dependents = []         #: 어절에 의존하는 의존관계 목록.
+
     def __init__(self, surface: str=None, morphemes=None, index: int=None):
         """
         어절 객체를 생성합니다.
@@ -164,11 +179,7 @@ class Word(object):
         :param list[Morpheme] morphemes: 어절에 포함된 형태소 목록.
         :param int index: 어절의 문장 내 위치.
         """
-        if surface is None:
-            self.surface = "##ROOT##"
-            self.morphemes = []
-            self.index = -1
-        else:
+        if surface is not None:
             assert type(surface) is str
             assert type(morphemes) is list, type(morphemes[0]) is Morpheme
             assert type(index) is int
@@ -176,8 +187,6 @@ class Word(object):
             self.surface = surface
             self.morphemes = morphemes
             self.index = index
-
-        self.dependents = []
 
     def __len__(self) -> int:
         """
@@ -320,6 +329,10 @@ class Word(object):
 
 class Sentence(object):
     """ 문장 객체. """
+
+    words = []          #: 문장을 구성하는 어절의 목록.
+    root = None         #: 문장의 핵심어(최상위 지배소)의 목록.
+    reference = None    #: KoalaNLP(Java)가 분석한 결과.
 
     def __init__(self, words, reference):
         """
