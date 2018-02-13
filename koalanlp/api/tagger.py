@@ -149,6 +149,7 @@ class Parser(object):
         from jnius import autoclass
         JParser = autoclass("kr.bydelta.koala.%s.Parser" % parser_type.value)
         self.__parse = JParser()
+        self.__Predef = autoclass('scala.Predef')
         if not(tagger_type is None):
             JTagger = autoclass("kr.bydelta.koala.%s.Tagger" % tagger_type.value)
             self.__tag = JTagger()
@@ -168,6 +169,7 @@ class Parser(object):
         if is_sentence:
             if is_list:
                 target = [sent.reference for sent in paragraph]
+                target = self.__Predef.genericArrayOps(target).toSeq()
             else:
                 target = paragraph.reference
             return _converter(self.__parse.parse(target))
@@ -216,16 +218,6 @@ class SentenceSplitter(object):
         """
         parsed = self.__seg.sentences(_jstr(paragraph))
         return _convert_sentence_str(parsed)
-
-    @staticmethod
-    def sentences(paragraph: Sentence) -> List[Sentence]:
-        """
-        KoalaNLP가 구현한 문장분리기를 사용하여, 문단을 문장으로 분리합니다.
-
-        :param Sentence paragraph: 분석할 문단. (품사표기가 되어있어야 합니다)
-        :return List[Sentence]: 분리된 문장
-        """
-        return sentences(paragraph)
 
 
 class Dictionary(object):
