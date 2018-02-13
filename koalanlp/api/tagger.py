@@ -117,10 +117,14 @@ class Tagger(object):
         """
         문단을 품사분석합니다.
 
-        :param str paragraph: 분석할 문단.
+        :param Union[str,List[str]] paragraph: 분석할 문단.
         :return List[Sentence]: 분석된 결과.
         """
-        return _converter(self.__tag.tag(_jstr(paragraph)))
+        is_list = type(paragraph) is list
+        if is_list:
+            return [self.tag_sentence(sent) for sent in paragraph]
+        else:
+            return _converter(self.__tag.tag(_jstr(paragraph)))
 
     def tag_sentence(self, sentence: str) -> Sentence:
         """
@@ -155,19 +159,32 @@ class Parser(object):
         """
         문단을 의존구문분석합니다.
 
-        :param Union[str,List[Sentence]] paragraph: 분석할 문단.
-        :return List[Sentence]: 분석된 결과.
+        :param Union[str,Sentence,List[str],List[Sentence]] paragraph: 분석할 문장 또는 문단.
+        :return Union[Sentence,List[Sentence]]: 분석된 결과. 입력이 Sentence이면 Sentence를 반환하며,
+        이외의 경우는 List[Sentence]를 반환함.
         """
-        is_sentences = type(paragraph) is list and type(paragraph[0]) is Sentence
-        if self.__tag is None or is_sentences:
-            if is_sentences:
+        is_list = type(paragraph) is list
+        is_sentence = type(paragraph) is Sentence or type(paragraph[0]) is Sentence
+
+        if is_sentence:
+            if is_list:
                 target = [sent.reference for sent in paragraph]
             else:
-                target = _jstr(paragraph)
+                target = paragraph.reference
             return _converter(self.__parse.parse(target))
         else:
-            tagged = self.__tag.tag(_jstr(paragraph))
-            return _converter(self.__parse.parse(tagged))
+            if is_list:
+                if self.__tag is not None:
+                    target = [self.__tag.tagSentence(_jstr(sent)) for sent in paragraph]
+                else:
+                    target = [_jstr(sent) for sent in paragraph]
+                return [_convert_sentence(self.__parse.parse(p)) for p in target]
+            else:
+                if self.__tag is not None:
+                    target = self.__tag.tag(paragraph)
+                else:
+                    target = _jstr(paragraph)
+                return _converter(self.__parse.parse(target))
 
     def parse_sentence(self, sentence) -> Sentence:
         """
@@ -176,16 +193,7 @@ class Parser(object):
         :param Union[str,Sentence] sentence: 분석할 문단.
         :return Sentence: 분석된 결과.
         """
-        is_sentence = type(sentence) is Sentence
-        if self.__tag is None or is_sentence:
-            if is_sentence:
-                target = sentence.reference
-            else:
-                target = _jstr(sentence)
-            return _convert_sentence(self.__parse.parse(target))
-        else:
-            tagged = self.__tag.tagSentence(_jstr(sentence))
-            return _convert_sentence(self.__parse.parse(tagged))
+        return self.parse([sentence])[0]
 
 
 class SentenceSplitter(object):
@@ -291,10 +299,15 @@ class Dictionary(object):
             Dictionary.import_from(Other_Dictionary, lambda tag: tag.startswith("NN"), False)
 
         :param Dictionary other: 참조할 사전
-        :param str->bool filter_fn: 추가할 품사를 지정하는 함수.
+        :param Union[str,List[str],str->bool] filter_fn: 가져올 품사나, 품사의 리스트, 또는 해당 품사인지 판단하는 함수.
         :param bool fast_append: 선택된 사전에 존재하는지를 검사하지 않고 빠르게 추가하고자 할 때. (기본값 false)
         """
-        tags = [self.__POS.withName(_jstr(tag)) for tag in POS.TAGS if filter_fn(tag)]
+        if type(filter_fn) is list and type(filter_fn[0]) is str:
+            tags = filter_fn
+        elif type(filter_fn) is str:
+            tags = [filter_fn]
+        else:
+            tags = [self.__POS.withName(_jstr(tag)) for tag in POS.TAGS if filter_fn(tag)]
         tag_set = self.__Predef.genericArrayOps(tags).toSet()
 
         self.__dictionary.importFrom(other.__dictionary, tag_set, fast_append)
@@ -310,10 +323,15 @@ class Dictionary(object):
             entries = Dictionary.base_entries_of(lambda tag: tag.startswith("NN"))
             next(entries)
 
-        :param str->bool filter_fn: 가져올 품사인지 판단하는 함수.
+        :param Union[str,List[str],str->bool] filter_fn: 가져올 품사나, 품사의 리스트, 또는 해당 품사인지 판단하는 함수.
         :return generator: (형태소, 품사)의 generator
         """
-        tags = [self.__POS.withName(_jstr(tag)) for tag in POS.TAGS if filter_fn(tag)]
+        if type(filter_fn) is list and type(filter_fn[0]) is str:
+            tags = filter_fn
+        elif type(filter_fn) is str:
+            tags = [filter_fn]
+        else:
+            tags = [self.__POS.withName(_jstr(tag)) for tag in POS.TAGS if filter_fn(tag)]
         tag_set = self.__Predef.genericArrayOps(tags).toSet()
 
         entries = self.__dictionary.baseEntriesOf(tag_set)
