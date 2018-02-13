@@ -160,8 +160,7 @@ class Parser(object):
         문단을 의존구문분석합니다.
 
         :param Union[str,Sentence,List[str],List[Sentence]] paragraph: 분석할 문장 또는 문단.
-        :return Union[Sentence,List[Sentence]]: 분석된 결과. 입력이 Sentence이면 Sentence를 반환하며,
-        이외의 경우는 List[Sentence]를 반환함.
+        :return Union[Sentence,List[Sentence]]: 분석된 결과. 입력이 Sentence이면 Sentence를 반환하며, 이외의 경우는 List[Sentence]를 반환함.
         """
         is_list = type(paragraph) is list
         is_sentence = type(paragraph) is Sentence or type(paragraph[0]) is Sentence
@@ -217,6 +216,16 @@ class SentenceSplitter(object):
         """
         parsed = self.__seg.sentences(_jstr(paragraph))
         return _convert_sentence_str(parsed)
+
+    @staticmethod
+    def sentences(paragraph: Sentence) -> List[Sentence]:
+        """
+        KoalaNLP가 구현한 문장분리기를 사용하여, 문단을 문장으로 분리합니다.
+
+        :param Sentence paragraph: 분석할 문단. (품사표기가 되어있어야 합니다)
+        :return List[Sentence]: 분리된 문장
+        """
+        return sentences(paragraph)
 
 
 class Dictionary(object):
