@@ -72,8 +72,10 @@ _AFFX_SET = [XPN, XPV, XSN, XSV, XSM, XSA, XSO, XR]
 _SUFX_SET = [XSN, XSV, XSM, XSA, XSO]
 _SYMB_SET = [SF, SP, SS, SE, SW, SO]
 _UNKN_SET = [NF, NV, NA]
+_ETC_SET = [SL, SH, SN]
 
 TAGS = [pos for pos in dir() if not pos.startswith('_') and pos.isupper()]
+
 
 def _finder(sets, tag) -> bool:
     if type(tag) is str:
@@ -176,6 +178,6 @@ def is_unknown(tag) -> bool:
 __all__ = ["is_noun", "is_predicate", "is_modifier", "is_postposition", "is_ending",
            "is_affix", "is_suffix", "is_symbol", "is_unknown",
            "TAGS"]
-for set in [_NOUN_SET, _PRED_SET, _MODF_SET, [IC], _EOMI_SET, _AFFX_SET, _SYMB_SET, _UNKN_SET]:
+for set in [_NOUN_SET, _PRED_SET, _MODF_SET, [IC], _EOMI_SET, _AFFX_SET, _SYMB_SET, _UNKN_SET, _ETC_SET]:
     for tag in set:
         __all__.append(tag)
