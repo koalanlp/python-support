@@ -3,7 +3,7 @@
 
 from koalanlp.data import *
 from .const import API
-from typing import List
+from typing import List, Union
 
 
 def _convert_word(result, widx) -> Word:
@@ -156,7 +156,7 @@ class Parser(object):
         else:
             self.__tag = None
 
-    def parse(self, paragraph) -> List[Sentence]:
+    def parse(self, paragraph) -> Union[Sentence, List[Sentence]]:
         """
         문단을 의존구문분석합니다.
 
@@ -170,9 +170,10 @@ class Parser(object):
             if is_list:
                 target = [sent.reference for sent in paragraph]
                 target = self.__Predef.genericArrayOps(target).toSeq()
+                return _converter(self.__parse.parse(target))
             else:
                 target = paragraph.reference
-            return _converter(self.__parse.parse(target))
+                return _convert_sentence(self.__parse.parse(target))
         else:
             if is_list:
                 if self.__tag is not None:
@@ -182,7 +183,7 @@ class Parser(object):
                 return [_convert_sentence(self.__parse.parse(p)) for p in target]
             else:
                 if self.__tag is not None:
-                    target = self.__tag.tag(paragraph)
+                    target = self.__tag.tag(_jstr(paragraph))
                 else:
                     target = _jstr(paragraph)
                 return _converter(self.__parse.parse(target))

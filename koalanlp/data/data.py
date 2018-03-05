@@ -187,6 +187,7 @@ class Word(object):
             self.surface = surface
             self.morphemes = morphemes
             self.index = index
+        self.dependents = []
 
     def __len__(self) -> int:
         """

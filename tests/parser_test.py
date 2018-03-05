@@ -58,3 +58,33 @@ def test_parse_sentence_relay():
     zipped = zip(iter(result), iter(result2))
     for (a, b) in zipped:
         assert a == b
+
+def test_parse_relay():
+    result_list = parser2.parse("안녕하세요.")
+    assert type(result_list) is list
+    assert len(result_list) == 1
+    result = result_list[0]
+    assert type(result) is Sentence
+    assert len(result) == 2
+    assert len(result.root.dependents) > 0
+    assert result.root.dependents[0].target == 0
+    assert result.surface_string() == "안녕하세요 ." #EUNJEON
+    assert result[0].surface == "안녕하세요"
+    assert len(result[0]) == 4
+    assert result[0][0].surface == "안녕"
+
+    result_list = parser2.parse("안녕하세요. 눈이 오는 설날 아침입니다.")
+    assert type(result_list) is list
+    assert len(result_list) == 2
+    result = result_list[1]
+    assert len(result) == 5
+    assert len(result.root.dependents) > 0
+    assert result.root.dependents[0].target == 1
+
+    result2 = tagger.tag("안녕하세요. 눈이 오는 설날 아침입니다.")
+    result2 = parser1.parse(result2)
+
+    zipped = zip(iter(result_list), iter(result2))
+    for (sent1, sent2) in zipped:
+        for (a, b) in zip(iter(sent1), iter(sent2)):
+            assert a == b
