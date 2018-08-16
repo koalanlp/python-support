@@ -6,7 +6,7 @@
 [![Sphinx doc](https://img.shields.io/badge/Python-Doc-blue.svg?style=flat-square)](https://koalanlp.github.io/py-koalanlp/build/html/)
 
 [![Build Status](https://img.shields.io/travis/koalanlp/py-koalanlp.svg?style=flat-square&branch=master)](https://travis-ci.org/koalanlp/py-koalanlp)
-[![scala-koalanlp](https://img.shields.io/badge/Scala-KoalaNLP-blue.svg?style=flat-square)](https://koalanlp.github.io/KoalaNLP-core)
+[![scala-koalanlp](https://img.shields.io/badge/Scala-KoalaNLP-red.svg?style=flat-square)](https://koalanlp.github.io/KoalaNLP-core)
 [![nodejs-koalanlp](https://img.shields.io/badge/Nodejs-KoalaNLP-blue.svg?style=flat-square)](https://koalanlp.github.io/nodejs-koalanlp)
 
 # 소개
@@ -99,4 +99,4 @@ print(sentence.verbs()) # 문장에서 용언만 추출합니다.
 * RHINO: 비상업적 용도 사용가능.
 
 # 결과 비교
-[Java/Scala Version KoalaNLP의 Wiki:결과비교](https://github.com/koalanlp/KoalaNLP/wiki/4.-결과-비교)를 참조해주세요.
+[Java/Scala Version KoalaNLP의 Wiki:결과비교](https://github.com/koalanlp/KoalaNLP-core/wiki/4.-결과-비교)를 참조해주세요.
