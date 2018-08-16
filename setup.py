@@ -4,9 +4,8 @@ setup(
     name='koalanlp',
     version='1.1.7',
     description='Python wrapper for KoalaNLP',
-    author='Bugeun Kim',
-    author_email='cd4209@gmail.com',
-    url='https://nearbydelta.github.io/py-koalanlp',
+    author='koalanlp',
+    url='https://koalanlp.github.io/py-koalanlp',
     install_requires=[
         "Cython~=0.27.3", "pyjnius~=1.1.1", "jip~=0.9.13"
     ],
@@ -17,8 +16,8 @@ setup(
     zip_safe=False,
     license="MIT",
     project_urls={
-        "Issue Tracker": "https://github.com/nearbydelta/py-koalanlp/issues",
-        "Source Code": "https://github.com/nearbydelta/py-koalanlp",
+        "Issue Tracker": "https://github.com/koalanlp/py-koalanlp/issues",
+        "Source Code": "https://github.com/koalanlp/py-koalanlp",
     },
     classifiers=[
         'Development Status :: 4 - Beta',
