@@ -1,16 +1,16 @@
 # Py-KoalaNLP
 
-[![PyPI](https://img.shields.io/pypi/v/koalanlp.svg?style=flat-square)](https://github.com/nearbydelta/py-koalanlp)
+[![PyPI](https://img.shields.io/pypi/v/koalanlp.svg?style=flat-square)](https://github.com/koalanlp/py-koalanlp)
 [![분석기별 품사비교표](https://img.shields.io/badge/%ED%92%88%EC%82%AC-%EB%B9%84%EA%B5%90%ED%91%9C-blue.svg?style=flat-square)](https://docs.google.com/spreadsheets/d/1OGM4JDdLk6URuegFKXg1huuKWynhg_EQnZYgTmG4h0s/edit?usp=sharing)
 [![MIT License](https://img.shields.io/badge/license-MIT-green.svg?style=flat-square)](https://tldrlegal.com/license/mit-license)
-[![Sphinx doc](https://img.shields.io/badge/Python-Doc-blue.svg?style=flat-square)](https://nearbydelta.github.io/py-koalanlp/build/html/)
+[![Sphinx doc](https://img.shields.io/badge/Python-Doc-blue.svg?style=flat-square)](https://koalanlp.github.io/py-koalanlp/build/html/)
 
-[![Build Status](https://img.shields.io/travis/nearbydelta/py-koalanlp.svg?style=flat-square&branch=master)](https://travis-ci.org/nearbydelta/py-koalanlp)
-[![scala-koalanlp](https://img.shields.io/badge/Scala-KoalaNLP-blue.svg?style=flat-square)](https://nearbydelta.github.io/KoalaNLP)
-[![nodejs-koalanlp](https://img.shields.io/badge/Nodejs-KoalaNLP-blue.svg?style=flat-square)](https://nearbydelta.github.io/nodejs-koalanlp)
+[![Build Status](https://img.shields.io/travis/koalanlp/py-koalanlp.svg?style=flat-square&branch=master)](https://travis-ci.org/koalanlp/py-koalanlp)
+[![scala-koalanlp](https://img.shields.io/badge/Scala-KoalaNLP-blue.svg?style=flat-square)](https://koalanlp.github.io/KoalaNLP-core)
+[![nodejs-koalanlp](https://img.shields.io/badge/Nodejs-KoalaNLP-blue.svg?style=flat-square)](https://koalanlp.github.io/nodejs-koalanlp)
 
 # 소개
-한국어 형태소 및 구문 분석기의 모음인, [KoalaNLP](https://github.com/nearbydelta/koalanlp)의 Python 판본입니다.
+한국어 형태소 및 구문 분석기의 모음인, [KoalaNLP](https://github.com/koalanlp/KoalaNLP-core)의 Python 판본입니다.
 
 이 프로젝트는 __서로 다른 형태의 형태소 분석기를__ 모아,
 __동일한 인터페이스__ 아래에서 사용할 수 있도록 하는 것이 목적입니다.
@@ -30,7 +30,7 @@ KoalaNLP의 Contributor가 되고 싶으시다면, 언제든지 Issue에 등록�
 또한, 추가하고자 하는 새로운 프로젝트가 있으시면, Issue에 등록해주십시오.
 
 # 사용법
-API 문서는 [![Sphinx doc](https://img.shields.io/badge/Python-Doc-blue.svg?style=flat-square)](https://nearbydelta.github.io/py-koalanlp/build/html/)에서, 간단한 예시와 사용법은 [Wiki](https://github.com/nearbydelta/py-koalanlp/wiki)에서 보실 수 있습니다.
+API 문서는 [![Sphinx doc](https://img.shields.io/badge/Python-Doc-blue.svg?style=flat-square)](https://koalanlp.github.io/py-koalanlp/build/html/)에서, 간단한 예시와 사용법은 [Wiki](https://github.com/koalanlp/py-koalanlp/wiki)에서 보실 수 있습니다.
 
 ## Dependency 추가
 * `Java` 8 이상이 설치되어 있고, `JAVA_HOME`이 설정되어 있어야 합니다.
@@ -99,4 +99,4 @@ print(sentence.verbs()) # 문장에서 용언만 추출합니다.
 * RHINO: 비상업적 용도 사용가능.
 
 # 결과 비교
-[Java/Scala Version KoalaNLP의 Wiki:결과비교](https://github.com/nearbydelta/KoalaNLP/wiki/4.-결과-비교)를 참조해주세요.
+[Java/Scala Version KoalaNLP의 Wiki:결과비교](https://github.com/koalanlp/KoalaNLP/wiki/4.-결과-비교)를 참조해주세요.
