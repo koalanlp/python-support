@@ -1,90 +1,51 @@
 from koalanlp import *
+from koalanlp.types import *
+from koalanlp.data import *
+from koalanlp.proc import *
 import pytest
 
-initialize([API.EUNJEON, API.KKMA], "1.9.2")
-parser1 = Parser(API.KKMA)
-parser2 = Parser(API.KKMA, API.EUNJEON)
+Util.initialize([API.EUNJEON, API.KKMA], "2.0.0")
+parser = Parser(API.KKMA)
 tagger = Tagger(API.EUNJEON)
 
-def test_parse_sentence():
-    with pytest.raises(Exception):
-        parser1.parse_sentence("안녕하세요.")
-
-    with pytest.raises(Exception):
-        parser1.parse_sentence("안녕하세요. 눈이 오는 설날 아침입니다.")
 
 def test_parse():
-    result = parser1.parse("안녕하세요. 눈이 오는 설날 아침입니다.")
+    result = parser.analyze("안녕하세요. 눈이 오는 설날 아침입니다.")
     assert len(result) == 2
     assert len(result[0]) == 1
     assert type(result[0]) is Sentence
-    assert result[0].surface_string() == "안녕하세요." #KKMA
-    assert result[0][0].surface == "안녕하세요."
+    assert result[0].surfaceString() == "안녕하세요."  # KKMA
+    assert result[0][0].getSurface() == "안녕하세요."
     assert len(result[1]) == 4
-    assert len(result[1].root.dependents) > 0
-    assert result[1].root.dependents[0].target == 3
-    assert result[1].surface_string() == "눈이 오는 설날 아침입니다." #KKMA
-    assert result[1][0].surface == "눈이"
-    assert result[1][0][0].surface == "눈"
-    assert result[1][0][0].tag == "NNG"
-    assert result[1][0][0].raw_tag == "NNG"
-    assert result[1][0][1].surface == "이"
-    assert result[1][0][1].raw_tag == "JKS"
-    assert result[1][3].surface == "아침입니다."
-    assert result[1][3][2].surface == "ㅂ니다" #KKMA (받침아님)
-    assert result[1][3][2].tag == "EF"
+    assert len(result[1].getDependencies()) > 0
+    assert result[1].surfaceString() == "눈이 오는 설날 아침입니다."  # KKMA
+    assert result[1][0].getSurface() == "눈이"
+    assert result[1][0][0].getSurface() == "눈"
+    assert result[1][0][0].getTag().name() == "NNG"
+    assert result[1][0][0].getOriginalTag() == "NNG"
+    assert result[1][0][1].getSurface() == "이"
+    assert result[1][0][1].getOriginalTag() == "JKS"
+    assert result[1][3].getSurface() == "아침입니다."
+    assert result[1][3][2].getSurface() == "ㅂ니다"  # KKMA (받침아님)
+    assert result[1][3][2].getTag().name() == "EF"
 
-def test_parse_sentence_relay():
-    result = parser2.parse_sentence("안녕하세요.")
-    assert not type(result) is list
-    assert type(result) is Sentence
+
+def test_parse_sentence_list():
+    result = tagger.tag("안녕하세요. 눈이 오는 설날 아침입니다.")
+    result = parser.analyze(result)
+
     assert len(result) == 2
-    assert len(result.root.dependents) > 0
-    assert result.root.dependents[0].target == 0
-    assert result.surface_string() == "안녕하세요 ." #EUNJEON
-    assert result[0].surface == "안녕하세요"
-    assert len(result[0]) == 4
-    assert result[0][0].surface == "안녕"
+    assert len(result[0]) == 1
+    assert len(result[1].getDependencies()) > 0
 
-    result = parser2.parse_sentence("안녕하세요. 눈이 오는 설날 아침입니다.")
-    assert not type(result) is list
-    assert len(result) == 7
-    assert len(result.root.dependents) > 0
-    assert result.root.dependents[0].target == 1
 
-    result2 = tagger.tag_sentence("안녕하세요. 눈이 오는 설날 아침입니다.")
-    result2 = parser1.parse_sentence(result2)
-
-    zipped = zip(iter(result), iter(result2))
-    for (a, b) in zipped:
-        assert a == b
-
-def test_parse_relay():
-    result_list = parser2.parse("안녕하세요.")
-    assert type(result_list) is list
-    assert len(result_list) == 1
-    result = result_list[0]
+def test_parse_sentence():
+    result = tagger.tagSentence("안녕하세요.")
+    result = parser.analyze(result)
     assert type(result) is Sentence
-    assert len(result) == 2
-    assert len(result.root.dependents) > 0
-    assert result.root.dependents[0].target == 0
-    assert result.surface_string() == "안녕하세요 ." #EUNJEON
-    assert result[0].surface == "안녕하세요"
+    assert len(result.getDependencies()) > 0
+    # assert result.root.dependents[0].target == 0
+    assert result.surfaceString() == "안녕하세요 ."  # EUNJEON
+    assert result[0].getSurface() == "안녕하세요"
     assert len(result[0]) == 4
-    assert result[0][0].surface == "안녕"
-
-    result_list = parser2.parse("안녕하세요. 눈이 오는 설날 아침입니다.")
-    assert type(result_list) is list
-    assert len(result_list) == 2
-    result = result_list[1]
-    assert len(result) == 5
-    assert len(result.root.dependents) > 0
-    assert result.root.dependents[0].target == 1
-
-    result2 = tagger.tag("안녕하세요. 눈이 오는 설날 아침입니다.")
-    result2 = parser1.parse(result2)
-
-    zipped = zip(iter(result_list), iter(result2))
-    for (sent1, sent2) in zipped:
-        for (a, b) in zip(iter(sent1), iter(sent2)):
-            assert a == b
+    assert result[0][0].getSurface() == "안녕"

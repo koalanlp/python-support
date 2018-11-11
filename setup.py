@@ -2,22 +2,23 @@ from setuptools import setup, find_packages
 
 setup(
     name='koalanlp',
-    version='1.1.7',
+    version='2.0.0',
     description='Python wrapper for KoalaNLP',
     author='koalanlp',
     url='https://koalanlp.github.io/py-koalanlp',
     install_requires=[
-        "Cython~=0.27.3", "pyjnius~=1.1.1", "jip~=0.9.13"
+        "Cython~=0.29", "pyjnius~=1.1.3", "jip~=0.9.13"
     ],
-    packages=find_packages(exclude=["docs", "tests"]),
-    keywords=['korean', 'natural language processing', 'koalanlp', 'sentence', 'parser', 'tagger'],
+    packages=find_packages(exclude=["docs", "tests", "doc_source"]),
+    keywords=['korean', 'natural language processing', 'koalanlp', '한국어 처리', '한국어 분석',
+              '형태소', '의존구문', '구문구조', '개체명', '의미역'],
     python_requires='>=3.5',
     package_data={},
     zip_safe=False,
     license="MIT",
     project_urls={
-        "Issue Tracker": "https://github.com/koalanlp/py-koalanlp/issues",
-        "Source Code": "https://github.com/koalanlp/py-koalanlp",
+        "Issue Tracker": "https://github.com/koalanlp/python-support/issues",
+        "Source Code": "https://github.com/koalanlp/python-support",
     },
     classifiers=[
         'Development Status :: 4 - Beta',

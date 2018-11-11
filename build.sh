@@ -1,13 +1,11 @@
 #!/bin/bash
 
-pip install sphinx sphinx_rtd_theme twine pytest
+pip3 install sphinx sphinx_rtd_theme twine pytest
 
 rm -r dist/
-python setup.py bdist_wheel
-cd docs
+python3 setup.py bdist_wheel
 make clean
 make html
-cd ..
 twine upload dist/koalanlp-*.whl
 
 VERSION=`ls dist | grep koalanlp | cut -d- -f2`

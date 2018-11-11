@@ -1,9 +1,13 @@
 from koalanlp import *
+from koalanlp.types import *
+from koalanlp.data import *
+from koalanlp.proc import *
 import pytest
 
-initialize([API.TWITTER, API.EUNJEON], "1.9.2")
+Util.initialize([API.OKT, API.EUNJEON], "2.0.0")
 tagger = Tagger(API.EUNJEON)
-segmenter = SentenceSplitter(API.TWITTER)
+segmenter = SentenceSplitter(API.OKT)
+
 
 def test_sentences():
     result = segmenter.sentences("안녕하세요.")
@@ -19,20 +23,20 @@ def test_sentences():
 
 
 def test_sentence_by_koala():
-    result = tagger.tag_sentence("안녕하세요. 눈이 오는 설날 아침입니다.")
-    result = sentences(result)
+    result = tagger.tagSentence("안녕하세요. 눈이 오는 설날 아침입니다.")
+    result = SentenceSplitter.sentencesTagged(result)
     assert len(result) == 2
     assert len(result[0]) == 2
-    assert result[0].surface_string() == "안녕하세요 ."
-    assert result[0][0].surface == "안녕하세요"
+    assert result[0].surfaceString() == "안녕하세요 ."
+    assert result[0][0].getSurface() == "안녕하세요"
     assert len(result[1]) == 5
-    assert result[1].surface_string() == "눈이 오는 설날 아침입니다 ."
-    assert result[1][0].surface == "눈이"
-    assert result[1][0][0].surface == "눈"
-    assert result[1][0][0].tag == "NNG"
-    assert result[1][0][0].raw_tag == "NNG"
-    assert result[1][0][1].surface == "이"
-    assert result[1][0][1].raw_tag == "JKS"
-    assert result[1][3].surface == "아침입니다"
-    assert result[1][3][2].surface == "ᄇ니다"
-    assert result[1][3][2].tag == "EF"
+    assert result[1].surfaceString() == "눈이 오는 설날 아침입니다 ."
+    assert result[1][0].getSurface()== "눈이"
+    assert result[1][0][0].getSurface() == "눈"
+    assert result[1][0][0].getTag().name() == "NNG"
+    assert result[1][0][0].getOriginalTag() == "NNG"
+    assert result[1][0][1].getSurface() == "이"
+    assert result[1][0][1].getOriginalTag() == "JKS"
+    assert result[1][3].getSurface() == "아침입니다"
+    assert result[1][3][2].getSurface() == "ᄇ니다"
+    assert result[1][3][2].getTag().name() == "EF"
