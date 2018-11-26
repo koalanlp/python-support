@@ -6,7 +6,7 @@
 [![Sphinx doc](https://img.shields.io/badge/Python-Doc-blue.svg?style=flat-square)](https://koalanlp.github.io/python-support/html/)
 
 [![Build Status](https://img.shields.io/travis/koalanlp/python-support.svg?style=flat-square&branch=master)](https://travis-ci.org/koalanlp/python-support)
-[![java-koalanlp](https://img.shields.io/badge/Java-Kotlin-KoalaNLP-red.svg?style=flat-square)](https://koalanlp.github.io/koalanlp)
+[![java-koalanlp](https://img.shields.io/badge/Java,Kotlin-KoalaNLP-red.svg?style=flat-square)](https://koalanlp.github.io/koalanlp)
 [![scala-koalanlp](https://img.shields.io/badge/Scala-KoalaNLP-blue.svg?style=flat-square)](https://koalanlp.github.io/scala-support)
 [![nodejs-koalanlp](https://img.shields.io/badge/Nodejs-KoalaNLP-blue.svg?style=flat-square)](https://koalanlp.github.io/nodejs-support)
 
