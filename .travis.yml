@@ -4,14 +4,13 @@ jdk:
 python:
 - '3.5'
 - '3.6'
-- '3.7'
 install:
 - pip install Cython
 - pip install pyjnius jip
 - pip install pytest
 script:
 - python -m pytest tests/dictionary_test.py
-- python -m pytest tests/extension_core_test.py
+- python -m pytest tests/extension_core_spec.py
 - python -m pytest tests/proc_core_spec.py
 - python -m pytest tests/type_core_spec.py
 env:
