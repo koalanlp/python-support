@@ -4,8 +4,12 @@ pip3 install sphinx sphinx_rtd_theme twine pytest
 
 rm -r dist/
 python3 setup.py bdist_wheel
+mv docs/.nojekyll ./
+mv docs/index.html ./
 make clean
 make html
+mv ./.nojekyll docs/
+mv ./index.html docs/
 twine upload dist/koalanlp-*.whl
 
 VERSION=`ls dist | grep koalanlp | cut -d- -f2`

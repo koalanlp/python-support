@@ -4,36 +4,22 @@
 from .types import *
 from .jnius import *
 from typing import List, Optional
-from rop import read_only_properties
 
 
-def read_only_properties_allow_none(*attrs):
-    """
-    This class is from package rop.
-    (Code is modified to allow none overwrite)
-    """
-    def class_rebuilder(cls):
-        class NewClass(cls):
-            def __setattr__(self, name, value):
-
-                if name not in attrs:
-                    pass
-                elif name not in self.__dict__:
-                    pass
-                elif getattr(self, name) is None:
-                    pass
-                else:
-                    raise AttributeError("Can't touch {}".format(name))
-
-                super().__setattr__(name, value)
-
-        return NewClass
-    return class_rebuilder
-
-
-@read_only_properties('_ref_list')
 class _PyListWrap(object):
     _ref_list = None
+
+    def __setattr__(self, name, value):
+        if name not in ['_ref_list']:
+            pass
+        elif name not in self.__dict__:
+            pass
+        elif getattr(self, name) is None:
+            pass
+        else:
+            raise AttributeError("Can't touch {}".format(name))
+
+        super().__setattr__(name, value)
 
     def __init__(self, ref_list):
         self._ref_list = ref_list
@@ -91,7 +77,6 @@ class _PyListWrap(object):
         return sum(hash(x) for x in self)
 
 
-@read_only_properties('corefGroup', 'surface', 'label', 'fineLabel', 'originalLabel')
 class Entity(_PyListWrap):
     """
     개체명 분석 결과를 저장할 [Property] class
@@ -140,6 +125,18 @@ class Entity(_PyListWrap):
 
         for morph in self:
             morph.entities.append(self)
+
+    def __setattr__(self, name, value):
+        if name not in ['corefGroup', 'surface', 'label', 'fineLabel', 'originalLabel']:
+            pass
+        elif name not in self.__dict__:
+            pass
+        elif getattr(self, name) is None:
+            pass
+        else:
+            raise AttributeError("Can't touch {}".format(name))
+
+        super().__setattr__(name, value)
 
     def getSurface(self) -> str:
         """
@@ -248,7 +245,6 @@ class CoreferenceGroup(_PyListWrap):
             entity.corefGroup = self
 
 
-@read_only_properties('label', 'terminal', 'children', 'parent')
 class Tree(_PyListWrap):
     """
     트리 구조를 저장할 [Property]입니다. :py:class:`Word`를 묶어서 표현하는 구조에 적용됩니다.
@@ -269,6 +265,18 @@ class Tree(_PyListWrap):
 
         self.label = label
         self.terminal = terminal
+
+    def __setattr__(self, name, value):
+        if name not in ['label', 'terminal', 'children', 'parent']:
+            pass
+        elif name not in self.__dict__:
+            pass
+        elif getattr(self, name) is None:
+            pass
+        else:
+            raise AttributeError("Can't touch {}".format(name))
+
+        super().__setattr__(name, value)
 
     def getLabel(self):
         """
@@ -380,7 +388,6 @@ class Tree(_PyListWrap):
         return "%s-Node(%s)" % (self.label, str(self.terminal) if self.terminal is not None else '')
 
 
-@read_only_properties('label', 'terminal', 'children', 'parent', 'originalLabel')
 class SyntaxTree(Tree):
     """
     구문구조 분석의 결과를 저장할 [Property].
@@ -428,6 +435,18 @@ class SyntaxTree(Tree):
         for child in self:
             child.parent = self
 
+    def __setattr__(self, name, value):
+        if name not in ['label', 'terminal', 'children', 'parent', 'originalLabel']:
+            pass
+        elif name not in self.__dict__:
+            pass
+        elif getattr(self, name) is None:
+            pass
+        else:
+            raise AttributeError("Can't touch {}".format(name))
+
+        super().__setattr__(name, value)
+
     def getOriginalLabel(self) -> Optional[str]:
         """
 
@@ -447,7 +466,6 @@ class SyntaxTree(Tree):
         return PhraseTag.valueOf(super().getLabel())
 
 
-@read_only_properties('src', 'dest', 'label')
 class DAGEdge(object):
     """
     DAG Edge를 저장합니다.
@@ -461,6 +479,18 @@ class DAGEdge(object):
         self.src = src
         self.dest = dest
         self.label = label
+
+    def __setattr__(self, name, value):
+        if name not in ['src', 'dest', 'label']:
+            pass
+        elif name not in self.__dict__:
+            pass
+        elif getattr(self, name) is None:
+            pass
+        else:
+            raise AttributeError("Can't touch {}".format(name))
+
+        super().__setattr__(name, value)
 
     def getSrc(self):
         """
@@ -494,7 +524,6 @@ class DAGEdge(object):
                                     str(self.dest))
 
 
-@read_only_properties('src', 'dest', 'governor', 'dependent', 'label', 'type', 'depType', 'originalLabel')
 class DepEdge(DAGEdge):
     """
     의존구문구조 분석의 결과.
@@ -549,6 +578,18 @@ class DepEdge(DAGEdge):
 
         self.governor = self.src
         self.dependent = self.dest
+
+    def __setattr__(self, name, value):
+        if name not in ['src', 'dest', 'governor', 'dependent', 'label', 'type', 'depType', 'originalLabel']:
+            pass
+        elif name not in self.__dict__:
+            pass
+        elif getattr(self, name) is None:
+            pass
+        else:
+            raise AttributeError("Can't touch {}".format(name))
+
+        super().__setattr__(name, value)
 
     def getGovernor(self):
         """
@@ -612,7 +653,6 @@ class DepEdge(DAGEdge):
         return hash(self.type) + super().__hash__()
 
 
-@read_only_properties('src', 'dest', 'predicate', 'argument', 'label', 'modifiers', 'originalLabel')
 class RoleEdge(DAGEdge):
     """
     의미역 구조 분석의 결과.
@@ -666,6 +706,18 @@ class RoleEdge(DAGEdge):
         self.predicate = self.src
         self.argument = self.dest
 
+    def __setattr__(self, name, value):
+        if name not in ['src', 'dest', 'predicate', 'argument', 'label', 'modifiers', 'originalLabel']:
+            pass
+        elif name not in self.__dict__:
+            pass
+        elif getattr(self, name) is None:
+            pass
+        else:
+            raise AttributeError("Can't touch {}".format(name))
+
+        super().__setattr__(name, value)
+
     def getPredicate(self):
         """
 
@@ -716,8 +768,6 @@ class RoleEdge(DAGEdge):
                                        ' '.join(w.surface for w in self.modifiers))
 
 
-@read_only_properties('surface', 'tag', 'originalTag')
-@read_only_properties_allow_none('id', 'word')
 class Morpheme(object):
     """
     형태소를 저장하는 [Property] class입니다.
@@ -769,6 +819,18 @@ class Morpheme(object):
 
         if self.reference.getWordSense() is not None:
             self.wordSense = self.reference.getWordSense()
+
+    def __setattr__(self, name, value):
+        if name not in ['surface', 'tag', 'originalTag', 'id', 'word']:
+            pass
+        elif name not in self.__dict__:
+            pass
+        elif getattr(self, name) is None:
+            pass
+        else:
+            raise AttributeError("Can't touch {}".format(name))
+
+        super().__setattr__(name, value)
 
     def getSurface(self) -> str:
         """
@@ -1002,8 +1064,6 @@ class Morpheme(object):
             else "%s/%s" % (self.surface, str(self.tag))
 
 
-@read_only_properties('surface', 'morphemes')
-@read_only_properties_allow_none('id')
 class Word(_PyListWrap):
     """
     어절을 표현하는 [Property] class입니다.
@@ -1042,6 +1102,18 @@ class Word(_PyListWrap):
         for i, morph in enumerate(self):
             morph.word = self
             morph.id = i
+
+    def __setattr__(self, name, value):
+        if name not in ['surface', 'morphemes', 'id']:
+            pass
+        elif name not in self.__dict__:
+            pass
+        elif getattr(self, name) is None:
+            pass
+        else:
+            raise AttributeError("Can't touch {}".format(name))
+
+        super().__setattr__(name, value)
 
     def getSurface(self) -> str:
         """
@@ -1287,7 +1359,6 @@ class Word(_PyListWrap):
         return self.surface == other.surface and super().__eq__(other)
 
 
-@read_only_properties('words')
 class Sentence(_PyListWrap):
     """
     문장을 표현하는 [Property] class입니다.
@@ -1339,6 +1410,18 @@ class Sentence(_PyListWrap):
 
         for i, word in enumerate(self):
             word.id = i
+
+    def __setattr__(self, name, value):
+        if name not in ['words']:
+            pass
+        elif name not in self.__dict__:
+            pass
+        elif getattr(self, name) is None:
+            pass
+        else:
+            raise AttributeError("Can't touch {}".format(name))
+
+        super().__setattr__(name, value)
 
     def __get_jword(self, jword) -> Optional[Word]:
         if jword is not None:

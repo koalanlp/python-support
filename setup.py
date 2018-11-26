@@ -7,7 +7,7 @@ setup(
     author='koalanlp',
     url='https://koalanlp.github.io/python-support',
     install_requires=[
-        "Cython~=0.29", "pyjnius~=1.1.3", "jip~=0.9.13", "read_only_property~=0.1"
+        "Cython~=0.29", "pyjnius~=1.1.3", "jip~=0.9.13"
     ],
     packages=find_packages(exclude=["docs", "tests", "doc_source"]),
     keywords=['korean', 'natural language processing', 'koalanlp', '한국어 처리', '한국어 분석',
