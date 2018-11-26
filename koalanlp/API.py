@@ -12,6 +12,7 @@ RHINO = 'rhino'      #: 라이노. 현재 |ver_rhino| 버전이 최신입니다.
 OKT = 'okt'          #: 트위터. 현재 |ver_okt| 버전이 최신입니다. 문장분리, 품사분석만 가능합니다.
 DAON = 'daon'        #: 다온. 현재 |ver_daon| 버전이 최신입니다. 품사분석만 가능합니다.
 ETRI = 'etri'        #: ETRI Open API. 현재 |ver_etri| 버전이 최신입니다.
+CORE = 'core'        #: 분석기 Interface 정의 라이브러리. 현재 |ver_core| 버전이 최신입니다. 편의기능을 제공하며 타 분석기 참조시 함께 참조됩니다.
 
 _REQUIRE_ASSEMBLY_ = [HNN, KKMA, ARIRANG, RHINO, DAON]   #: 'assembly' classifier 필요 여부
 
@@ -23,6 +24,7 @@ def _query(api: str, type: str):
     except Exception:
         raise Exception('API.%s는 %s를 지원하지 않습니다!' % (api.upper(), str(type)))
 
+
 # ----- Define members exported -----
 
-__all__ = ['HNN', 'KMR', 'KKMA', 'EUNJEON', 'ARIRANG', 'RHINO', 'OKT', 'DAON', 'ETRI']
+__all__ = ['HNN', 'KMR', 'KKMA', 'EUNJEON', 'ARIRANG', 'RHINO', 'OKT', 'DAON', 'ETRI', 'CORE']

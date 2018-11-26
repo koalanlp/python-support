@@ -5,37 +5,62 @@ from typing import Union, Dict, List
 
 from .jnius import *
 
+# 'ㄱ', 'ㄲ', 'ㄴ', 'ㄷ', 'ㄸ', 'ㄹ', 'ㅁ', 'ㅂ', 'ㅃ', 'ㅅ', 'ㅆ', 'ㅇ', 'ㅈ', 'ㅉ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'
+HanFirstList = [chr(x) for x in range(0x1100, 0x1112 + 1)]  #: 초성 조합형 문자열 리스트 (UNICODE 순서)
 
-def ChoToJong() -> Dict[str, str]:
-    """
-    :rtype: Dict[str, str]
-    :return: 초성 문자를 종성 조합형 문자로 변경
-    """
-    return py_dict(koala_class_of('ExtUtil').ChoToJong, py_str, py_str)
+# 'ㅏ', 'ㅐ', 'ㅑ', 'ㅒ', 'ㅓ', 'ㅔ', 'ㅕ', 'ㅖ', 'ㅗ', 'ㅘ', 'ㅙ', 'ㅚ', 'ㅛ', 'ㅜ', 'ㅝ', 'ㅞ', 'ㅟ', 'ㅠ', 'ㅡ', 'ㅢ', 'ㅣ'
+HanSecondList = [chr(x) for x in range(0x1161, 0x1175 + 1)]  #: 중성 조합형 문자열 리스트 (UNICODE 순서)
 
+# None, 'ㄱ', 'ㄲ', 'ㄳ', 'ㄴ', 'ㄵ', 'ㄶ', 'ㄷ', 'ㄹ', 'ㄺ', 'ㄻ', 'ㄼ', 'ㄽ', 'ㄾ', 'ㄿ',
+# 'ㅀ', 'ㅁ', 'ㅂ', 'ㅄ', 'ㅅ', 'ㅆ', 'ㅇ', 'ㅈ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'
+HanLastList = [None] + [chr(x) for x in range(0x11A8, 0x11C2 + 1)]  #: 종성 조합형 문자열 리스트 (UNICODE 순서). 가장 첫번째는 null (받침 없음)
 
-def HanFirstList() -> List[str]:
-    """
-    :rtype: List[str]
-    :return: 초성 조합형 문자열 리스트 (UNICODE 순서)
-    """
-    return py_list(koala_class_of('ExtUtil').HanFirstList, py_str)
-
-
-def HanSecondList() -> List[str]:
-    """
-    :rtype: List[str]
-    :return: 중성 조합형 문자열 리스트 (UNICODE 순서)
-    """
-    return py_list(koala_class_of('ExtUtil').HanSecondList, py_str)
-
-
-def HanLastList() -> List[str]:
-    """
-    :rtype: List[str]
-    :return: 종성 조합형 문자열 리스트 (UNICODE 순서). 가장 첫번째는 null (받침 없음)
-    """
-    return py_list(koala_class_of('ExtUtil').HanLastList, py_str)
+ChoToJong = {
+    '\u1100': '\u11A8',  # ㄱ
+    '\u1101': '\u11A9',  # ㄲ
+    '\u1102': '\u11AB',  # ㄴ
+    '\u1103': '\u11AE',  # ㄷ
+    '\u1105': '\u11AF',  # ㄹ
+    '\u1106': '\u11B7',  # ㅁ
+    '\u1107': '\u11B8',  # ㅂ
+    '\u1109': '\u11BA',  # ㅅ
+    '\u110A': '\u11BB',  # ㅆ
+    '\u110B': '\u11BC',  # ㅇ
+    '\u110C': '\u11BD',  # ㅈ
+    '\u110E': '\u11BE',  # ㅊ
+    '\u110F': '\u11BF',  # ㅋ
+    '\u1110': '\u11C0',  # ㅌ
+    '\u1111': '\u11C1',  # ㅍ
+    '\u1112': '\u11C2',  # ㅎ
+    # 아래는 완성형 문자
+    'ㄱ': '\u11A8',  # ㄱ
+    'ㄲ': '\u11A9',
+    'ㄳ': '\u11AA',
+    'ㄴ': '\u11AB',  # ㄴ
+    'ㄵ': '\u11AC',
+    'ㄶ': '\u11AD',
+    'ㄷ': '\u11AE',  # ㄷ
+    'ㄹ': '\u11AF',  # ㄹ
+    'ㄺ': '\u11B0',
+    'ㄻ': '\u11B1',
+    'ㄼ': '\u11B2',
+    'ㄽ': '\u11B3',
+    'ㄾ': '\u11B4',
+    'ㄿ': '\u11B5',
+    'ㅀ': '\u11B6',
+    'ㅁ': '\u11B7',  # ㅁ
+    'ㅂ': '\u11B8',  # ㅂ
+    'ㅄ': '\u11B9',
+    'ㅅ': '\u11BA',  # ㅅ
+    'ㅆ': '\u11BB',  # ㅆ
+    'ㅇ': '\u11BC',  # ㅇ
+    'ㅈ': '\u11BD',  # ㅈ
+    'ㅊ': '\u11BE',  # ㅊ
+    'ㅋ': '\u11BF',  # ㅋ
+    'ㅌ': '\u11C0',  # ㅌ
+    'ㅍ': '\u11C1',  # ㅍ
+    'ㅎ': '\u11C2'  # ㅎ
+}  #: 초성 문자를 종성 조합형 문자로 변경
 
 
 def alphaToHangul(text: str) -> str:
@@ -83,7 +108,7 @@ def isHanja(text: str) -> List[bool]:
     :return: 문자열 문자의 위치마다 한자인지 아닌지를 표기한 리스트. 한자라면 True.
     """
 
-    return [koala_class_of('ExtUtil').isHanja(char(ch)) for ch in text]
+    return [koala_class_of('ExtUtil').isHanja(ch) for ch in text]
 
 
 def isCJKHanja(text: str) -> List[bool]:
@@ -96,10 +121,10 @@ def isCJKHanja(text: str) -> List[bool]:
     :return: 문자열 문자의 위치마다 한자인지 아닌지를 표기한 리스트. 한자라면 True.
     """
 
-    return [koala_class_of('ExtUtil').isCJKHanja(char(ch)) for ch in text]
+    return [koala_class_of('ExtUtil').isCJKHanja(ch) for ch in text]
 
 
-def hanjaToHangul(text: str, headCorrection: bool=True) -> str:
+def hanjaToHangul(text: str, headCorrection: bool = True) -> str:
     """
     국사편찬위원회 한자음가사전에 따라 한자 표기된 내용을 국문 표기로 전환합니다.
 
@@ -128,7 +153,7 @@ def isCompleteHangul(text: str) -> List[bool]:
     :return: 문자열 문자의 위치마다 확인여부를 표기한 리스트. 맞다면 True.
     """
 
-    return [koala_class_of('ExtUtil').isCompleteHangul(char(ch)) for ch in text]
+    return [koala_class_of('ExtUtil').isCompleteHangul(ch) for ch in text]
 
 
 def isIncompleteHangul(text: str) -> List[bool]:
@@ -140,7 +165,7 @@ def isIncompleteHangul(text: str) -> List[bool]:
     :return: 문자열 문자의 위치마다 확인여부를 표기한 리스트. 맞다면 True.
     """
 
-    return [koala_class_of('ExtUtil').isIncompleteHangul(char(ch)) for ch in text]
+    return [koala_class_of('ExtUtil').isIncompleteHangul(ch) for ch in text]
 
 
 def isHangul(text: str) -> List[bool]:
@@ -152,7 +177,7 @@ def isHangul(text: str) -> List[bool]:
     :return: 문자열 문자의 위치마다 확인여부를 표기한 리스트. 맞다면 True.
     """
 
-    return [koala_class_of('ExtUtil').isHangul(char(ch)) for ch in text]
+    return [koala_class_of('ExtUtil').isHangul(ch) for ch in text]
 
 
 def isHangulEnding(text: str) -> bool:
@@ -176,7 +201,7 @@ def isChosungJamo(text: str) -> List[bool]:
     :return: 문자열 문자의 위치마다 확인여부를 표기한 리스트. 맞다면 True.
     """
 
-    return [koala_class_of('ExtUtil').isChosungJamo(char(ch)) for ch in text]
+    return [koala_class_of('ExtUtil').isChosungJamo(ch) for ch in text]
 
 
 def isJungsungJamo(text: str) -> List[bool]:
@@ -188,7 +213,7 @@ def isJungsungJamo(text: str) -> List[bool]:
     :return: 문자열 문자의 위치마다 확인여부를 표기한 리스트. 맞다면 True.
     """
 
-    return [koala_class_of('ExtUtil').isJungsungJamo(char(ch)) for ch in text]
+    return [koala_class_of('ExtUtil').isJungsungJamo(ch) for ch in text]
 
 
 def isJongsungJamo(text: str) -> List[bool]:
@@ -200,7 +225,7 @@ def isJongsungJamo(text: str) -> List[bool]:
     :return: 문자열 문자의 위치마다 확인여부를 표기한 리스트. 맞다면 True.
     """
 
-    return [koala_class_of('ExtUtil').isJongsungJamo(char(ch)) for ch in text]
+    return [koala_class_of('ExtUtil').isJongsungJamo(ch) for ch in text]
 
 
 def isJongsungEnding(text: str) -> bool:
@@ -223,8 +248,19 @@ def getChosung(text: str) -> List[Union[None, str]]:
     :rtype: List[Union[None,str]]
     :return: 분리된 각 초성이 들어간 리스트.
     """
+    # PyJnius does not correctly handle 'Char'-type return values, so we have to handle it in here.
 
-    return [koala_class_of('ExtUtil').getChosung(char(ch)) for ch in text]
+    result = []
+
+    for ch, isCH, isIC in zip(text, isCompleteHangul(text), isChosungJamo(text)):
+        if isCH:
+            result.append(chr((ord(ch) - 0xAC00) // 0x024C + 0x1100))
+        elif isIC:
+            result.append(ch)
+        else:
+            result.append(None)
+    
+    return result
 
 
 def getJungsung(text: str) -> List[Union[None, str]]:
@@ -235,8 +271,19 @@ def getJungsung(text: str) -> List[Union[None, str]]:
     :rtype: List[Union[None,str]]
     :return: 분리된 각 중성이 들어간 리스트.
     """
+    # PyJnius does not correctly handle 'Char'-type return values, so we have to handle it in here.
 
-    return [koala_class_of('ExtUtil').getJungsung(char(ch)) for ch in text]
+    result = []
+
+    for ch, isCH, isIC in zip(text, isCompleteHangul(text), isJungsungJamo(text)):
+        if isCH:
+            result.append(chr(((ord(ch) - 0xAC00) % 0x024C) // 0x001C + 0x1161))
+        elif isIC:
+            result.append(ch)
+        else:
+            result.append(None)
+
+    return result
 
 
 def getJongsung(text: str) -> List[Union[None, str]]:
@@ -247,8 +294,19 @@ def getJongsung(text: str) -> List[Union[None, str]]:
     :rtype: List[Union[None,str]]
     :return: 분리된 각 종성이 들어간 리스트.
     """
+    # PyJnius does not correctly handle 'Char'-type return values, so we have to handle it in here.
 
-    return [koala_class_of('ExtUtil').getJongsung(char(ch)) for ch in text]
+    result = []
+
+    for ch, isIC in zip(text, isJongsungJamo(text)):
+        if isIC:
+            result.append(ch)
+        elif isJongsungEnding(ch):
+            result.append(chr((ord(ch) - 0xAC00) % 0x001C + 0x11A7))
+        else:
+            result.append(None)
+
+    return result
 
 
 def dissembleHangul(text: str) -> str:
@@ -275,7 +333,7 @@ def assembleHangulTriple(cho: Union[str, None] = None, jung: Union[str, None] = 
     :return: 초성, 중성, 종성을 조합하여 문자를 만듭니다.
     """
 
-    return koala_class_of('ExtUtil').assembleHangul(char(cho), char(jung), char(jong))
+    return koala_class_of('ExtUtil').assembleHangulTriple(cho, jung, jong)
 
 
 def assembleHangul(text: str) -> str:
@@ -287,7 +345,8 @@ def assembleHangul(text: str) -> str:
     :return: 조합형 문자들이 조합된 문자열. 조합이 불가능한 문자는 그대로 남습니다.
     """
 
-    return koala_class_of('ExtUtil').assembleHangul(string(text))
+    # This is an bypass...
+    return koala_class_of('ExtUtil').assembleHangulString(string(text))
 
 
 def correctVerbApply(verb: str, isVerb: bool, rest: str) -> str:
@@ -329,7 +388,6 @@ __all__ = [
     'getJungsung',
     'getJongsung',
     'dissembleHangul',
-    'assembleHangulTriple',
     'assembleHangul',
     'correctVerbApply'
 ]

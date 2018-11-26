@@ -1,21 +1,20 @@
 language: python
 jdk:
-  - oraclejdk8
+- oraclejdk8
 python:
-  - "3.5"
-  - "3.6"
+- '3.5'
+- '3.6'
+- '3.7'
 install:
-  - pip install Cython
-  - pip install pyjnius jip
-  - pip install pytest
-cache:
-  directories:
-  - $HOME/virtualenv/python3.6.3/.jip
+- pip install Cython
+- pip install pyjnius jip
+- pip install pytest
 script:
-  - python -m pytest tests/dictionary_test.py
-  - python -m pytest tests/parser_test.py
-  - python -m pytest tests/segment_test.py
-  - python -m pytest tests/tagger_test.py
+- python -m pytest tests/dictionary_test.py
+- python -m pytest tests/extension_core_test.py
+- python -m pytest tests/proc_core_spec.py
+- python -m pytest tests/type_core_spec.py
 env:
   global:
-    - JAVA_HOME=/usr/lib/jvm/java-8-oracle
+  - JAVA_HOME=/usr/lib/jvm/java-8-oracle
+  - secure: f/Qsj0v9bUCplwXVjM1PrDTU0Cyp1hqra4k9mwUU7JJwkX51OQO61l2PPVEixX5Q6OQzIwvYI6bxusJVLPU+WV0lQzQmTK9UPSATNmwURU8btzYNJInwZ563Q7KkTR/NuIm3CNvuj4CGgQLZS22eLdDTQsw8q41CCP3BtybWrP+bsx2kZoGY7GJ12gWkS327QY87+ZO+2vAkl+NSGghtrkbcYVLgodInq4Q6GjjhMvmJPp3WBcC/N1O3q8Q88ED+t06ok1j76xd0Ay/qQPAx0U1J2uaK0/oQbw8F978EyHOPHc3EqTKgSJLERj6zXBgWfSf7rzqtofDKkrG3qE0KT6vqU/WhMiz/wkm1/KJay0vkPKdnjhVHhw7lPbowbhm91MA4bEBKISzp7Yge3cGzLLcapa7FgiFTrCFAqiTsfWKiLLe8I+reFYvPA15PmOigf2iUXGWji2RT+HbiOLR4K14PADcmV9OheGKt0Lfanxy55RxJttAyQdJ7Bh6ICWlR185O2LV/iSmVnsDK7rAxNrjZ1TYSjp/eqlrEdt1MlawYPTZGYjMkcYP00LKynOLEFWWFBJN/XRk4wdIoUt0E1d8XBc55L8gpamFNGac9aifQxJOgEdnIHwT6Enr3mih4LXl43srbLbSyPOzifJJ7M5As0+8ZZHqbiFLAWDTTHP0=

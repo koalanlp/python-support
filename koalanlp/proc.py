@@ -37,8 +37,8 @@ class SentenceSplitter(object):
         :rtype: List[Sentence]
         :return: 분리된 문장
         """
-        return py_list(koala_class_of('proc', 'SentenceSplitter').invoke(paragraph.reference),
-                       item_converter=Sentence.from_java)
+        return py_list(koala_class_of('proc', 'SentenceSplitter').INSTANCE.invoke(paragraph.reference),
+                       item_converter=Sentence.fromJava)
 
 
 class Tagger(object):
@@ -66,7 +66,7 @@ class Tagger(object):
         :rtype: List[Sentence]
         :return: 분석된 결과.
         """
-        return py_list(self.__api.tag(string(paragraph)), item_converter=Sentence.from_java)
+        return py_list(self.__api.tag(string(paragraph)), item_converter=Sentence.fromJava)
 
     def tagSentence(self, sentence: str) -> Sentence:
         """
@@ -76,7 +76,7 @@ class Tagger(object):
         :rtype: Sentence
         :return: 분석된 결과.
         """
-        return Sentence.from_java(self.__api.tagSentence(string(sentence)))
+        return Sentence.fromJava(self.__api.tagSentence(string(sentence)))
 
 
 class __CanAnalyzeProperty(object):
@@ -102,17 +102,17 @@ class __CanAnalyzeProperty(object):
         :return: 분석된 결과.
         """
         if type(paragraph) is str:
-            return py_list(self.__api.analyze(string(paragraph)), item_converter=Sentence.from_java)
+            return py_list(self.__api.analyze(string(paragraph)), item_converter=Sentence.fromJava)
         elif type(paragraph) is list:
             if len(paragraph) == 0:
                 return []
             elif type(paragraph[0]) is Sentence:
-                return py_list(self.__api.analyze(java_list([s.reference for s in paragraph])),
-                               item_converter=Sentence.from_java)
+                # method overload makes hard to find apply(Ljava/util/ArrayList;)Ljava/util/ArrayList;
+                return [Sentence.fromJava(self.__api.analyze(s.reference)) for s in paragraph]
             else:
                 raise Exception("List인 경우 Sentence의 List만 분석 가능합니다.")
         else:  # Sentence
-            return Sentence.from_java(self.__api.analyze(paragraph.reference))
+            return Sentence.fromJava(self.__api.analyze(paragraph.reference))
 
 
 class Parser(__CanAnalyzeProperty):
@@ -164,7 +164,9 @@ class Dictionary(object):
 
         :param Tuple[str,POS] pairs: (표면형, 품사)의 가변형 인자
         """
-        self.__api.addUserDictionary([java_tuple(string(t[0]), t[1].reference) for t in pairs])
+        surface_list = [string(t[0]) for t in pairs]
+        tag_list = [t[1].reference for t in pairs]
+        self.__api.addUserDictionary(java_list(surface_list), java_list(tag_list))
 
     def contains(self, word: str, *pos_tags: POS) -> bool:
         """
@@ -181,7 +183,7 @@ class Dictionary(object):
 
         if len(tags) == 1:
             tag = tags[0]
-            return self.__api.contains(java_tuple(string(word), tag[1].reference))
+            return self.__api.contains(java_tuple(string(word), tag.reference))
         else:
             return self.__api.contains(string(word), java_set(tags))
 
@@ -252,7 +254,7 @@ class Dictionary(object):
 
         zipped = [java_tuple(string(t[0]), t[1].reference) for t in word]
 
-        return py_list(self.__api.getNotExists(onlySystemDic, zipped),
+        return py_list(self.__api.getNotExists(onlySystemDic, *zipped),
                        item_converter=lambda t: (t.getFirst(), POS(t.getSecond())))
 
 

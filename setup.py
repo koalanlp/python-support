@@ -5,9 +5,9 @@ setup(
     version='2.0.0',
     description='Python wrapper for KoalaNLP',
     author='koalanlp',
-    url='https://koalanlp.github.io/py-koalanlp',
+    url='https://koalanlp.github.io/python-support',
     install_requires=[
-        "Cython~=0.29", "pyjnius~=1.1.3", "jip~=0.9.13"
+        "Cython~=0.29", "pyjnius~=1.1.3", "jip~=0.9.13", "read_only_property~=0.1"
     ],
     packages=find_packages(exclude=["docs", "tests", "doc_source"]),
     keywords=['korean', 'natural language processing', 'koalanlp', '한국어 처리', '한국어 분석',

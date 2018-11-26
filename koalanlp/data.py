@@ -3,39 +3,73 @@
 
 from .types import *
 from .jnius import *
-from typing import Union, List
+from typing import List, Optional
+from rop import read_only_properties
 
 
-def _get_item_(jlist, item, item_converter=lambda x: x):
-    if type(item) is tuple:
-        result = []
-        for index in item:
-            res = _get_item_(jlist, index, item_converter)
-            if type(res) is list:
-                result += res
-            else:
-                result.append(res)
-        return result
-    elif type(item) is slice:
-        return [item_converter(jlist.get(index)) for index in range(*item.indicies(jlist.size()))]
-    elif type(item) is int:
-        return item_converter(jlist.get(item))
-    else:
-        raise Exception("%s is not supported!" % item.__class__)
+def read_only_properties_allow_none(*attrs):
+    """
+    This class is from package rop.
+    (Code is modified to allow none overwrite)
+    """
+    def class_rebuilder(cls):
+        class NewClass(cls):
+            def __setattr__(self, name, value):
+
+                if name not in attrs:
+                    pass
+                elif name not in self.__dict__:
+                    pass
+                elif getattr(self, name) is None:
+                    pass
+                else:
+                    raise AttributeError("Can't touch {}".format(name))
+
+                super().__setattr__(name, value)
+
+        return NewClass
+    return class_rebuilder
 
 
-class _JavaDataWrap(object):
-    def __init__(self, reference):
-        self.reference = reference
+@read_only_properties('_ref_list')
+class _PyListWrap(object):
+    _ref_list = None
 
-    def __repr__(self) -> str:
+    def __init__(self, ref_list):
+        self._ref_list = ref_list
+
+    def __getitem__(self, item):
         """
-        문자열 표현을 생성합니다.
+        포함된 대상을 가져옵니다.
 
-        :rtype: str
-        :return: 이 객체의 문자열 표현
+        :param item: index의 번호 또는 slice
+        :return: 지정된 위치에 있는 대상(들)
         """
-        return self.reference.toString()
+        return self._ref_list[item]
+
+    def __iter__(self):
+        """
+        :rtype: iter
+        :return: 포함된 대상을 순회하는 iterator
+        """
+        return iter(self._ref_list)
+
+    def __contains__(self, item) -> bool:
+        """
+        대상이 포함되는지 확인합니다.
+
+        :param item: 포함되는지 확인할 대상
+        :rtype: bool
+        :return: 해당 대상이 포함되면 true.
+        """
+        return item in self._ref_list
+
+    def __len__(self):
+        """
+        :rtype: int
+        :return: 포함된 대상의 개수
+        """
+        return len(self._ref_list)
 
     def __eq__(self, other) -> bool:
         """
@@ -45,7 +79,7 @@ class _JavaDataWrap(object):
         :rtype: bool
         :return: Java Reference가 같다면 true.
         """
-        return type(other) is type(self) and other.reference.equals(self.reference)
+        return type(other) is type(self) and len(self) == len(other) and all(x == y for x, y in zip(self, other))
 
     def __hash__(self) -> int:
         """
@@ -54,10 +88,11 @@ class _JavaDataWrap(object):
         :rtype: int
         :return: Java Reference의 Hash code
         """
-        return self.reference.hashcode()
+        return sum(hash(x) for x in self)
 
 
-class Entity(_JavaDataWrap):
+@read_only_properties('corefGroup', 'surface', 'label', 'fineLabel', 'originalLabel')
+class Entity(_PyListWrap):
     """
     개체명 분석 결과를 저장할 [Property] class
 
@@ -79,6 +114,32 @@ class Entity(_JavaDataWrap):
         * :py:meth:`koalanlp.data.Sentence.getEntities` 문장에 포함된 모든 [Entity]를 가져오는 API
         * :py:class:`koalanlp.types.CoarseEntityType` [Entity]의 대분류 개체명 분류구조 Enum 값
     """
+    corefGroup = None  #: 공지시어 해소 또는 대용어 분석 결과. :py:meth:`getCorefGroup` 참고.
+    surface = None  #: 개체명 표면형.
+    label = None  #: 개체명 대분류 값
+    fineLabel = None  #: 개체명 세분류 값
+    originalLabel = None  #: 원본 분석기가 제시한 개체명 분류의 값.
+
+    def __init__(self, surface: str, label: str, fineLabel: str, morphemes: List, originalLabel: str=None):
+        """
+        개체명 분석 결과를 저장합니다.
+        :param str surface: 개체명의 표면형 문자열.
+        :param str label: 개체명 대분류 값, [CoarseEntityType]에 기록된 개체명 중 하나.
+        :param str fineLabel: 개체명 세분류 값으로, [label]으로 시작하는 문자열.
+        :param List[Morpheme] morphemes: 개체명을 이루는 형태소의 목록
+        :param str originalLabel: 원본 분석기가 제시한 개체명 분류의 값. 기본값은 None.
+        """
+        assert surface is not None and label is not None and fineLabel is not None and morphemes is not None, \
+            "[surface, label, fineLabel, morphemes] 값은 None일 수 없습니다."
+
+        super().__init__(morphemes)
+        self.surface = surface
+        self.label = label
+        self.fineLabel = fineLabel
+        self.originalLabel = originalLabel
+
+        for morph in self:
+            morph.entities.append(self)
 
     def getSurface(self) -> str:
         """
@@ -87,7 +148,7 @@ class Entity(_JavaDataWrap):
 
         :return: 개체명의 표면형 문자열.
         """
-        return self.reference.getSurface()
+        return self.surface
 
     def getLabel(self) -> CoarseEntityType:
         """
@@ -95,7 +156,7 @@ class Entity(_JavaDataWrap):
 
         :return: 개체명 대분류 값, [CoarseEntityType]에 기록된 개체명 중 하나.
         """
-        return CoarseEntityType.valueOf(self.reference.getLabel().name())
+        return CoarseEntityType.valueOf(self.label)
 
     def getFineLabel(self) -> str:
         """
@@ -103,15 +164,15 @@ class Entity(_JavaDataWrap):
 
         :return: 개체명 세분류 값으로, [label]으로 시작하는 문자열.
         """
-        return self.reference.getFineLabel()
+        return self.fineLabel
 
-    def getOriginalLabel(self) -> Union[str, None]:
+    def getOriginalLabel(self) -> Optional[str]:
         """
-        :rtype: str 또는 None
+        :rtype: str
 
         :return: 원본 분석기가 제시한 개체명 분류의 값. 기본값은 null.
         """
-        return self.reference.getOriginalLabel()
+        return self.originalLabel
 
     def getCorefGroup(self):
         """
@@ -141,45 +202,19 @@ class Entity(_JavaDataWrap):
 
         :return: 공통된 대상을 묶은 [CoreferenceGroup]. 없다면 None.
         """
-        obj = self.reference.getCorefGroup()
-        return CoreferenceGroup(obj) if obj is not None else None
+        return self.corefGroup
 
-    def __getitem__(self, item):
-        """
-        포함된 형태소를 가져옵니다.
+    def __eq__(self, other):
+        return self.label == other.label and self.fineLabel == other.fineLabel and super().__eq__(other)
 
-        :param item: index의 번호 또는 slice
-        :rtype: List[Morpheme]
-        :return: 지정된 위치에 있는 형태소(들)
-        """
-        return _get_item_(self.reference, item, lambda x: Morpheme(x))
+    def __hash__(self):
+        return hash(self.label) + hash(self.fineLabel) + sum(hash(x) for x in self)
 
-    def __iter__(self):
-        """
-        :rtype: iter
-        :return: 포함된 형태소를 순회하는 iterator
-        """
-        return iter(py_list(self.reference, lambda x: Morpheme(x)))
-
-    def __contains__(self, item) -> bool:
-        """
-        형태소가 포함되는지 확인합니다.
-
-        :param Morpheme item: 포함되는지 확인할 형태소
-        :rtype: bool
-        :return: 해당 형태소가 포함되면 true.
-        """
-        return type(item) is Morpheme and self.reference.contains(item.reference)
-
-    def __len__(self):
-        """
-        :rtype: int
-        :return: 포함된 형태소의 개수
-        """
-        return self.reference.size()
+    def __repr__(self):
+        return "%s(%s; '%s')" % (str(self.label), self.fineLabel, self.surface)
 
 
-class CoreferenceGroup(_JavaDataWrap):
+class CoreferenceGroup(_PyListWrap):
     """
     공지시어 해소 또는 대용어 분석 결과를 저장할 class입니다.
 
@@ -202,82 +237,55 @@ class CoreferenceGroup(_JavaDataWrap):
         * :py:meth:`koalanlp.data.Entity.getCorefGroup` 각 개체명을 묶어 같은 지시 대상을 갖는 묶음인 [CoreferenceGroup]를 가져오는 API
     """
 
-    def __getitem__(self, item):
+    def __init__(self, entities):
         """
-        포함된 개체명을 가져옵니다.
+        공지시어 해소 또는 대용어 분석 결과를 저장합니다.
+        :param List[Entity] entities: 묶음에 포함되는 개체명들의 목록
+        """
+        super().__init__(entities)
 
-        :param item: index의 번호 또는 slice
-        :rtype: List[Entity]
-        :return: 지정된 위치에 있는 개체명(들)
-        """
-        return _get_item_(self.reference, item, lambda x: Entity(x))
-
-    def __iter__(self):
-        """
-        :rtype: iter
-        :return: 포함된 개체명을 순회하는 iterator
-        """
-        return iter(py_list(self.reference, lambda x: Entity(x)))
-
-    def __contains__(self, item) -> bool:
-        """
-        개체명이 포함되는지 확인합니다.
-
-        :param Entity item: 포함되는지 확인할 개체명
-        :rtype: bool
-        :return: 해당 개체명이 포함되면 true.
-        """
-        return type(item) is Entity and self.reference.contains(item.reference)
-
-    def __len__(self):
-        """
-        :rtype: int
-        :return: 포함된 개체명의 개수
-        """
-        return self.reference.size()
+        for entity in self:
+            entity.corefGroup = self
 
 
-class Tree(_JavaDataWrap):
+@read_only_properties('label', 'terminal', 'children', 'parent')
+class Tree(_PyListWrap):
     """
     트리 구조를 저장할 [Property]입니다. :py:class:`Word`를 묶어서 표현하는 구조에 적용됩니다.
     """
+    label = None
+    terminal = None
+    parent = None
 
-    def __contains__(self, item) -> bool:
+    def __init__(self, label, terminal, children):
         """
-        트리 구조가 포함되는지 확인합니다.
+        트리 형태의 구조를 저장합니다.
+        :param label: 트리에 붙어있는 표지자입니다. None일 수 없습니다.
+        :param Word terminal: 트리의 노드에서 연결되는 [Word]
+        :param List[Tree] children: 트리/DAG의 자식 노드들
+        """
+        assert label is not None and children is not None, "[label, children]이 not None이어야 합니다."
+        super().__init__(children)
 
-        :param Tree item: 포함되는지 확인할 트리 구조
-        :rtype: bool
-        :return: 해당 구조가 포함되면 true.
-        """
-        return type(item) is Tree and self.reference.contains(item.reference)
+        self.label = label
+        self.terminal = terminal
 
-    def __len__(self):
-        """
-        :rtype: int
-        :return: 포함된 하위 구조의 개수
-        """
-        return self.reference.size()
-
-    def _getLabel(self, cls):
+    def getLabel(self):
         """
         트리에 붙어있는 표지자입니다. Null일 수 없습니다.
 
-        :param cls: 표지자를 cast할 class
-
-        :return: cast된 표지자
+        :return: 표지자
         """
-        return cls.valueOf(self.reference.getLabel().name())
+        return self.label
 
     def getTerminal(self):
         """
 
-        :rtype: Word 또는 None
-
-        :return: 트리의 노드에서 연결되는 [Word] 
+        :rtype: Word
+        :return: 트리의 노드에서 연결되는 [Word] 또는 None
         """
-        obj = self.reference.getTerminal()
-        return Word(obj) if obj is not None else None
+
+        return self.terminal
 
     def isRoot(self) -> bool:
         """
@@ -287,9 +295,9 @@ class Tree(_JavaDataWrap):
 
         :return: 최상위 노드인 경우 true
         """
-        return self.reference.isRoot()
+        return self.parent is None
 
-    def hasNonTerminal(self) -> bool:
+    def hasNonTerminals(self) -> bool:
         """
         이 노드가 (terminal node를 제외하고) 자식 노드를 갖는지 확인합니다.
 
@@ -299,7 +307,7 @@ class Tree(_JavaDataWrap):
 
         :return: 자식노드가 있다면 True
         """
-        return self.reference.hasNonTerminal()
+        return len(self) > 0
 
     def getTerminals(self):
         """
@@ -312,32 +320,40 @@ class Tree(_JavaDataWrap):
 
         :return: Terminal node의 목록
         """
-        return py_list(self.reference.getTerminals(), lambda x: Word(x))
+        leaves = [term for child in self for term in child.getTerminals()]
+        if self.getTerminal() is not None:
+            leaves.append(self.getTerminal())
 
-    def getTreeString(self) -> str:
+        return sorted(leaves, key=lambda x: x.getId())
+
+    def getTreeString(self, depth=0, buffer='') -> str:
         """
-        이 트리구조를 표현하는 텍스트 표현을 [buffer]에 담아 반환합니다.
-
-
+        :rtype: str
+        :param int depth: 들여쓰기할 수준입니다. 숫자만큼 들여쓰기됩니다. (기본값 0)
+        :param str buffer: 결과를 저장할 버퍼입니다.
         :return: 트리구조의 표현을 문자열로 돌려줍니다.
         """
-        return self.reference.getTreeString().toString()
 
-    def _getParent(self, cls):
+        buffer += ("| " * depth)
+        buffer += str(self)
+
+        for child in self:
+            buffer += '\n'
+            buffer = child.getTreeString(depth+1, buffer)
+
+        return buffer
+
+    def getParent(self):
         """
         부모 노드를 반환합니다.
 
         * 부모 노드가 초기화되지 않은 경우 null을 반환합니다.
 
-
-        :param cls: Casting할 Python Class
-
         :return: 같은 타입의 부모 노드 또는 null
         """
-        obj = self.reference.getParent()
-        return cls(obj) if obj is not None else None
+        return self.parent
 
-    def _getNonTerminals(self, cls):
+    def getNonTerminals(self):
         """
         이 노드의 Non-terminal 자식 노드를 모읍니다.
 
@@ -350,14 +366,21 @@ class Tree(_JavaDataWrap):
             for item in x:
                 ...
 
-
-        :param cls: Casting할 Python Class
-
         :return: 같은 타입의 부모 노드 또는 null
         """
-        return py_list(self.reference, lambda x: cls(x))
+        return self
+
+    def __eq__(self, other):
+        return self.label == other.label and self.terminal == other.terminal and super().__eq__(other)
+
+    def __hash__(self):
+        return hash(self.label) + (hash(self.terminal) if self.terminal is not None else 0) + sum(hash(x) for x in self)
+
+    def __repr__(self):
+        return "%s-Node(%s)" % (self.label, str(self.terminal) if self.terminal is not None else '')
 
 
+@read_only_properties('label', 'terminal', 'children', 'parent', 'originalLabel')
 class SyntaxTree(Tree):
     """
     구문구조 분석의 결과를 저장할 [Property].
@@ -382,114 +405,96 @@ class SyntaxTree(Tree):
         * :py:meth:`koalanlp.data.Sentence.getSyntaxTree` 전체 문장을 분석한 [SyntaxTree]를 가져오는 API
         * :py:class:`koalanlp.types.PhraseTag` 구구조의 형태 분류를 갖는 Enum 값
     """
+    originalLabel = None  #: 원본 분석기의 표지자 값
 
-    def __getitem__(self, item):
+    def __init__(self, label: str, terminal=None, children=None, originalLabel=None):
         """
-        하위 구문구조를 가져옵니다.
+        구문구조 분석의 결과를 생성합니다.
 
-        :param item: index의 번호 또는 slice
-        :rtype: List[SyntaxTree]
-        :return: 지정된 위치에 있는 구문구조(들)
+        :param str label: 구구조 표지자입니다. [PhraseTag] Enum 값입니다.
+        :param Word terminal: 현재 구구조에 직접 속하는 [Word]들. 중간 구문구조인 경우 leaf를 직접 포함하지 않으므로 None.
+        :param List[SyntaxTree] children: 현재 구구조에 속하는 하위 구구조 [SyntaxTree]. 하위 구구조가 없다면 빈 리스트.
+        :param str originalLabel: 원본 분석기의 표지자 String 값. 기본값은 None.
         """
-        return _get_item_(self.reference, item, lambda x: SyntaxTree(x))
+        children = children if children is not None else []
+        super().__init__(label, terminal, children)
 
-    def __iter__(self):
+        self.originalLabel = originalLabel
+
+        term = self.getTerminal()
+        if term is not None:
+            term.phrase = self
+
+        for child in self:
+            child.parent = self
+
+    def getOriginalLabel(self) -> Optional[str]:
         """
-        :rtype: iter
-        :return: 포함된 하위 구문구조를 순회하는 iterator
+
+        :rtype: str
+
+        :return: 원본 분석기의 표지자 String 값. 기본값은 None.
         """
-        return iter(py_list(self.reference, lambda x: SyntaxTree(x)))
+        return self.originalLabel
 
     def getLabel(self) -> PhraseTag:
         """
 
         :rtype: PhraseTag
 
-        :return: 구구조 표지자입니다. [PhraseTag] Enum 값입니다.
+        :return: 구문구조 표지자
         """
-        return super()._getLabel(PhraseTag)
-
-    def getOriginalLabel(self) -> Union[str, None]:
-        """
-
-        :rtype: str 또는 None
-
-        :return: 원본 분석기의 표지자 String 값. 기본값은 None.
-        """
-        return self.reference.getOriginalLabel()
-
-    def getParent(self):
-        """
-        부모 노드를 반환합니다.
-
-        * 부모 노드가 초기화되지 않은 경우 None을 반환합니다.
+        return PhraseTag.valueOf(super().getLabel())
 
 
-        :rtype: SyntaxTree 또는 None
-
-        :return: 같은 타입의 부모 노드 또는 None
-        """
-        return super()._getParent(SyntaxTree)
-
-    def getNonTerminals(self) -> List:
-        """
-        이 노드의 Non-terminal 자식 노드를 모읍니다.
-
-        * 이 함수는 읽기의 편의를 위한 syntactic sugar입니다. 즉 다음 구문은 동일합니다.
-
-        .. code-block:: python
-
-            for item in x.getNonTerminals():
-                ...
-            for item in x:
-                ...
-
-        :rtype: List[SyntaxTree]
-
-        :return: 같은 타입의 부모 노드 또는 null
-        """
-        return super()._getNonTerminals(SyntaxTree)
-
-
-class DAGEdge(_JavaDataWrap):
+@read_only_properties('src', 'dest', 'label')
+class DAGEdge(object):
     """
     DAG Edge를 저장합니다.
     """
+    src = None  #: Edge의 시작점.
+    dest = None  #: Edge의 종점.
+    label = None  #: Edge가 나타내는 관계
 
-    def _getSrc(self, cls):
+    def __init__(self, src, dest, label):
+        assert dest is not None, "[dest]이 not None이어야 합니다."
+        self.src = src
+        self.dest = dest
+        self.label = label
+
+    def getSrc(self):
         """
-        Edge의 시작점. 의존구문분석인 경우 지배소, 의미역인 경우 동사.
-
-        :param cls: Casting할 class
-
-        :return: casting된 src
+        :return: Edge의 시작점. 의존구문분석인 경우 지배소, 의미역인 경우 동사.
         """
-        obj = self.reference.getSrc()
-        return cls(obj) if obj is not None else None
+        return self.src
 
-    def _getDest(self, cls):
+    def getDest(self):
         """
-        Edge의 종점. 의존구문분석인 경우 피지배소, 의미역인 경우 논항.
-
-        :param cls: Casting할 class
-
-        :return: casting된 dest
+        :return: Edge의 종점. 의존구문분석인 경우 피지배소, 의미역인 경우 논항.
         """
-        obj = self.reference.getDest()
-        return cls(obj) if obj is not None else None
+        return self.dest
 
-    def _getLabel(self, cls):
+    def getLabel(self):
         """
-        Edge가 나타내는 관계.
-
-        :param cls: Casting할 class
-
-        :return: casting된 label
+        :return: Edge가 나타내는 관계.
         """
-        obj = self.reference.getLabel()
-        return cls.valueOf(obj.name()) if obj is not None else None
+        return self.label
+
+    def __eq__(self, other):
+        return type(self) is type(other) and self.label == other.label and \
+               self.src == other.src and self.dest == other.dest
+
+    def __hash__(self):
+        return (hash(self.label) if self.label is not None else 0) + \
+               hash(self.dest) + (hash(self.src) if self.src is not None else 0)
+
+    def __repr__(self):
+        return "%s('%s' → '%s')" % (str(self.label) if self.label is not None else '',
+                                    str(self.src) if self.src is not None else 'ROOT',
+                                    str(self.dest))
 
 
+@read_only_properties('src', 'dest', 'governor', 'dependent', 'label', 'type', 'depType', 'originalLabel')
 class DepEdge(DAGEdge):
     """
     의존구문구조 분석의 결과.
@@ -516,33 +521,43 @@ class DepEdge(DAGEdge):
         * :py:meth:`koalanlp.types.PhraseTag` 의존구조의 형태 분류를 갖는 Enum 값 (구구조 분류와 같음)
         * :py:meth:`koalanlp.types.DependencyTag` 의존구조의 기능 분류를 갖는 Enum 값
     """
+    originalLabel = None  #: 원본 분석기의 표지자 값
+    type = None  #: 구문구조 표지자 값
+    governor = None  #: 의존구문구조의 지배소
+    dependent = None  #: 의존구문구조의 피지배소
+    depType = None  #: 의존구문구조 표지자 값
 
-    def getSrc(self):
+    def __init__(self, governor, dependent, type: str, depType: str=None, originalLabel: str=None):
         """
-
-        :rtype: Word 또는 None
-
-        :return: 의존구조의 지배소 [Word]. 문장의 Root에 해당하는 경우 None.
+        의존구문 구조를 생성합니다.
+        :param Word governor: 의존구문구조의 지배소
+        :param Word dependent: 의존구문구조의 피지배소
+        :param str type: 구문분석 표지자
+        :param str depType: 의존구문구조 표지자
+        :param str originalLabel: 의존구문구조 표지자의 원본분석기 표기
         """
-        return super()._getSrc(Word)
+        assert type is not None, "type은 None일 수 없습니다."
+        super().__init__(governor, dependent, depType)
+        self.type = type
+        self.originalLabel = originalLabel
+
+        if self.dest is not None:
+            self.dest.governorEdge = self
+
+        if self.src is not None:
+            self.src.dependentEdges.append(self)
+
+        self.governor = self.src
+        self.dependent = self.dest
 
     def getGovernor(self):
         """
 
-        :rtype: Word 또는 None
+        :rtype: Word
 
         :return: 의존구조의 지배소 [Word]. 문장의 Root에 해당하는 경우 None.
         """
-        return self.getSrc()
-
-    def getDest(self):
-        """
-
-        :rtype: Word
-
-        :return: 의존구조의 피지배소 [Word]
-        """
-        return super()._getDest(Word)
+        return self.src
 
     def getDependent(self):
         """
@@ -551,25 +566,16 @@ class DepEdge(DAGEdge):
 
         :return: 의존구조의 피지배소 [Word]
         """
-        return self.getDest()
+        return self.dest
 
-    def getLabel(self) -> Union[DependencyTag, None]:
+    def getDepType(self) -> Optional[DependencyTag]:
         """
 
-        :rtype: DependencyTag 또는 None
+        :rtype: DependencyTag
 
-        :return: 의존기능 표지자, [DependencyTag] Enum 값. 별도의 기능이 지정되지 않으면 null. (ETRI 표준안은 구구조+의존기능으로 의존구문구조를 표기함)
+        :return: 의존기능 표지자, [DependencyTag] Enum 값. 별도의 기능이 지정되지 않으면 None. (ETRI 표준안은 구구조+의존기능으로 의존구문구조를 표기함)
         """
-        return super()._getLabel(DependencyTag)
-
-    def getDepType(self) -> Union[DependencyTag, None]:
-        """
-
-        :rtype: DependencyTag 또는 None
-
-        :return: 의존기능 표지자, [DependencyTag] Enum 값. 별도의 기능이 지정되지 않으면 null. (ETRI 표준안은 구구조+의존기능으로 의존구문구조를 표기함)
-        """
-        return self.getLabel()
+        return DependencyTag.valueOf(self.label) if self.label is not None else None
 
     def getType(self) -> PhraseTag:
         """
@@ -578,19 +584,35 @@ class DepEdge(DAGEdge):
 
         :return: 구구조 표지자, [PhraseTag] Enum 값 (ETRI 표준안은 구구조+의존기능으로 의존구문구조를 표기함)
         """
-        obj = self.reference.getType()
-        return PhraseTag.valueOf(obj.name()) if obj is not None else None
+        return PhraseTag.valueOf(self.type)
 
-    def getOriginalLabel(self) -> Union[str, None]:
+    def getOriginalLabel(self) -> Optional[str]:
         """
 
-        :rtype: str 또는 None
+        :rtype: str
 
-        :return: 원본 분석기의 표지자 String 값. 기본값은 null.
+        :return: 원본 분석기의 표지자 String 값. 기본값은 None.
         """
-        return self.reference.getOriginalLabel()
+        return self.originalLabel
+
+    def getLabel(self) -> DependencyTag:
+        """
+        :rtype: DependencyTag
+        :return: Edge가 나타내는 관계.
+        """
+        return DependencyTag.valueOf(self.label) if self.label is not None else None
+
+    def __repr__(self):
+        return "%s%s" % (str(self.type), super().__repr__())
+
+    def __eq__(self, other):
+        return self.type == other.type and super().__eq__(other)
+
+    def __hash__(self):
+        return hash(self.type) + super().__hash__()
 
 
+@read_only_properties('src', 'dest', 'predicate', 'argument', 'label', 'modifiers', 'originalLabel')
 class RoleEdge(DAGEdge):
     """
     의미역 구조 분석의 결과.
@@ -615,15 +637,34 @@ class RoleEdge(DAGEdge):
         * :py:meth:`koalanlp.data.Sentence.getRoles` 전체 문장을 분석한 의미역 구조 [RoleEdge]를 가져오는 API
         * :py:class:`koalanlp.types.RoleType` 의미역 분류를 갖는 Enum 값
     """
+    originalLabel = None  #: 원본 분석기의 표지자 값
+    modifiers = []  #: 논항의 수식어구 목록.
+    predicate = None  #: 의미역 구조의 술어
+    argument = None  #: 의미역 구조의 논항
 
-    def getSrc(self):
+    def __init__(self, predicate, argument, label: str, modifiers: List=None, originalLabel: str=None):
         """
-
-        :rtype: Word
-
-        :return: 의미역 구조에서 표현하는 동사 [Word]
+        의미역 구조를 생성합니다.
+        :param Word predicate: 의미역 구조의 술어
+        :param Word argument: 의미역 구조의 논항
+        :param str label: 의미역 구조의 표지자
+        :param List[Word] modifiers: 논항의 수식어구들
+        :param str originalLabel: 의미역 구조 표지자의 원본분석기 표기
         """
-        return super()._getSrc(Word)
+        assert predicate is not None and label is not None, "[predicate, label]은 not None이어야 합니다."
+        super().__init__(predicate, argument, label)
+
+        self.modifiers = modifiers if modifiers is not None else []
+        self.originalLabel = originalLabel
+
+        if self.dest is not None:
+            self.dest.predicateRole = self
+
+        if self.src is not None:
+            self.src.argumentRoles.append(self)
+
+        self.predicate = self.src
+        self.argument = self.dest
 
     def getPredicate(self):
         """
@@ -632,16 +673,7 @@ class RoleEdge(DAGEdge):
 
         :return: 의미역 구조에서 표현하는 동사 [Word]
         """
-        return self.getSrc()
-
-    def getDest(self):
-        """
-
-        :rtype: Word
-
-        :return: 의미역 구조에서 서술된 논항 [Word]
-        """
-        return super()._getDest(Word)
+        return self.src
 
     def getArgument(self):
         """
@@ -650,16 +682,7 @@ class RoleEdge(DAGEdge):
 
         :return: 의미역 구조에서 서술된 논항 [Word]
         """
-        return self.getDest()
-
-    def getLabel(self) -> RoleType:
-        """
-
-        :rtype: RoleType
-
-        :return: 의미역 표지자, [RoleType] Enum 값
-        """
-        return super()._getLabel(RoleType)
+        return self.dest
 
     def getModifiers(self) -> List:
         """
@@ -668,19 +691,34 @@ class RoleEdge(DAGEdge):
 
         :return: 논항의 수식어구들
         """
-        return py_list(self.reference.getModifiers(), lambda x: Word(x))
+        return self.modifiers
 
-    def getOriginalLabel(self) -> Union[str, None]:
+    def getOriginalLabel(self) -> Optional[str]:
         """
 
-        :rtype: str 또는 None
+        :rtype: str
 
-        :return: 원본 분석기의 표지자 String 값. 기본값은 null.
+        :return: 원본 분석기의 표지자 String 값. 기본값은 None.
         """
-        return self.reference.getOriginalLabel()
+        return self.originalLabel
+
+    def getLabel(self) -> RoleType:
+        """
+        :rtype: RoleType
+        :return: Edge가 나타내는 관계.
+        """
+        return RoleType.valueOf(self.label)
+
+    def __repr__(self):
+        return "%s('%s' → '%s/%s')" % (str(self.label) if self.label is not None else '',
+                                       self.src.surface if self.src is not None else 'ROOT',
+                                       self.dest.surface,
+                                       ' '.join(w.surface for w in self.modifiers))
 
 
-class Morpheme(_JavaDataWrap):
+@read_only_properties('surface', 'tag', 'originalTag')
+@read_only_properties_allow_none('id', 'word')
+class Morpheme(object):
     """
     형태소를 저장하는 [Property] class입니다.
 
@@ -703,6 +741,35 @@ class Morpheme(_JavaDataWrap):
         * :py:class:`koalanlp.types.POS` 형태소의 분류를 담은 Enum class
     """
 
+    surface = ''  #: 형태소 표면형
+    id = None  #: 형태소의 어절 내 위치
+    tag = None  #: 형태소의 세종 품사
+    originalTag = None  #: 형태소의 원본분석기 품사
+    word = None  #: 형태소의 상위 어절.
+    wordSense = None  #: 형태소의 의미 어깨번호. :py:meth:`getWordSense` 참고.
+    entities = []  #: 형태소를 포함하는 개체명 목록. :py:meth:`getEntities` 참고.
+
+    def __init__(self, surface: str, tag: str, originalTag: str=None, reference=None):
+        """
+        형태소를 생성합니다.
+        :param str surface: 형태소 표면형
+        :param str tag: 형태소 품사 태그
+        :param str originalTag: 형태소 품사 원본 표기
+        """
+        assert surface is not None and tag is not None, "surface, tag가 None이 아니어야 합니다."
+
+        self.surface = surface
+        self.tag = tag
+        self.originalTag = originalTag
+        self.reference = reference
+        self.id = None
+        self.word = None
+        self.wordSense = None
+        self.entities = []
+
+        if self.reference.getWordSense() is not None:
+            self.wordSense = self.reference.getWordSense()
+
     def getSurface(self) -> str:
         """
 
@@ -710,16 +777,16 @@ class Morpheme(_JavaDataWrap):
 
         :return: 형태소 표면형 String
         """
-        return self.reference.getSurface()
+        return self.surface
 
-    def getOriginalTag(self) -> Union[str, None]:
+    def getOriginalTag(self) -> Optional[str]:
         """
 
-        :rtype: str 또는 None
+        :rtype: str
 
-        :return: 원본 형태소 분석기의 품사 String
+        :return: 원본 형태소 분석기의 품사 String (없으면 None)
         """
-        return self.reference.getOriginalTag()
+        return self.originalTag
 
     def getTag(self) -> POS:
         """
@@ -728,7 +795,7 @@ class Morpheme(_JavaDataWrap):
 
         :return: 세종 품사표기
         """
-        return POS.valueOf(self.reference.getTag().name())
+        return POS.valueOf(self.tag)
 
     def getId(self) -> int:
         """
@@ -737,20 +804,20 @@ class Morpheme(_JavaDataWrap):
 
         :return: 형태소의 어절 내 위치입니다.
         """
-        return self.reference.getId()
+        return self.id
 
-    def getWordSense(self) -> Union[int, None]:
+    def getWordSense(self) -> Optional[int]:
         """
         다의어 분석 결과인, 이 형태소의 사전 속 의미/어깨번호 값을 돌려줍니다.
 
         다의어 분석을 한 적이 없다면 None을 돌려줍니다.
 
 
-        :rtype: int 또는 None
+        :rtype: int
 
         :return: 의미/어깨번호 값
         """
-        return self.reference.getWordSense()
+        return self.wordSense
 
     def getEntities(self) -> List[Entity]:
         """
@@ -777,63 +844,62 @@ class Morpheme(_JavaDataWrap):
 
         :rtype: List[Entity]
 
-        :return: [Entity]의 목록입니다. 분석 결과가 없으면 빈 리스트.
+        :return: [Entity]의 목록입니다. 분석 결과가 없으면 빈 리스트
         """
-
-        return py_list(self.reference.getEntities(), lambda x: Entity(x))
+        return self.entities
 
     def getWord(self):
         """
 
         :rtype: Word
 
-        :return: 이 형태소를 포함하는 단어를 돌려줍니다. 
+        :return: 이 형태소를 포함하는 단어를 돌려줍니다.
         """
-        return Word(self.reference.getWord())
+        return self.word
 
     def isNoun(self) -> bool:
         """
-        체언(명사, 수사, 대명사) 형태소인지 확인합니다.        
+        체언(명사, 수사, 대명사) 형태소인지 확인합니다.
 
         :rtype: bool
 
         :return: 체언이라면 true
         """
 
-        return self.reference.isNoun()
+        return self.getTag().isNoun()
 
     def isPredicate(self) -> bool:
         """
-        용언(동사, 형용사) 형태소인지 확인합니다.        
+        용언(동사, 형용사) 형태소인지 확인합니다.
 
         :rtype: bool
 
         :return: 용언이라면 true
         """
 
-        return self.reference.isPredicate()
+        return self.getTag().isPredicate()
 
     def isModifier(self) -> bool:
         """
-        수식언(관형사, 부사) 형태소인지 확인합니다.        
+        수식언(관형사, 부사) 형태소인지 확인합니다.
 
         :rtype: bool
 
         :return: 수식언이라면 true
         """
 
-        return self.reference.isModifier()
+        return self.getTag().isModifier()
 
     def isJosa(self) -> bool:
         """
-        관계언(조사) 형태소인지 확인합니다.        
+        관계언(조사) 형태소인지 확인합니다.
 
         :rtype: bool
 
         :return: 관계언이라면 true
         """
 
-        return self.reference.isJosa()
+        return self.getTag().isPostPosition()
 
     def hasTag(self, partialTag: str) -> bool:
         """
@@ -859,7 +925,7 @@ class Morpheme(_JavaDataWrap):
 
         :return: 포함되는 경우 True.
         """
-        return self.reference.hasTag(string(partialTag))
+        return self.getTag().startsWith(partialTag)
 
     def hasTagOneOf(self, *tags: str) -> bool:
         """
@@ -885,7 +951,7 @@ class Morpheme(_JavaDataWrap):
 
         :return: 하나라도 포함되는 경우 True.
         """
-        return self.reference.hasTagOneOf([string(t) for t in tags])
+        return any(self.getTag().startsWith(t) for t in tags)
 
     def hasOriginalTag(self, partialTag: str) -> bool:
         """
@@ -911,7 +977,7 @@ class Morpheme(_JavaDataWrap):
 
         :return: 포함되는 경우 True.
         """
-        return self.reference.hasOriginalTag(string(partialTag))
+        return self.originalTag.upper().startswith(partialTag.upper()) if self.originalTag is not None else False
 
     def equalsWithoutTag(self, other):
         """
@@ -923,47 +989,59 @@ class Morpheme(_JavaDataWrap):
 
         :return: 표면형이 같으면 True
         """
-        return self.reference.equalsWithoutTag(other.reference)
+        return self.surface == other.surface
+
+    def __eq__(self, other):
+        return type(other) is Morpheme and self.surface == other.surface and self.tag == other.tag
+
+    def __hash__(self):
+        return hash(self.surface) * len(POS.values()) + hash(self.tag)
+
+    def __repr__(self):
+        return "%s/%s(%s)" % (self.surface, str(self.tag), self.originalTag) if self.originalTag is not None \
+            else "%s/%s" % (self.surface, str(self.tag))
 
 
-class Word(_JavaDataWrap):
+@read_only_properties('surface', 'morphemes')
+@read_only_properties_allow_none('id')
+class Word(_PyListWrap):
     """
     어절을 표현하는 [Property] class입니다.
     """
+    surface = ''  #: 어절의 표면형
+    id = None  #: 어절의 문장 내 위치
+    morphemes = []  #: 어절 내 형태소 목록
+    entities = []  #: 개체명 분석을 했다면, 현재 어절이 속한 개체명 값. :py:meth:`getEntities` 참고
+    phrase = None  #: 구문분석을 했다면, 현재 어절이 속한 직속 상위 구구조(Phrase). :py:meth:`getPhrase` 참고
+    dependentEdges = []  #: 의존구문분석을 했다면, 현재 어절이 지배소인 하위 의존구문 구조의 값. :py:meth:`getDependentEdges` 참고.
+    governorEdge = None  #: 의존구문분석을 했다면, 현재 어절이 의존소인 상위 의존구문 구조의 값. :py:meth:`getGovernorEdge` 참고
+    argumentRoles = []  #: 의미역 분석을 했다면, 현재 어절이 술어로 기능하는 하위 의미역 구조의 목록. :py:meth:`getArgumentRoles` 참고.
+    predicateRole = None  #: 의미역 분석을 했다면, 현재 어절이 논항인 상위 의미역 구조. :py:meth:`getPredicateRole` 참고.
 
-    def __getitem__(self, item):
+    def __init__(self, surface, morphemes, reference=None):
         """
-        포함된 형태소를 가져옵니다.
+        어절을 생성합니다.
+        :param str surface: 어절의 표면형
+        :param List[Morpheme] morphemes: Morpheme 목록으로부터 문장을 만들 때, List[Morpheme]
+        """
+        assert surface is not None and morphemes is not None and len(morphemes) > 0, \
+            "morphemes가 list이고, surface가 None이 아니어야 합니다."
 
-        :param item: index의 번호 또는 slice
-        :rtype: List[Morpheme]
-        :return: 지정된 위치에 있는 형태소(들)
-        """
-        return _get_item_(self.reference, item, lambda x: Morpheme(x))
+        self.surface = surface
+        self.morphemes = morphemes
+        self.reference = reference
+        self.id = None
+        self.entities = []
+        self.phrase = None
+        self.dependentEdges = []
+        self.governorEdge = None
+        self.argumentRoles = []
+        self.predicateRole = None
+        super().__init__(self.morphemes)
 
-    def __iter__(self):
-        """
-        :rtype: iter
-        :return: 포함된 형태소를 순회하는 iterator
-        """
-        return iter(py_list(self.reference, lambda x: Morpheme(x)))
-
-    def __contains__(self, item) -> bool:
-        """
-        형태소가 포함되는지 확인합니다.
-
-        :param Morpheme item: 포함되는지 확인할 형태소
-        :rtype: bool
-        :return: 해당 형태소가 포함되면 true.
-        """
-        return type(item) is Morpheme and self.reference.contains(item.reference)
-
-    def __len__(self):
-        """
-        :rtype: int
-        :return: 포함된 형태소의 개수
-        """
-        return self.reference.size()
+        for i, morph in enumerate(self):
+            morph.word = self
+            morph.id = i
 
     def getSurface(self) -> str:
         """
@@ -972,7 +1050,7 @@ class Word(_JavaDataWrap):
 
         :return: 어절의 표면형 String.
         """
-        return self.reference.getSurface()
+        return self.surface
 
     def getId(self) -> int:
         """
@@ -981,7 +1059,7 @@ class Word(_JavaDataWrap):
 
         :return: 어절의 문장 내 위치입니다.
         """
-        return self.reference.getId()
+        return self.id
 
     def getEntities(self) -> List[Entity]:
         """
@@ -1005,12 +1083,17 @@ class Word(_JavaDataWrap):
             * :py:class:`koalanlp.data.Entity` 개체명을 저장하는 형태
             * :py:class:`koalanlp.types.CoarseEntityType` [Entity]의 대분류 개체명 분류구조 Enum 값
 
-
         :rtype: List[Entity]
 
         :return: [Entity]의 목록입니다. 분석 결과가 없으면 빈 리스트.
         """
-        return py_list(self.reference.getEntities(), lambda x: Entity(x))
+        value = set()
+        for morph in self:
+            if morph.getEntities() is not None:
+                for ent in morph.getEntities():
+                    value.add(ent)
+
+        return list(value)
 
     def getPhrase(self) -> SyntaxTree:
         """
@@ -1036,13 +1119,11 @@ class Word(_JavaDataWrap):
             * :py:class:`koalanlp.data.SyntaxTree` 구문구조를 저장하는 형태
             * :py:class:`koalanlp.types.PhraseTag` 구구조의 형태 분류를 갖는 Enum 값
 
-
         :rtype: SyntaxTree
 
         :return: 어절의 상위 구구조 [SyntaxTree]. 분석 결과가 없으면 None
         """
-        obj = self.reference.getPhrase()
-        return SyntaxTree(obj) if obj is not None else None
+        return self.phrase
 
     def getDependentEdges(self) -> List[DepEdge]:
         """
@@ -1070,12 +1151,11 @@ class Word(_JavaDataWrap):
             * :py:meth:`koalanlp.types.DependencyTag` 의존구조의 기능 분류를 갖는 Enum 값
             * :py:class:`koalanlp.data.DepEdge` 의존구문구조의 저장형태
 
-
         :rtype: List[DepEdge]
 
-        :return: 어절이 지배하는 의존구문구조 [DepEdge]의 목록. 분석 결과가 없으면 빈 리스트
+        :return: 어절이 지배하는 의존구문구조 [DepEdge]의 목록. 분석 결과가 없으면 빈 리스트.
         """
-        return py_list(self.reference.getDependentEdges(), lambda x: DepEdge(x))
+        return self.dependentEdges
 
     def getGovernorEdge(self) -> DepEdge:
         """
@@ -1103,13 +1183,11 @@ class Word(_JavaDataWrap):
             * :py:meth:`koalanlp.types.DependencyTag` 의존구조의 기능 분류를 갖는 Enum 값
             * :py:class:`koalanlp.data.DepEdge` 의존구문구조의 저장형태
 
-
         :rtype: List[DepEdge]
 
         :return: 어절이 지배당하는 의존구문구조 [DepEdge]. 분석 결과가 없으면 None
         """
-        obj = self.reference.getGovernorEdge()
-        return DepEdge(obj) if obj is not None else None
+        return self.governorEdge
 
     def getArgumentRoles(self) -> List[RoleEdge]:
         """
@@ -1135,12 +1213,11 @@ class Word(_JavaDataWrap):
             * :py:class:`koalanlp.data.RoleEdge` 의미역 구조를 저장하는 형태
             * :py:class:`koalanlp.types.RoleType` 의미역 분류를 갖는 Enum 값
 
-
         :rtype: List[RoleEdge]
 
-        :return: 어절이 술어로 기능하는 하위 의미역 구조 [RoleEdge]의 목록. 분석 결과가 없으면 null.
+        :return: 어절이 술어로 기능하는 하위 의미역 구조 [RoleEdge]의 목록. 분석 결과가 없으면 빈 리스트.
         """
-        return py_list(self.reference.getArgumentRoles(), lambda x: RoleEdge(x))
+        return self.argumentRoles
 
     def getPredicateRole(self) -> RoleEdge:
         """
@@ -1166,13 +1243,11 @@ class Word(_JavaDataWrap):
             * :py:class:`koalanlp.data.RoleEdge` 의미역 구조를 저장하는 형태
             * :py:class:`koalanlp.types.RoleType` 의미역 분류를 갖는 Enum 값
 
-
         :rtype: RoleEdge
 
-        :return: 어절이 논항인 상위 의미역 구조 [RoleEdge]. 분석 결과가 없으면 null.
+        :return: 어절이 논항인 상위 의미역 구조 [RoleEdge]. 분석 결과가 없으면 None.
         """
-        obj = self.reference.getPredicateRole()
-        return RoleEdge(obj) if obj is not None else None
+        return self.predicateRole
 
     def singleLineString(self) -> str:
         """
@@ -1183,49 +1258,148 @@ class Word(_JavaDataWrap):
         참고:
             * 세종 품사표기는 :py:class:`koalanlp.types.POS` 를 참고하세요.
 
-
         :return: 각 형태소별로 "표면형/품사" 형태로 기록하고 이를 +로 이어붙인 문자열.
         """
-        return self.reference.singleLineString()
+        return "+".join("%s/%s" % (it.surface, it.tag) for it in self)
+
+    def equalsWithoutTag(self, other) -> bool:
+        """
+        [other] 어절과 표면형이 같은지 비교합니다.
+        :param Word other: 표면형을 비교할 다른 어절
+        :rtype: bool
+        :return: 표면형이 같으면 true
+        """
+        return self.surface == other.surface
+
+    def __repr__(self) -> str:
+        """
+        문자열 표현을 생성합니다.
+
+        :rtype: str
+        :return: 이 객체의 문자열 표현
+        """
+        return "%s = %s" % (self.surface, self.singleLineString())
+
+    def __hash__(self):
+        return hash(self.surface) + super().__hash__()
+
+    def __eq__(self, other):
+        return self.surface == other.surface and super().__eq__(other)
 
 
-class Sentence(_JavaDataWrap):
+@read_only_properties('words')
+class Sentence(_PyListWrap):
     """
     문장을 표현하는 [Property] class입니다.
     """
-    def __getitem__(self, item):
-        """
-        포함된 어절을 가져옵니다.
+    words = []  #: 문장내 어절의 목록
+    syntaxTree = None  #: 문장의 최상위 구구조 (분석결과가 없으면 None) :py:meth:`getSyntaxTree` 참고.
+    dependencies = []  #: 문장에 포함된 모든 의존구문구조 (분석결과가 없으면 []). :py:meth:`getDependencies` 참고
+    roles = []  #: 문장에 포함된 모든 의미역 구조 (분석 결과가 없으면 []). :py:meth:`getRoles` 참고
+    entities = []  #: 문장에 포함된 모든 개체명 (분석 결과가 없으면 []). :py:meth:`getEntities` 참고
+    corefGroups = []  #: 문장 내에 포함된 공통 지시어 또는 대용어들의 묶음 (분석 결과가 없으면 []). :py:meth:`getCorefGroups` 참고
+    reference = None  #: Java 문장 타입
 
-        :param item: index의 번호 또는 slice
-        :rtype: List[Word]
-        :return: 지정된 위치에 있는 어절(들)
+    def __init__(self, words=None, reference=None):
         """
-        return _get_item_(self.reference, item, lambda x: Morpheme(x))
+        문장을 생성합니다.
+        :param List[Word] words: Word의 목록으로부터 문장을 만들 때, List[word]
+        :param reference: Java 분석 결과로부터 문장을 만들 때, Java KoalaNLP의 Sentence
+        """
+        assert (words is not None and len(words) > 0) or reference is not None, \
+            "words가 list이거나 reference가 None이 아니어야 합니다."
 
-    def __iter__(self):
-        """
-        :rtype: iter
-        :return: 포함된 어절을 순회하는 iterator
-        """
-        return iter(py_list(self.reference, lambda x: Morpheme(x)))
+        if reference is not None:
+            self.words = py_list(reference,
+                                 lambda w: Word(surface=w.getSurface(),
+                                                morphemes=py_list(w,
+                                                                  lambda m: Morpheme(surface=m.getSurface(),
+                                                                                     tag=m.getTag().name(),
+                                                                                     originalTag=m.getOriginalTag(),
+                                                                                     reference=m)),
+                                                reference=w))
+            super().__init__(self.words)
 
-    def __contains__(self, item) -> bool:
-        """
-        어절이 포함되는지 확인합니다.
+            obj = reference.getSyntaxTree()
+            self.syntaxTree = self.__recon_syntax_tree(obj)
+            self.dependencies = py_list(reference.getDependencies(), self.__get_dep_edge)
+            self.roles = py_list(reference.getRoles(), self.__get_role)
+            self.entities = py_list(reference.getEntities(), self.__get_entity)
+            self.corefGroups = py_list(reference.getCorefGroups(), self.__get_coref)
+            self.reference = reference
+        else:
+            self.words = words
+            self.syntaxTree = None
+            self.dependencies = []
+            self.roles = []
+            self.entities = []
+            self.corefGroups = []
+            self.reference = None
+            super().__init__(words)
 
-        :param Word item: 포함되는지 확인할 어절
-        :rtype: bool
-        :return: 해당 어절이 포함되면 true.
-        """
-        return type(item) is Morpheme and self.reference.contains(item.reference)
+        for i, word in enumerate(self):
+            word.id = i
 
-    def __len__(self):
-        """
-        :rtype: int
-        :return: 문장 속 어절의 개수
-        """
-        return self.reference.size()
+    def __get_jword(self, jword) -> Optional[Word]:
+        if jword is not None:
+            return self[jword.getId()]
+        else:
+            return None
+
+    def __get_jmorph(self, jmorph) -> Optional[Morpheme]:
+        if jmorph is not None:
+            return self[jmorph.getWord().getId()][jmorph.getId()]
+        else:
+            return None
+
+    def __recon_syntax_tree(self, jtree) -> Optional[SyntaxTree]:
+        if jtree is None:
+            return None
+
+        jtree = koala_cast_of(jtree, 'data.SyntaxTree')
+        term = None
+        non_terms = None
+
+        if jtree.getTerminal() is not None:
+            term = self.__get_jword(jtree.getTerminal())
+
+        if jtree.hasNonTerminals():
+            non_terms = py_list(jtree, self.__recon_syntax_tree)
+
+        tree = SyntaxTree(label=jtree.getLabel().name(), terminal=term,
+                          children=non_terms, originalLabel=jtree.getOriginalLabel())
+        tree.reference = jtree
+        return tree
+
+    def __get_dep_edge(self, e) -> DepEdge:
+        edge = DepEdge(governor=self.__get_jword(e.getGovernor()),
+                       dependent=self.__get_jword(e.getDependent()),
+                       type=e.getType().name(),
+                       depType=e.getDepType().name() if e.getDepType() is not None else None,
+                       originalLabel=e.getOriginalLabel())
+        edge.reference = e
+        return edge
+
+    def __get_role(self, e) -> RoleEdge:
+        edge = RoleEdge(predicate=self.__get_jword(e.getPredicate()),
+                        argument=self.__get_jword(e.getArgument()),
+                        label=e.getLabel().name(),
+                        modifiers=py_list(e.getModifiers(), self.__get_jword),
+                        originalLabel=e.getOriginalLabel())
+        edge.reference = e
+        return e
+
+    def __get_entity(self, e) -> Entity:
+        enty = Entity(surface=e.getSurface(), label=e.getLabel().name(),
+                      fineLabel=e.getFineLabel(), morphemes=py_list(e, self.__get_jmorph),
+                      originalLabel=e.getOriginalLabel())
+        enty.reference = e
+        return enty
+
+    def __get_coref(self, coref) -> CoreferenceGroup:
+        coref = CoreferenceGroup(py_list(coref, lambda e: self.entities[self.entities.index(self.__get_entity(e))]))
+        coref.reference = coref
+        return coref
 
     def getSyntaxTree(self) -> SyntaxTree:
         """
@@ -1256,8 +1430,7 @@ class Sentence(_JavaDataWrap):
 
         :return: 최상위 구구조 [SyntaxTree]. 분석 결과가 없으면 null.
         """
-        obj = self.reference.getSyntaxTree()
-        return SyntaxTree(obj) if obj is not None else None
+        return self.syntaxTree
 
     def getDependencies(self) -> List[DepEdge]:
         """
@@ -1290,7 +1463,7 @@ class Sentence(_JavaDataWrap):
 
         :return: 문장 내 모든 의존구문구조 [DepEdge]의 목록. 분석 결과가 없으면 null.
         """
-        return py_list(self.reference.getDependencies(), lambda x: DepEdge(x))
+        return self.dependencies
 
     def getRoles(self) -> List[RoleEdge]:
         """
@@ -1321,7 +1494,7 @@ class Sentence(_JavaDataWrap):
 
         :return: 어절이 술어로 기능하는 하위 의미역 구조 [RoleEdge]의 목록. 분석 결과가 없으면 null.
         """
-        return py_list(self.reference.getRoles(), lambda x: RoleEdge(x))
+        return self.roles
 
     def getEntities(self) -> List[Entity]:
         """
@@ -1350,7 +1523,7 @@ class Sentence(_JavaDataWrap):
 
         :return: 문장에 포함된 모든 [Entity]의 목록입니다.
         """
-        return py_list(self.reference.getEntities(), lambda x: Entity(x))
+        return self.entities
 
     def getCorefGroups(self):
         """
@@ -1380,7 +1553,7 @@ class Sentence(_JavaDataWrap):
 
         :return: 공통된 대상을 묶은 [CoreferenceGroup]의 목록. 없다면 빈 리스트.
         """
-        return py_list(self.reference.getCorefGroups(), lambda x: CoreferenceGroup(x))
+        return self.corefGroups
 
     def getNouns(self) -> List[Word]:
         """
@@ -1402,8 +1575,20 @@ class Sentence(_JavaDataWrap):
 
         :return: 체언 또는 체언 성격의 어휘를 포함하는 어절의 목록
          """
+        result = []
+        for word in self:
+            inclusion = -1
+            exclusion = -1
+            for i, m in reversed(list(enumerate(word))):
+                if inclusion != -1 and (m.isNoun() or m.hasTagOneOf('ETN', 'XSN')):
+                    inclusion = i
+                if exclusion != -1 and m.hasTagOneOf('XSV', 'XSA', 'XSM'):
+                    exclusion = i
 
-        return py_list(self.reference.getNouns(), lambda x: Word(x))
+            if inclusion != -1 and (exclusion == -1 or inclusion > exclusion):
+                result.append(word)
+
+        return result
 
     def getVerbs(self) -> List[Word]:
         """
@@ -1423,10 +1608,22 @@ class Sentence(_JavaDataWrap):
 
         :rtype: List[Word]
 
-        :return: 체언 또는 체언 성격의 어휘를 포함하는 어절의 목록
+        :return: 용언 또는 용언 성격의 어휘를 포함하는 어절의 목록
          """
+        result = []
+        for word in self:
+            inclusion = -1
+            exclusion = -1
+            for i, m in reversed(list(enumerate(word))):
+                if inclusion != -1 and (m.isPredicate() or m.tag == POS.XSV):
+                    inclusion = i
+                if exclusion != -1 and m.hasTagOneOf("ETN", "ETM", "XSN", "XSA", "XSM"):
+                    exclusion = i
 
-        return py_list(self.reference.getVerbs(), lambda x: Word(x))
+            if inclusion != -1 and (exclusion == -1 or inclusion > exclusion):
+                result.append(word)
+
+        return result
 
     def getModifiers(self) -> List[Word]:
         """
@@ -1446,10 +1643,22 @@ class Sentence(_JavaDataWrap):
 
         :rtype: List[Word]
 
-        :return: 체언 또는 체언 성격의 어휘를 포함하는 어절의 목록
+        :return: 수식언 또는 수식언 성격의 어휘를 포함하는 어절의 목록
          """
+        result = []
+        for word in self:
+            inclusion = -1
+            exclusion = -1
+            for i, m in reversed(list(enumerate(word))):
+                if inclusion != -1 and (m.isPredicate() or m.hasTagOneOf("ETM", "XSA", "XSM")):
+                    inclusion = i
+                if exclusion != -1 and m.hasTagOneOf("ETN", "XSN", "XSV"):
+                    exclusion = i
 
-        return py_list(self.reference.getModifiers(), lambda x: Word(x))
+            if inclusion != -1 and (exclusion == -1 or inclusion > exclusion):
+                result.append(word)
+
+        return result
 
     def surfaceString(self, delimiter: str = ' ') -> str:
         """
@@ -1459,8 +1668,7 @@ class Sentence(_JavaDataWrap):
 
         :return: 띄어쓰기 된 문장입니다.
         """
-
-        return self.reference.surfaceString(string(delimiter))
+        return delimiter.join(word.surface for word in self)
 
     def singleLineString(self) -> str:
         """
@@ -1471,8 +1679,20 @@ class Sentence(_JavaDataWrap):
 
         :return: 품사분석 결과를 담은 1행짜리 String.
         """
+        return ' '.join(word.singleLineString() for word in self)
 
-        return self.reference.singleLineString()
+    def __repr__(self) -> str:
+        """
+        문자열 표현을 생성합니다.
+
+        :rtype: str
+        :return: 이 객체의 문자열 표현
+        """
+        return self.surfaceString()
+
+    @staticmethod
+    def fromJava(ref):
+        return Sentence(reference=ref)
 
 
 # ----- define members exported -----

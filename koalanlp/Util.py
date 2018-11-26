@@ -28,9 +28,12 @@ commands.repos_manager.add_repos('central1', 'http://repo1.maven.org/maven2/', '
                                  order=3)
 commands.repos_manager.add_repos('central2', 'http://central.maven.org/maven2/', 'remote',
                                  order=4)
+
+# JCenter
+commands.repos_manager.add_repos('jcenter', 'http://jcenter.bintray.com/', 'remote', order=5)
+
 # Jitpack for Komoran v3
-commands.repos_manager.add_repos('jitpack.io', 'https://jitpack.io/', 'remote',
-                                 order=5)
+commands.repos_manager.add_repos('jitpack.io', 'https://jitpack.io/', 'remote', order=6)
 
 
 class _ArtifactClsf(Artifact):
@@ -97,7 +100,7 @@ def _resolve_artifacts_modified(artifacts, exclusions=[]):
         pominfo = _find_pom(artifact)
         if pominfo is None:
             if not any(map(artifact.is_same_artifact, exclusions)):
-                commands.logger.warn("[Warning] Artifact is not found: %s", artifact)
+                commands.logger.warning("[Warning] Artifact is not found: %s", artifact)
             # Ignore this unknown pom.
             continue
 
@@ -124,24 +127,23 @@ def _resolve_artifacts_modified(artifacts, exclusions=[]):
     return download_list
 
 
-def initialize(packages=[API.EUNJEON, API.KKMA],
-               version="2.0.0",
-               java_options="-Xmx4g -Dfile.encoding=utf-8"):
+def initialize(java_options="-Xmx4g -Dfile.encoding=utf-8", **packages):
     """
     초기화 함수. 필요한 Java library를 다운받습니다.
 
-    :param List[API] packages: 사용할 분석기 API의 목록. (기본값: [API.EUNJEON, API.KKMA])
-    :param str version: 사용할 분석기의 버전. (기본값: "2.0.0")
     :param str java_options: 자바 JVM option (기본값: "-Xmx4g -Dfile.encoding=utf-8")
+    :param Dict[str,str] packages: 사용할 분석기 API의 목록. (Keyword arguments; 기본값: EUNJEON="2.0.0", KKMA="2.0.0")
     :raise Exception: JVM이 2회 이상 초기화 될때 Exception.
     """
     import jnius_config
     if not jnius_config.vm_running:
         java_options = java_options.split(" ")
         jnius_config.add_options(*java_options)
+        packages = {getattr(API, k.upper()): v for k, v in packages.items()}
 
         deps = [_ArtifactClsf('kr.bydelta', 'koalanlp-%s' % pack, version,
-                              'assembly' if pack in API._REQUIRE_ASSEMBLY_ else None) for pack in packages]
+                              'assembly' if pack in API._REQUIRE_ASSEMBLY_ else None)
+                for pack, version in packages.items()]
         exclusions = [_ArtifactClsf('com.jsuereth', 'sbt-pgp', '*')]
 
         down_list = _resolve_artifacts_modified(deps, exclusions=exclusions)
@@ -174,14 +176,15 @@ def initialize(packages=[API.EUNJEON, API.KKMA],
 
         commands.logger.info("JVM initialization procedure is completed.")
     else:
-        raise Exception("JVM cannot be initialized. I think JVM has been initialized by other packages already. Please check!")
+        raise Exception("JVM cannot be initialized. "
+                        "I think JVM has been initialized by other packages already. Please check!")
 
 
-def contains(string_list, tag) -> bool:
+def contains(string_list: List[str], tag) -> bool:
     """
     주어진 문자열 리스트에 구문분석 표지자/의존구문 표지자/의미역 표지/개체명 분류가 포함되는지 확인합니다.
 
-    :param str string_list: 분류가 포함되는지 확인할 문자열 목록
+    :param List[str] string_list: 분류가 포함되는지 확인할 문자열 목록
     :param Union[PhraseTag,DependencyTag,CoarseEntityType,RoleType] tag: 포함되는지 확인할 구문분석 표지자/의존구문 표지자/의미역 표지/개체명 분류
     :rtype: bool
     :return: 포함되면 true

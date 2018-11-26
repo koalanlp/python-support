@@ -4,9 +4,9 @@ from koalanlp.proc import *
 import pytest
 import inspect
 
-Util.initialize([API.OKT, API.EUNJEON], "2.0.0")
-dict1 = Dictionary(API.OKT)
-dict2 = Dictionary(API.EUNJEON)
+Util.initialize(KKMA="2.0.2", OKT="2.0.2")
+dict1 = Dictionary(API.KKMA)
+dict2 = Dictionary(API.OKT)
 
 
 def test_add_user_dictionary():
@@ -19,7 +19,7 @@ def test_add_user_dictionary():
 
 
 def test_get_not_exists():
-    assert len(dict2.getNotExists(True, ("설빙", POS.NNP), ("일", POS.NNG))) == 1
+    assert len(dict2.getNotExists(True, ("쓰국", POS.NNP), ("일", POS.NNG))) == 1
 
 
 def test_base_entries_of():

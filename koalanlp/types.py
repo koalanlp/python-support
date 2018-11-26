@@ -21,7 +21,7 @@ class _JavaEnum(object):
         return self.name
 
     def __eq__(self, other):
-        return type(other) is _JavaEnum and other.classType == self.classType and other.ordinal == self.ordinal
+        return isinstance(other, _JavaEnum) and other.classType == self.classType and other.ordinal == self.ordinal
 
 
 class POS(_JavaEnum):
