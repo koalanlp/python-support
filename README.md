@@ -156,4 +156,4 @@ print(sentence.getVerbs()) # 문장에서 용언만 추출합니다.
 ```
 
 # 결과 비교
-[Sample:결과비교](https://koalanlp.github.io/sample/comparison.md)를 참조해주세요.
+[Sample:결과비교](https://koalanlp.github.io/sample/comparison)를 참조해주세요.
