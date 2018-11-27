@@ -1,4 +1,4 @@
-# Py-KoalaNLP
+# KoalaNLP (Python3 Support)
 
 [![PyPI](https://img.shields.io/pypi/v/koalanlp.svg?style=flat-square)](https://github.com/koalanlp/python-support)
 [![분석기별 품사비교표](https://img.shields.io/badge/%ED%92%88%EC%82%AC-%EB%B9%84%EA%B5%90%ED%91%9C-blue.svg?style=flat-square)](https://docs.google.com/spreadsheets/d/1OGM4JDdLk6URuegFKXg1huuKWynhg_EQnZYgTmG4h0s/edit?usp=sharing)
@@ -77,7 +77,7 @@ KoalaNLP는 다음과 같은 특징을 가지고 있습니다.
 
 ## Dependency 추가
 우선 Java 8 이상을 설치하고, `JAVA_HOME`을 환경변수에 등록해주십시오.
-그런 다음, 아래와 같이 설치하십시오. (현재 python-koalanlp 버전은 [![PyPI](https://img.shields.io/pypi/v/koalanlp.svg?style=flat-square)](https://github.com/koalanlp/py-koalanlp)입니다.)
+그런 다음, 아래와 같이 설치하십시오. (현재 python-koalanlp 버전은 [![PyPI](https://img.shields.io/pypi/v/koalanlp.svg?style=flat-square)](https://github.com/koalanlp/python-support)입니다.)
 
 ```bash
 $ pip install Cython # Cython은 별도 설치가 필요합니다.

@@ -593,6 +593,7 @@ class DepEdge(DAGEdge):
         assert type is not None, "type은 None일 수 없습니다."
         super().__init__(governor, dependent, depType)
         self.type = type
+        self.depType = self.label
         self.originalLabel = originalLabel
 
         if self.dest is not None:
@@ -709,7 +710,7 @@ class RoleEdge(DAGEdge):
 
         * :py:class:`koalanlp.proc.RoleLabeler` 의미역 분석을 수행하는 interface.
         * :py:meth:`koalanlp.data.Word.getArgumentRoles` 어절이 술어인 논항들의 [RoleEdge] 목록을 가져오는 API
-        * :py:meth:`koalanlp.data.Word.getPredicateRole` 어절이 논항인 [RoleEdge]의 술어를 가져오는 API
+        * :py:meth:`koalanlp.data.Word.getPredicateRoles` 어절이 논항인 [RoleEdge]의 술어를 가져오는 API
         * :py:meth:`koalanlp.data.Sentence.getRoles` 전체 문장을 분석한 의미역 구조 [RoleEdge]를 가져오는 API
         * :py:class:`koalanlp.types.RoleType` 의미역 분류를 갖는 Enum 값
     """
@@ -1131,7 +1132,7 @@ class Word(_PyListWrap):
     dependentEdges = []  #: 의존구문분석을 했다면, 현재 어절이 지배소인 하위 의존구문 구조의 값. :py:meth:`getDependentEdges` 참고.
     governorEdge = None  #: 의존구문분석을 했다면, 현재 어절이 의존소인 상위 의존구문 구조의 값. :py:meth:`getGovernorEdge` 참고
     argumentRoles = []  #: 의미역 분석을 했다면, 현재 어절이 술어로 기능하는 하위 의미역 구조의 목록. :py:meth:`getArgumentRoles` 참고.
-    predicateRole = None  #: 의미역 분석을 했다면, 현재 어절이 논항인 상위 의미역 구조. :py:meth:`getPredicateRole` 참고.
+    predicateRoles = []  #: 의미역 분석을 했다면, 현재 어절이 논항인 상위 의미역 구조의 목록. :py:meth:`getPredicateRoles` 참고.
 
     def __init__(self, surface, morphemes, reference=None):
         """
@@ -1151,7 +1152,7 @@ class Word(_PyListWrap):
         self.dependentEdges = []
         self.governorEdge = None
         self.argumentRoles = []
-        self.predicateRole = None
+        self.predicateRoles = []
         super().__init__(self.morphemes)
 
         for i, morph in enumerate(self):
@@ -1342,7 +1343,7 @@ class Word(_PyListWrap):
             아래를 참고해보세요.
 
             * :py:class:`koalanlp.proc.RoleLabeler` 의미역 분석을 수행하는 interface.
-            * :py:meth:`koalanlp.data.Word.getPredicateRole` 어절이 논항인 [RoleEdge]의 술어를 가져오는 API
+            * :py:meth:`koalanlp.data.Word.getPredicateRoles` 어절이 논항인 [RoleEdge]의 술어를 가져오는 API
             * :py:meth:`koalanlp.data.Sentence.getRoles` 전체 문장을 분석한 의미역 구조 [RoleEdge]를 가져오는 API
             * :py:class:`koalanlp.data.RoleEdge` 의미역 구조를 저장하는 형태
             * :py:class:`koalanlp.types.RoleType` 의미역 분류를 갖는 Enum 값
@@ -1353,7 +1354,7 @@ class Word(_PyListWrap):
         """
         return self.argumentRoles
 
-    def getPredicateRole(self) -> RoleEdge:
+    def getPredicateRoles(self) -> RoleEdge:
         """
         의미역 분석을 했다면, 현재 어절이 논항인 상위 의미역 구조를 돌려줌.
 
@@ -1381,7 +1382,7 @@ class Word(_PyListWrap):
 
         :return: 어절이 논항인 상위 의미역 구조 [RoleEdge]. 분석 결과가 없으면 None.
         """
-        return self.predicateRole
+        return self.predicateRoles
 
     def singleLineString(self) -> str:
         """
@@ -1532,7 +1533,7 @@ class Sentence(_PyListWrap):
                         modifiers=py_list(e.getModifiers(), self.__get_jword),
                         originalLabel=e.getOriginalLabel())
         edge.reference = e
-        return e
+        return edge
 
     def __get_entity(self, e) -> Entity:
         enty = Entity(surface=e.getSurface(), label=e.getLabel().name(),
@@ -1541,9 +1542,9 @@ class Sentence(_PyListWrap):
         enty.reference = e
         return enty
 
-    def __get_coref(self, coref) -> CoreferenceGroup:
-        coref = CoreferenceGroup(py_list(coref, lambda e: self.entities[self.entities.index(self.__get_entity(e))]))
-        coref.reference = coref
+    def __get_coref(self, c) -> CoreferenceGroup:
+        coref = CoreferenceGroup(py_list(c, lambda e: self.entities[self.entities.index(self.__get_entity(e))]))
+        coref.reference = c
         return coref
 
     def getReference(self):
@@ -1650,8 +1651,8 @@ class Sentence(_PyListWrap):
             아래를 참고해보세요.
 
             * :py:class:`koalanlp.proc.RoleLabeler` 의미역 분석을 수행하는 interface.
-            * :py:meth:`koalanlp.data.Word.getPredicateRole` 어절이 논항인 [RoleEdge]의 술어를 가져오는 API
-            * :py:meth:`koalanlp.data.Word.getPredicateRole` 어절이 논항인 [RoleEdge]의 술어를 가져오는 API
+            * :py:meth:`koalanlp.data.Word.getPredicateRoles` 어절이 논항인 [RoleEdge]의 술어를 가져오는 API
+            * :py:meth:`koalanlp.data.Word.getArgumentRoles` 어절이 술어인 [RoleEdge]의 논항들을 가져오는 API
             * :py:class:`koalanlp.data.RoleEdge` 의미역 구조를 저장하는 형태
             * :py:class:`koalanlp.types.RoleType` 의미역 분류를 갖는 Enum 값
 

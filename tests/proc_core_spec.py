@@ -6,10 +6,11 @@ from koalanlp.jnius import *
 from typing import Optional
 import os
 import random
+from time import sleep
 
-Util.initialize(OKT="2.0.2", HNN="2.0.2", ETRI="2.0.2")
+Util.initialize(OKT="2.0.3-SNAPSHOT", HNN="2.0.3-SNAPSHOT", ETRI="2.0.3-SNAPSHOT")
 
-EXAMPLES = [line.split(' ', maxsplit=2)
+EXAMPLES = [line.split(' ', maxsplit=1)
             for text in [
 """01 1+1은 2이고, 3*3은 9이다.
 01 RHINO는 말줄임표를... 확인해야함... ^^ 이것도 확인해야.
@@ -164,15 +165,17 @@ def compare_words(pyword, opts):
         assert len(pyword.getEntities()) == 0
 
     if opts.get('SRL', False):
-        if pyword.reference.getPredicateRole() is not None:
-            assert pyword.getPredicateRole().reference.equals(pyword.reference.getPredicateRole())
+        if pyword.reference.getPredicateRoles() is not None:
+            pyargs = [e.reference for e in pyword.getPredicateRoles()]
+            jargs = pyword.reference.getPredicateRoles()
+            assert all(jargs.contains(e) for e in pyargs)
 
         if pyword.reference.getArgumentRoles() is not None:
             pyargs = [e.reference for e in pyword.getArgumentRoles()]
             jargs = pyword.reference.getArgumentRoles()
             assert all(jargs.contains(e) for e in pyargs)
     else:
-        assert pyword.getPredicateRole() is None
+        assert len(pyword.getPredicateRoles()) == 0
         assert len(pyword.getArgumentRoles()) == 0
 
     if opts.get('DEP', False):
@@ -289,7 +292,7 @@ def compare_entity(pyentity):
     for id, morph in enumerate(pyentity):
         assert type(morph) is Morpheme
         assert pyentity.reference.contains(morph.reference)
-        assert pyentity.reference.indexOf(morph.reference) == id
+        assert pyentity.reference.get(id).equals(morph.reference)
 
     assert str(pyentity) == pyentity.reference.toString()
 
@@ -358,14 +361,14 @@ def test_SentenceSplitter_empty():
 
 def test_SentenceSplitter_typecheck():
     for _, line in EXAMPLES:
-        res = splitter.sentences(line)
+        res = splitter(line)
         assert type(res) is list
         assert type(res[0]) is str
 
 
 def test_Tagger_Sentence_typecheck():
     for _, line in EXAMPLES:
-        para = tagger.tag(line)
+        para = tagger(line)
         assert type(para) is list
         for sent in para:
             compare_sentence(sent)
@@ -376,7 +379,7 @@ def test_Tagger_Sentence_typecheck():
 
 def test_Parser_Syntax_Dep_typecheck():
     for _, line in EXAMPLES:
-        para = parser.analyze(line)
+        para = parser(line)
         assert type(para) is list
         for sent in para:
             compare_sentence(sent, {'SYN': True, 'DEP': True})
@@ -384,16 +387,20 @@ def test_Parser_Syntax_Dep_typecheck():
 
 def test_Parser_Relay_typecheck():
     for _, line in EXAMPLES:
-        tagged = tagger.tag(line)
-        para = parser.analyze(tagged)
+        print(line)
+        tagged = tagger(line)
+        para = parser(tagged)
         assert type(para) is list
         for sent in para:
             compare_sentence(sent, {'SYN': True, 'DEP': True})
 
 
 def test_RoleLabeler_Role_typecheck():
-    for n, line in random.sample(EXAMPLES, 10):
-        para = roleLabeler.analyze(line)
+    for _, line in random.sample(EXAMPLES, 10):
+        # 429 Too Many Request를 방지하기 위해 의도적으로 속도를 좀 조절함
+        for t in range(random.randint(5, 10)):
+            sleep(1)
+        para = roleLabeler(line)
         assert type(para) is list
         for sent in para:
             compare_sentence(sent, {'SRL': True, 'NER': True, 'DEP': True, 'WSD': True})
@@ -401,6 +408,8 @@ def test_RoleLabeler_Role_typecheck():
 
 def test_EntityRecog_Entity_typecheck():
     for _, line in random.sample(EXAMPLES, 10):
-        para = entityRecog.analyze(line)
+        for t in range(random.randint(5, 10)):
+            sleep(1)
+        para = entityRecog(line)
         for sent in para:
             compare_sentence(sent, {'NER': True, 'WSD': True})

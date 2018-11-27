@@ -28,6 +28,19 @@ class SentenceSplitter(object):
         """
         return py_list(self.__api.invoke(string(paragraph)), lambda x: x)
 
+    def __call__(self, *args, **kwargs):
+        """
+        문단을 문장으로 분리합니다.
+
+        :param str paragraph: 분석할 문단들 (가변인자)
+        :rtype: List[str]
+        :return: 분리한 문장들. (flattened list)
+        """
+        if all(type(arg) is str for arg in args):
+            return [sent for arg in args for sent in self.sentences(arg)]
+        else:
+            raise TypeError('str 타입만 사용 가능합니다.')
+
     @staticmethod
     def sentencesTagged(paragraph: Sentence) -> List[Sentence]:
         """
@@ -78,6 +91,22 @@ class Tagger(object):
         """
         return Sentence.fromJava(self.__api.tagSentence(string(sentence)))
 
+    def __call__(self, *args, **kwargs):
+        """
+        문단을 품사분석합니다.
+
+        :param str paragraph: 분석할 문단들. (가변인자)
+        :rtype: List[Sentence]
+        :return: 분석된 결과. (flattened list)
+        """
+        if all(type(arg) is str for arg in args):
+            if len(args) == 1:
+                return self.tag(args[0])
+            else:
+                return [sent for arg in args for sent in self.tag(arg)]
+        else:
+            raise TypeError('str 타입만 사용 가능합니다.')
+
 
 class __CanAnalyzeProperty(object):
     """
@@ -113,6 +142,28 @@ class __CanAnalyzeProperty(object):
                 raise Exception("List인 경우 Sentence의 List만 분석 가능합니다.")
         else:  # Sentence
             return Sentence.fromJava(self.__api.analyze(paragraph.getReference()))
+
+    def __call__(self, *args, **kwargs):
+        """
+        문단을 분석합니다.
+
+        :param paragraph: 분석할 문단 텍스트(str), 문장 객체의 리스트 (List[Sentence]) 또는 문장 객체(Sentence)들 (가변인자)
+        :rtype: Union[Sentence, List[Sentence]]
+        :return: 분석된 결과. Sentence를 입력받은 경우 Sentence, 그 외의 경우 List[Sentence] (flattened list).
+        """
+        if len(args) == 1:
+            return self.analyze(args[0])
+        elif len(args) > 1 and all(type(arg) is Sentence for arg in args):
+            return self.analyze(args)
+        else:
+            result = []
+            for arg in args:
+                if type(arg) is str:
+                    result += self.analyze(arg)
+                else:
+                    result.append(self.analyze(arg))
+
+            return result
 
 
 class Parser(__CanAnalyzeProperty):
