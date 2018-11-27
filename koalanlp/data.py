@@ -105,7 +105,7 @@ class Entity(_PyListWrap):
     fineLabel = None  #: 개체명 세분류 값
     originalLabel = None  #: 원본 분석기가 제시한 개체명 분류의 값.
 
-    def __init__(self, surface: str, label: str, fineLabel: str, morphemes: List, originalLabel: str=None):
+    def __init__(self, surface: str, label: str, fineLabel: str, morphemes: List, originalLabel: str = None):
         """
         개체명 분석 결과를 저장합니다.
         :param str surface: 개체명의 표면형 문자열.
@@ -122,6 +122,7 @@ class Entity(_PyListWrap):
         self.label = label
         self.fineLabel = fineLabel
         self.originalLabel = originalLabel
+        self.reference = None
 
         for morph in self:
             morph.entities.append(self)
@@ -137,6 +138,15 @@ class Entity(_PyListWrap):
             raise AttributeError("Can't touch {}".format(name))
 
         super().__setattr__(name, value)
+
+    def getReference(self):
+        if self.reference is None:
+            self.reference = koala_class_of('data.Entity')(string(self.surface),
+                                                           koala_enum_of('CoarseEntityType', self.label),
+                                                           string(self.fineLabel),
+                                                           java_list([m.getReference() for m in self]),
+                                                           string(self.originalLabel))
+        return self.reference
 
     def getSurface(self) -> str:
         """
@@ -240,9 +250,15 @@ class CoreferenceGroup(_PyListWrap):
         :param List[Entity] entities: 묶음에 포함되는 개체명들의 목록
         """
         super().__init__(entities)
+        self.reference = None
 
         for entity in self:
             entity.corefGroup = self
+
+    def getReference(self):
+        if self.reference is None:
+            self.reference = koala_class_of('data.CoreferenceGroup')(java_list([e.getReference() for e in self]))
+        return self.reference
 
 
 class Tree(_PyListWrap):
@@ -347,7 +363,7 @@ class Tree(_PyListWrap):
 
         for child in self:
             buffer += '\n'
-            buffer = child.getTreeString(depth+1, buffer)
+            buffer = child.getTreeString(depth + 1, buffer)
 
         return buffer
 
@@ -427,6 +443,7 @@ class SyntaxTree(Tree):
         super().__init__(label, terminal, children)
 
         self.originalLabel = originalLabel
+        self.reference = None
 
         term = self.getTerminal()
         if term is not None:
@@ -446,6 +463,14 @@ class SyntaxTree(Tree):
             raise AttributeError("Can't touch {}".format(name))
 
         super().__setattr__(name, value)
+
+    def getReference(self):
+        if self.reference is None:
+            self.reference = koala_class_of('data.SyntaxTree')(koala_enum_of('PhraseTag', self.label),
+                                                               self.terminal.getReference() if self.terminal is not None else None,
+                                                               java_list([t.getReference() for t in self]),
+                                                               string(self.originalLabel))
+        return self.reference
 
     def getOriginalLabel(self) -> Optional[str]:
         """
@@ -556,7 +581,7 @@ class DepEdge(DAGEdge):
     dependent = None  #: 의존구문구조의 피지배소
     depType = None  #: 의존구문구조 표지자 값
 
-    def __init__(self, governor, dependent, type: str, depType: str=None, originalLabel: str=None):
+    def __init__(self, governor, dependent, type: str, depType: str = None, originalLabel: str = None):
         """
         의존구문 구조를 생성합니다.
         :param Word governor: 의존구문구조의 지배소
@@ -578,6 +603,7 @@ class DepEdge(DAGEdge):
 
         self.governor = self.src
         self.dependent = self.dest
+        self.reference = None
 
     def __setattr__(self, name, value):
         if name not in ['src', 'dest', 'governor', 'dependent', 'label', 'type', 'depType', 'originalLabel']:
@@ -590,6 +616,16 @@ class DepEdge(DAGEdge):
             raise AttributeError("Can't touch {}".format(name))
 
         super().__setattr__(name, value)
+
+    def getReference(self):
+        if self.reference is None:
+            self.reference = koala_class_of('data.DepEdge')(
+                self.governor.getReference() if self.governor is not None else None,
+                self.dependent.getReference(),
+                koala_enum_of('PhraseTag', self.type),
+                koala_enum_of('DependencyTag', self.depType),
+                string(self.originalLabel))
+        return self.reference
 
     def getGovernor(self):
         """
@@ -682,7 +718,7 @@ class RoleEdge(DAGEdge):
     predicate = None  #: 의미역 구조의 술어
     argument = None  #: 의미역 구조의 논항
 
-    def __init__(self, predicate, argument, label: str, modifiers: List=None, originalLabel: str=None):
+    def __init__(self, predicate, argument, label: str, modifiers: List = None, originalLabel: str = None):
         """
         의미역 구조를 생성합니다.
         :param Word predicate: 의미역 구조의 술어
@@ -705,6 +741,7 @@ class RoleEdge(DAGEdge):
 
         self.predicate = self.src
         self.argument = self.dest
+        self.reference = None
 
     def __setattr__(self, name, value):
         if name not in ['src', 'dest', 'predicate', 'argument', 'label', 'modifiers', 'originalLabel']:
@@ -717,6 +754,16 @@ class RoleEdge(DAGEdge):
             raise AttributeError("Can't touch {}".format(name))
 
         super().__setattr__(name, value)
+
+    def getReference(self):
+        if self.reference is None:
+            self.reference = koala_class_of('data.RoleEdge')(
+                self.predicate.getReference() if self.predicate is not None else None,
+                self.argument.getReference(),
+                koala_enum_of('RoleType', self.label),
+                java_list([w.getReference() for w in self.modifiers]),
+                string(self.originalLabel))
+        return self.reference
 
     def getPredicate(self):
         """
@@ -799,7 +846,7 @@ class Morpheme(object):
     wordSense = None  #: 형태소의 의미 어깨번호. :py:meth:`getWordSense` 참고.
     entities = []  #: 형태소를 포함하는 개체명 목록. :py:meth:`getEntities` 참고.
 
-    def __init__(self, surface: str, tag: str, originalTag: str=None, reference=None):
+    def __init__(self, surface: str, tag: str, originalTag: str = None, reference=None):
         """
         형태소를 생성합니다.
         :param str surface: 형태소 표면형
@@ -831,6 +878,14 @@ class Morpheme(object):
             raise AttributeError("Can't touch {}".format(name))
 
         super().__setattr__(name, value)
+
+    def getReference(self):
+        if self.reference is None:
+            self.reference = koala_class_of('data.Morpheme')(
+                string(self.surface),
+                koala_enum_of('POS', self.tag),
+                string(self.originalTag))
+        return self.reference
 
     def getSurface(self) -> str:
         """
@@ -1114,6 +1169,13 @@ class Word(_PyListWrap):
             raise AttributeError("Can't touch {}".format(name))
 
         super().__setattr__(name, value)
+
+    def getReference(self):
+        if self.reference is None:
+            self.reference = koala_class_of('data.Word')(
+                string(self.surface),
+                java_list([m.getReference() for m in self]))
+        return self.reference
 
     def getSurface(self) -> str:
         """
@@ -1412,11 +1474,11 @@ class Sentence(_PyListWrap):
             word.id = i
 
     def __setattr__(self, name, value):
-        if name not in ['words']:
+        if name not in ['words', 'syntaxTree', 'dependencies', 'roles', 'entities', 'corefGroups']:
             pass
         elif name not in self.__dict__:
             pass
-        elif getattr(self, name) is None:
+        elif getattr(self, name) is None or len(getattr(self, name)) == 0:
             pass
         else:
             raise AttributeError("Can't touch {}".format(name))
@@ -1484,6 +1546,27 @@ class Sentence(_PyListWrap):
         coref.reference = coref
         return coref
 
+    def getReference(self):
+        if self.reference is None:
+            self.reference = koala_class_of('data.Sentence')(java_list([w.getReference() for w in self]))
+
+        if self.getSyntaxTree() is not None and self.reference.getSyntaxTree() is None:
+            self.reference.setSyntaxTree(self.getSyntaxTree().getReference())
+
+        if len(self.getRoles()) > 0 and self.reference.getRoles() is None:
+            self.reference.setRoleEdges(java_list([e.getReference() for e in self.getRoles()]))
+
+        if len(self.getDependencies()) > 0 and self.reference.getDependencies() is None:
+            self.reference.setDepEdges(java_list([e.getReference() for e in self.getDependencies()]))
+
+        if len(self.getEntities()) > 0 and self.reference.getEntities() is None:
+            self.reference.setEntities(java_list([e.getReference() for e in self.getEntities()]))
+
+        if len(self.getCorefGroups()) > 0 and self.reference.getCorefGroups() is None:
+            self.reference.setCorefGroups(java_list([e.getReference() for e in self.getCorefGroups()]))
+
+        return self.reference
+
     def getSyntaxTree(self) -> SyntaxTree:
         """
         구문분석을 했다면, 최상위 구구조(Phrase)를 돌려줍니다.
@@ -1511,7 +1594,7 @@ class Sentence(_PyListWrap):
 
         :rtype: SyntaxTree
 
-        :return: 최상위 구구조 [SyntaxTree]. 분석 결과가 없으면 null.
+        :return: 최상위 구구조 [SyntaxTree]. 분석 결과가 없으면 None.
         """
         return self.syntaxTree
 
@@ -1544,7 +1627,7 @@ class Sentence(_PyListWrap):
 
         :rtype: List[DepEdge]
 
-        :return: 문장 내 모든 의존구문구조 [DepEdge]의 목록. 분석 결과가 없으면 null.
+        :return: 문장 내 모든 의존구문구조 [DepEdge]의 목록. 분석 결과가 없으면 빈 리스트.
         """
         return self.dependencies
 
@@ -1575,7 +1658,7 @@ class Sentence(_PyListWrap):
 
         :rtype: List[RoleEdge]
 
-        :return: 어절이 술어로 기능하는 하위 의미역 구조 [RoleEdge]의 목록. 분석 결과가 없으면 null.
+        :return: 어절이 술어로 기능하는 하위 의미역 구조 [RoleEdge]의 목록. 분석 결과가 없으면 빈 리스트.
         """
         return self.roles
 

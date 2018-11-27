@@ -37,7 +37,7 @@ class SentenceSplitter(object):
         :rtype: List[Sentence]
         :return: 분리된 문장
         """
-        return py_list(koala_class_of('proc', 'SentenceSplitter').INSTANCE.invoke(paragraph.reference),
+        return py_list(koala_class_of('proc', 'SentenceSplitter').INSTANCE.invoke(paragraph.getReference()),
                        item_converter=Sentence.fromJava)
 
 
@@ -108,11 +108,11 @@ class __CanAnalyzeProperty(object):
                 return []
             elif type(paragraph[0]) is Sentence:
                 # method overload makes hard to find apply(Ljava/util/ArrayList;)Ljava/util/ArrayList;
-                return [Sentence.fromJava(self.__api.analyze(s.reference)) for s in paragraph]
+                return [Sentence.fromJava(self.__api.analyze(s.getReference())) for s in paragraph]
             else:
                 raise Exception("List인 경우 Sentence의 List만 분석 가능합니다.")
         else:  # Sentence
-            return Sentence.fromJava(self.__api.analyze(paragraph.reference))
+            return Sentence.fromJava(self.__api.analyze(paragraph.getReference()))
 
 
 class Parser(__CanAnalyzeProperty):

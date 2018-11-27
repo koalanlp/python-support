@@ -20,6 +20,10 @@ def koala_class_of(*path):
     return class_of('kr.bydelta.koala', *path)
 
 
+def koala_enum_of(tagset, tag):
+    return koala_class_of(tagset).valueOf(tag) if tag is not None else None
+
+
 def cast_of(obj, *path):
     if obj is None:
         return None
@@ -33,7 +37,7 @@ def koala_cast_of(obj, *path):
 
 
 def string(s: str):
-    return class_of('java.lang.String')(s.encode('UTF-8'))
+    return class_of('java.lang.String')(s.encode('UTF-8')) if s is not None else None
 
 
 def py_list(result, item_converter) -> List:
@@ -110,6 +114,7 @@ def java_pos_filter(pos_set):
 __all__ = [
     'class_of',
     'koala_class_of',
+    'koala_enum_of',
     'cast_of',
     'koala_cast_of',
     'string',

@@ -117,6 +117,7 @@ def compare_morphemes(pymorph, opts):
     assert pymorph.getOriginalTag() == pymorph.reference.getOriginalTag()
     assert pymorph.getSurface() == pymorph.reference.getSurface()
     assert pymorph.getWord().reference.equals(pymorph.reference.getWord())
+    assert pymorph.reference.equals(pymorph.getReference())
 
     if opts.get('NER', False) and pymorph.reference.getEntities() is not None:
         pyents = [e.reference for e in pymorph.getEntities()]
@@ -153,6 +154,7 @@ def compare_words(pyword, opts):
     assert pyword.getSurface() == pyword.reference.getSurface()
     assert pyword.getId() == pyword.reference.getId()
     assert pyword.singleLineString() == pyword.reference.singleLineString()
+    assert pyword.reference.equals(pyword.getReference())
 
     if opts.get('NER', False) and pyword.reference.getEntities() is not None:
         pyents = [e.reference for e in pyword.getEntities()]
@@ -200,6 +202,7 @@ def compare_phrase(pytree):
     assert pytree.isRoot() == pytree.reference.isRoot()
     assert pytree.getOriginalLabel() == pytree.reference.getOriginalLabel()
     assert pytree.getTreeString() == pytree.reference.getTreeString().toString()
+    assert pytree.reference.equals(pytree.getReference())
 
     pyterms = [t.reference for t in pytree.getTerminals()]
     jterms = pytree.reference.getTerminals()
@@ -231,6 +234,7 @@ def compare_depedge(pyedge):
     assert type(pyedge) is DepEdge
     assert pyedge.getOriginalLabel() == pyedge.reference.getOriginalLabel()
     assert pyedge.getType().name == pyedge.reference.getType().name()
+    assert pyedge.reference.equals(pyedge.getReference())
 
     gov = pyedge.getGovernor()
     if gov is not None:
@@ -257,6 +261,7 @@ def compare_roleedge(pyedge):
     assert type(pyedge) is RoleEdge
     assert pyedge.getOriginalLabel() == pyedge.reference.getOriginalLabel()
     assert pyedge.getLabel().name == pyedge.reference.getLabel().name()
+    assert pyedge.reference.equals(pyedge.getReference())
 
     gov = pyedge.getPredicate()
     if gov is not None:
@@ -278,6 +283,7 @@ def compare_entity(pyentity):
     assert pyentity.getOriginalLabel() == pyentity.reference.getOriginalLabel()
     assert pyentity.getSurface() == pyentity.reference.getSurface()
     assert pyentity.getFineLabel() == pyentity.reference.getFineLabel()
+    assert pyentity.reference.equals(pyentity.getReference())
     # assert pyentity.getCorefGroup().reference.equals(pyentity.reference.getCorefGroup())
 
     for id, morph in enumerate(pyentity):
@@ -292,6 +298,7 @@ def compare_sentence(pysent, opts={}):
     assert type(pysent) is Sentence
     assert str(pysent) == pysent.reference.toString()
     assert pysent.singleLineString() == pysent.reference.singleLineString()
+    assert pysent.reference.equals(pysent.getReference())
 
     assert pysent.surfaceString() == pysent.reference.surfaceString()
     assert pysent.surfaceString('//') == pysent.reference.surfaceString(string('//'))
@@ -343,7 +350,6 @@ def compare_sentence(pysent, opts={}):
     for word in pysent:
         assert pysent.reference.contains(word.reference)
         compare_words(word, opts)
-
 
 def test_SentenceSplitter_empty():
     sentences = splitter.sentences("")
