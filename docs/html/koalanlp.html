@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>KoalaNLP Python3 API &mdash; KoalaNLP 2.0.1 documentation</title>
+  <title>KoalaNLP Python3 API &mdash; KoalaNLP 2.0.2 documentation</title>
   
 
   
@@ -3323,7 +3323,10 @@
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">반환:</th><td class="field-body"><p class="first last">사전에 포함된다면 True 아니면 False.</p>
+<tr class="field-even field"><th class="field-name">반환 형식:</th><td class="field-body"><p class="first">bool</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">반환:</th><td class="field-body"><p class="first last">사전에 포함된다면 True 아니면 False.</p>
 </td>
 </tr>
 </tbody>
@@ -3355,13 +3358,13 @@ next(entries)</div></blockquote>
 
 <dl class="method">
 <dt id="koalanlp.proc.Dictionary.getItems">
-<code class="descname">getItems</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Set[Tuple[str, koalanlp.types.POS]]<a class="headerlink" href="#koalanlp.proc.Dictionary.getItems" title="정의 주소">¶</a></dt>
+<code class="descname">getItems</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; List[Tuple[str, koalanlp.types.POS]]<a class="headerlink" href="#koalanlp.proc.Dictionary.getItems" title="정의 주소">¶</a></dt>
 <dd><p>사용자 사전에 등재된 모든 항목을 가져옵니다.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">반환 형식:</th><td class="field-body">Set[(str,<a class="reference internal" href="#koalanlp.types.POS" title="koalanlp.types.POS">POS</a>)]</td>
+<tr class="field-odd field"><th class="field-name">반환 형식:</th><td class="field-body">List[(str,<a class="reference internal" href="#koalanlp.types.POS" title="koalanlp.types.POS">POS</a>)]</td>
 </tr>
 <tr class="field-even field"><th class="field-name">반환:</th><td class="field-body">(형태소, 품사)의 set</td>
 </tr>

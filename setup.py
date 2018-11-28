@@ -1,15 +1,19 @@
 from setuptools import setup, find_packages
 
-with open('README.md') as f:
-    long_description = f.read()
+try:
+    import pypandoc
+    long_description = pypandoc.convert('README.md', 'rst')
+    desc_type = None
+except(IOError, ImportError):
+    long_description = open('README.md').read()
+    desc_type = 'text/markdown'
 
 
 setup(
     name='koalanlp',
-    version='2.0.1',
+    version='2.0.2',
     description='Python wrapper for KoalaNLP',
     long_description=long_description,
-    long_description_content_type='text/markdown',
     author='koalanlp',
     url='https://koalanlp.github.io/python-support',
     install_requires=[

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-pip3 install sphinx sphinx_rtd_theme twine pytest
+pip3 install --upgrade sphinx sphinx_rtd_theme twine pytest pypandoc
 
 rm -r dist/
 python3 setup.py bdist_wheel

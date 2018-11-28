@@ -8,7 +8,7 @@ import os
 import random
 from time import sleep
 
-Util.initialize(OKT="2.0.3-SNAPSHOT", HNN="2.0.3-SNAPSHOT", ETRI="2.0.3-SNAPSHOT")
+Util.initialize(OKT="2.0.4-SNAPSHOT", HNN="2.0.4-SNAPSHOT", ETRI="2.0.4-SNAPSHOT")
 
 EXAMPLES = [line.split(' ', maxsplit=1)
             for text in [

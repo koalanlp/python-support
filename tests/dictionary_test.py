@@ -4,7 +4,7 @@ from koalanlp.proc import *
 import pytest
 import inspect
 
-Util.initialize(KKMA="2.0.2", OKT="2.0.2")
+Util.initialize(KKMA="2.0.3", OKT="2.0.3")
 dict1 = Dictionary(API.KKMA)
 dict2 = Dictionary(API.OKT)
 
@@ -16,6 +16,14 @@ def test_add_user_dictionary():
     dict1.addUserDictionary(("설국열차", POS.NNP), ("안드로이드", POS.NNP))
     assert dict1.contains("안드로이드", POS.NNP)
     assert dict1.contains("설국열차", POS.NNP)
+
+    dict1.addUserDictionary(("하동균", POS.NNP))
+    dict1.addUserDictionary(("나비야", POS.NNP))
+
+    assert dict1.contains("하동균", POS.NNP, POS.NNG)
+    assert ("하동균", POS.NNP) in dict1
+
+    assert len(list(dict1.getItems())) == 5
 
 
 def test_get_not_exists():

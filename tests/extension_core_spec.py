@@ -2,7 +2,7 @@ import random
 
 from koalanlp import *
 
-Util.initialize(CORE="2.0.2")
+Util.initialize(CORE="2.0.3")
 
 
 def test_read_alphabet():
@@ -455,7 +455,10 @@ def test_assemble_hangul():
                  None if random.random() < 1/28.0 else chr(0x11A8 + random.randint(0, 26)))
                 for _ in range(4)]
         codestr = ''.join(''.join(t for t in triple if t is not None) for triple in code)
+        triplestr = ''.join(''.join(ExtUtil.assembleHangulTriple(t[0], t[1], t[2]) for t in code))
         str = ExtUtil.assembleHangul(codestr)
+
+        assert triplestr == str
 
         assert ExtUtil.isJongsungEnding(str) == ExtUtil.isJongsungJamo(codestr)[-1]
         assert ExtUtil.isJongsungEnding(str) == (code[-1][2] is not None)

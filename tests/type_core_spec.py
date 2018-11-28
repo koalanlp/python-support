@@ -4,7 +4,7 @@ import pytest
 import random
 
 
-Util.initialize(CORE="2.0.2")
+Util.initialize(CORE="2.0.3")
 
 
 def test_POS_discriminate_tags():

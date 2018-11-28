@@ -332,8 +332,15 @@ def assembleHangulTriple(cho: Union[str, None] = None, jung: Union[str, None] = 
     :rtype: str
     :return: 초성, 중성, 종성을 조합하여 문자를 만듭니다.
     """
+    assert cho is None or isChosungJamo(cho)[0], "한글 자모 문자 이외의 문자를 사용하면 안됩니다."
+    assert jung is None or isJungsungJamo(jung)[0], "한글 자모 문자 이외의 문자를 사용하면 안됩니다."
+    assert jong is None or isJongsungJamo(jong)[0], "한글 자모 문자 이외의 문자를 사용하면 안됩니다."
 
-    return koala_class_of('ExtUtil').assembleHangulTriple(cho, jung, jong)
+    cho = cho if cho is not None else HanFirstList[11]
+    jung = jung if jung is not None else HanSecondList[18]
+    jong = jong if jong is not None else ''
+
+    return koala_class_of('ExtUtil').assembleHangulString(string(cho + jung + jong))
 
 
 def assembleHangul(text: str) -> str:

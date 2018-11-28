@@ -45,10 +45,13 @@ def py_list(result, item_converter) -> List:
         return []
 
     if type(result) is not list:
-        size = result.size
-        if type(size) is not int:
-            size = size()
-        result = [result.get(i) for i in range(size)]
+        items = []
+
+        it = result.iterator()
+        while it.hasNext():
+            items.append(it.next())
+
+        result = items
 
     return [item_converter(item) for item in result]
 

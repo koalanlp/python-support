@@ -63,7 +63,7 @@ class Tagger(object):
     :param bool useLightTagger: 코모란(KMR) 분석기의 경우, 경량 분석기를 사용할 것인지의 여부. (기본값 False)
     """
 
-    def __init__(self, api: str, apiKey: str='', useLightTagger: bool=False):
+    def __init__(self, api: str, apiKey: str = '', useLightTagger: bool = False):
         if api == API.ETRI:
             self.__api = API._query(api, __class__.__name__)(apiKey)
         elif api == API.KMR:
@@ -116,7 +116,7 @@ class __CanAnalyzeProperty(object):
     :param str apiKey: ETRI 분석기의 경우, ETRI에서 발급받은 API Key
     """
 
-    def __init__(self, api: str, cls: str, apiKey: str=''):
+    def __init__(self, api: str, cls: str, apiKey: str = ''):
         if api == API.ETRI:
             self.__api = API._query(api, cls)(apiKey)
         else:
@@ -173,7 +173,8 @@ class Parser(__CanAnalyzeProperty):
     :param str api: 사용할 분석기의 유형.
     :param str apiKey: ETRI 분석기의 경우, ETRI에서 발급받은 API Key
     """
-    def __init__(self, api: str, apiKey: str=''):
+
+    def __init__(self, api: str, apiKey: str = ''):
         super().__init__(api, __class__.__name__, apiKey)
 
 
@@ -184,7 +185,8 @@ class EntityRecognizer(__CanAnalyzeProperty):
     :param str api: 사용할 분석기의 유형.
     :param str apiKey: ETRI 분석기의 경우, ETRI에서 발급받은 API Key
     """
-    def __init__(self, api: str, apiKey: str=''):
+
+    def __init__(self, api: str, apiKey: str = ''):
         super().__init__(api, __class__.__name__, apiKey)
 
 
@@ -195,7 +197,8 @@ class RoleLabeler(__CanAnalyzeProperty):
     :param str api: 사용할 분석기의 유형.
     :param str apiKey: ETRI 분석기의 경우, ETRI에서 발급받은 API Key
     """
-    def __init__(self, api: str, apiKey: str=''):
+
+    def __init__(self, api: str, apiKey: str = ''):
         super().__init__(api, __class__.__name__, apiKey)
 
 
@@ -225,6 +228,7 @@ class Dictionary(object):
 
         :param str word: 확인할 형태소
         :param POS pos_tags: 세종품사들(기본값: NNP 고유명사, NNG 일반명사)
+        :rtype: bool
         :return: 사전에 포함된다면 True 아니면 False.
         """
         if len(pos_tags) > 0:
@@ -236,7 +240,17 @@ class Dictionary(object):
             tag = tags[0]
             return self.__api.contains(java_tuple(string(word), tag.reference))
         else:
-            return self.__api.contains(string(word), java_set(tags))
+            return self.__api.contains(string(word), java_set([tag.reference for tag in tags]))
+
+    def __contains__(self, item: Tuple[str, POS]) -> bool:
+        """
+        사전에 등재되어 있는지 확인합니다.
+
+        :param Tuple[str,POS] item: 확인할 대상 (형태소, 품사)
+        :rtype: bool
+        :return: 사전에 포함된다면 True 아니면 False.
+        """
+        return self.contains(item[0], item[1])
 
     def importFrom(self, other, fastAppend=False, filter=lambda t: t.isNoun()):
         """
@@ -281,16 +295,16 @@ class Dictionary(object):
             yield (item.getFirst(), POS(item.getSecond()))
 
     # getItems()
-    def getItems(self) -> Set[Tuple[str, POS]]:
+    def getItems(self) -> List[Tuple[str, POS]]:
         """
         사용자 사전에 등재된 모든 항목을 가져옵니다.
 
-        :rtype: Set[(str,POS)]
+        :rtype: List[(str,POS)]
         :return: (형태소, 품사)의 set
         """
 
-        return set(py_list(self.__api.getItems(),
-                           item_converter=lambda t: (t.getFirst(), POS(t.getSecond()))))
+        return py_list(self.__api.getItems(),
+                       item_converter=lambda t: (t.getFirst(), POS.valueOf(t.getSecond().name())))
 
     # getNotExists()
     def getNotExists(self, onlySystemDic: bool, *word: Tuple[str, POS]) -> List[Tuple[str, POS]]:
