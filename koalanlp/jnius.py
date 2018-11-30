@@ -107,7 +107,6 @@ def java_pos_filter(pos_set):
 
         @java_method('(Lkr/bydelta/koala/POS;)Z', name='invoke')
         def invoke(self, method, tag):
-            print(tag.name(), tag.name() in pos_set)
             return tag.name() in pos_set
 
     return PyPOSFilter()
