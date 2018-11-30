@@ -3,5 +3,7 @@ dist/
 koalanlp.egg-info/
 venv/
 .idea/
+.jip/
+.pytest_cache/
 
 **/__pycache__/

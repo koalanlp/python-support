@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>KoalaNLP Python3 API &mdash; KoalaNLP 2.0.2 documentation</title>
+  <title>KoalaNLP Python3 API &mdash; KoalaNLP 2.0.3 documentation</title>
   
 
   
@@ -92,6 +92,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#module-koalanlp.Util">편의기능</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference external" href="https://koalanlp.github.io/sample/">사용법 샘플</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://koalanlp.github.io/koalanlp/api/koalanlp/index.html">Kotlin/Java API</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://koalanlp.github.io/scala-support">Scala API</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://koalanlp.github.io/nodejs-support">NodeJS API</a></li>
@@ -3079,17 +3080,17 @@
 </table>
 <dl class="method">
 <dt id="koalanlp.proc.SentenceSplitter.sentences">
-<code class="descname">sentences</code><span class="sig-paren">(</span><em>paragraph: str</em><span class="sig-paren">)</span> &#x2192; List[str]<a class="headerlink" href="#koalanlp.proc.SentenceSplitter.sentences" title="정의 주소">¶</a></dt>
-<dd><p>문단을 문장으로 분리합니다.</p>
+<code class="descname">sentences</code><span class="sig-paren">(</span><em>*text</em><span class="sig-paren">)</span> &#x2192; List[str]<a class="headerlink" href="#koalanlp.proc.SentenceSplitter.sentences" title="정의 주소">¶</a></dt>
+<dd><p>문단(들)을 문장으로 분리합니다.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">매개 변수:</th><td class="field-body"><strong>paragraph</strong> (<em>str</em>) -- 분석할 문단.</td>
+<tr class="field-odd field"><th class="field-name">매개 변수:</th><td class="field-body"><strong>text</strong> (<em>Union</em><em>[</em><em>str</em><em>,</em><em>List</em><em>[</em><em>str</em><em>]</em><em>]</em>) -- 분석할 문단(들). 각 인자는 텍스트와 string 리스트 혼용 가능. (가변인자)</td>
 </tr>
 <tr class="field-even field"><th class="field-name">반환 형식:</th><td class="field-body">List[str]</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">반환:</th><td class="field-body">분리한 문장들.</td>
+<tr class="field-odd field"><th class="field-name">반환:</th><td class="field-body">분리한 문장들. (flattened list)</td>
 </tr>
 </tbody>
 </table>
@@ -3097,17 +3098,17 @@
 
 <dl class="staticmethod">
 <dt id="koalanlp.proc.SentenceSplitter.sentencesTagged">
-<em class="property">static </em><code class="descname">sentencesTagged</code><span class="sig-paren">(</span><em>paragraph: koalanlp.data.Sentence</em><span class="sig-paren">)</span> &#x2192; List[koalanlp.data.Sentence]<a class="headerlink" href="#koalanlp.proc.SentenceSplitter.sentencesTagged" title="정의 주소">¶</a></dt>
+<em class="property">static </em><code class="descname">sentencesTagged</code><span class="sig-paren">(</span><em>*text</em><span class="sig-paren">)</span> &#x2192; List[koalanlp.data.Sentence]<a class="headerlink" href="#koalanlp.proc.SentenceSplitter.sentencesTagged" title="정의 주소">¶</a></dt>
 <dd><p>KoalaNLP가 구현한 문장분리기를 사용하여, 문단을 문장으로 분리합니다.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">매개 변수:</th><td class="field-body"><strong>paragraph</strong> (<a class="reference internal" href="#koalanlp.data.Sentence" title="koalanlp.data.Sentence"><em>Sentence</em></a>) -- 분석할 문단. (품사표기가 되어있어야 합니다)</td>
+<tr class="field-odd field"><th class="field-name">매개 변수:</th><td class="field-body"><strong>text</strong> (<em>Union</em><em>[</em><em>List</em><em>[</em><a class="reference internal" href="#koalanlp.data.Word" title="koalanlp.data.Word"><em>Word</em></a><em>]</em><em>,</em><a class="reference internal" href="#koalanlp.data.Sentence" title="koalanlp.data.Sentence"><em>Sentence</em></a><em>]</em>) -- 분석할 문단(들). 각 인자는 품사표기가 되어있는 Word의 list 또는 Sentence 혼용 가능. (가변인자)</td>
 </tr>
 <tr class="field-even field"><th class="field-name">반환 형식:</th><td class="field-body">List[<a class="reference internal" href="#koalanlp.data.Sentence" title="koalanlp.data.Sentence">Sentence</a>]</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">반환:</th><td class="field-body">분리된 문장</td>
+<tr class="field-odd field"><th class="field-name">반환:</th><td class="field-body">분리된 문장들. (flattened list)</td>
 </tr>
 </tbody>
 </table>
@@ -3135,17 +3136,17 @@
 </table>
 <dl class="method">
 <dt id="koalanlp.proc.Tagger.tag">
-<code class="descname">tag</code><span class="sig-paren">(</span><em>paragraph: str</em><span class="sig-paren">)</span> &#x2192; List[koalanlp.data.Sentence]<a class="headerlink" href="#koalanlp.proc.Tagger.tag" title="정의 주소">¶</a></dt>
-<dd><p>문단을 품사분석합니다.</p>
+<code class="descname">tag</code><span class="sig-paren">(</span><em>*text</em><span class="sig-paren">)</span> &#x2192; List[koalanlp.data.Sentence]<a class="headerlink" href="#koalanlp.proc.Tagger.tag" title="정의 주소">¶</a></dt>
+<dd><p>문단(들)을 품사분석합니다.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">매개 변수:</th><td class="field-body"><strong>paragraph</strong> (<em>str</em>) -- 분석할 문단.</td>
+<tr class="field-odd field"><th class="field-name">매개 변수:</th><td class="field-body"><strong>text</strong> (<em>Union</em><em>[</em><em>str</em><em>,</em><em>List</em><em>[</em><em>str</em><em>]</em><em>]</em>) -- 분석할 문단들. 텍스트와 string 리스트 혼용 가능. (가변인자)</td>
 </tr>
 <tr class="field-even field"><th class="field-name">반환 형식:</th><td class="field-body">List[<a class="reference internal" href="#koalanlp.data.Sentence" title="koalanlp.data.Sentence">Sentence</a>]</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">반환:</th><td class="field-body">분석된 결과.</td>
+<tr class="field-odd field"><th class="field-name">반환:</th><td class="field-body">분석된 결과. (flattened list)</td>
 </tr>
 </tbody>
 </table>
@@ -3153,15 +3154,15 @@
 
 <dl class="method">
 <dt id="koalanlp.proc.Tagger.tagSentence">
-<code class="descname">tagSentence</code><span class="sig-paren">(</span><em>sentence: str</em><span class="sig-paren">)</span> &#x2192; koalanlp.data.Sentence<a class="headerlink" href="#koalanlp.proc.Tagger.tagSentence" title="정의 주소">¶</a></dt>
-<dd><p>문장을 품사분석합니다.</p>
+<code class="descname">tagSentence</code><span class="sig-paren">(</span><em>*text</em><span class="sig-paren">)</span> &#x2192; List[koalanlp.data.Sentence]<a class="headerlink" href="#koalanlp.proc.Tagger.tagSentence" title="정의 주소">¶</a></dt>
+<dd><p>문장을 품사분석합니다. (인자 하나를 문장 하나로 간주합니다)</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">매개 변수:</th><td class="field-body"><strong>sentence</strong> (<em>str</em>) -- 분석할 문단.</td>
+<tr class="field-odd field"><th class="field-name">매개 변수:</th><td class="field-body"><strong>text</strong> (<em>Union</em><em>[</em><em>str</em><em>]</em>) -- 분석할 문장들. (가변인자)</td>
 </tr>
-<tr class="field-even field"><th class="field-name">반환 형식:</th><td class="field-body"><a class="reference internal" href="#koalanlp.data.Sentence" title="koalanlp.data.Sentence">Sentence</a></td>
+<tr class="field-even field"><th class="field-name">반환 형식:</th><td class="field-body">List[<a class="reference internal" href="#koalanlp.data.Sentence" title="koalanlp.data.Sentence">Sentence</a>]</td>
 </tr>
 <tr class="field-odd field"><th class="field-name">반환:</th><td class="field-body">분석된 결과.</td>
 </tr>
@@ -3190,17 +3191,18 @@
 </table>
 <dl class="method">
 <dt id="koalanlp.proc.Parser.analyze">
-<code class="descname">analyze</code><span class="sig-paren">(</span><em>paragraph</em><span class="sig-paren">)</span> &#x2192; Union[koalanlp.data.Sentence, List[koalanlp.data.Sentence]]<a class="headerlink" href="#koalanlp.proc.Parser.analyze" title="정의 주소">¶</a></dt>
-<dd><p>문단을 분석합니다.</p>
+<code class="descname">analyze</code><span class="sig-paren">(</span><em>*text</em><span class="sig-paren">)</span> &#x2192; List[koalanlp.data.Sentence]<a class="headerlink" href="#koalanlp.proc.Parser.analyze" title="정의 주소">¶</a></dt>
+<dd><p>문단(들)을 분석합니다.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">매개 변수:</th><td class="field-body"><strong>paragraph</strong> -- 분석할 문단 텍스트(str), 문장 객체의 리스트 (List[Sentence]) 또는 문장 객체(Sentence).</td>
+<tr class="field-odd field"><th class="field-name">매개 변수:</th><td class="field-body"><strong>text</strong> (<em>Union</em><em>[</em><em>str</em><em>,</em><a class="reference internal" href="#koalanlp.data.Sentence" title="koalanlp.data.Sentence"><em>Sentence</em></a><em>,</em><em>List</em><em>[</em><em>str</em><em>]</em><em>,</em><em>List</em><em>[</em><a class="reference internal" href="#koalanlp.data.Sentence" title="koalanlp.data.Sentence"><em>Sentence</em></a><em>]</em><em>]</em>) -- 분석할 문단(들).
+각 인자는 텍스트(str), 문장 객체(Sentence), 텍스트의 리스트, 문장 객체의 리스트 혼용 가능 (가변인자)</td>
 </tr>
-<tr class="field-even field"><th class="field-name">반환 형식:</th><td class="field-body">Sentence를 입력받은 경우 Sentence, 그 외의 경우 List[<a class="reference internal" href="#koalanlp.data.Sentence" title="koalanlp.data.Sentence">Sentence</a>]</td>
+<tr class="field-even field"><th class="field-name">반환 형식:</th><td class="field-body">List[<a class="reference internal" href="#koalanlp.data.Sentence" title="koalanlp.data.Sentence">Sentence</a>]</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">반환:</th><td class="field-body">분석된 결과.</td>
+<tr class="field-odd field"><th class="field-name">반환:</th><td class="field-body">분석된 결과들. (flattened list)</td>
 </tr>
 </tbody>
 </table>
@@ -3227,17 +3229,18 @@
 </table>
 <dl class="method">
 <dt id="koalanlp.proc.EntityRecognizer.analyze">
-<code class="descname">analyze</code><span class="sig-paren">(</span><em>paragraph</em><span class="sig-paren">)</span> &#x2192; Union[koalanlp.data.Sentence, List[koalanlp.data.Sentence]]<a class="headerlink" href="#koalanlp.proc.EntityRecognizer.analyze" title="정의 주소">¶</a></dt>
-<dd><p>문단을 분석합니다.</p>
+<code class="descname">analyze</code><span class="sig-paren">(</span><em>*text</em><span class="sig-paren">)</span> &#x2192; List[koalanlp.data.Sentence]<a class="headerlink" href="#koalanlp.proc.EntityRecognizer.analyze" title="정의 주소">¶</a></dt>
+<dd><p>문단(들)을 분석합니다.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">매개 변수:</th><td class="field-body"><strong>paragraph</strong> -- 분석할 문단 텍스트(str), 문장 객체의 리스트 (List[Sentence]) 또는 문장 객체(Sentence).</td>
+<tr class="field-odd field"><th class="field-name">매개 변수:</th><td class="field-body"><strong>text</strong> (<em>Union</em><em>[</em><em>str</em><em>,</em><a class="reference internal" href="#koalanlp.data.Sentence" title="koalanlp.data.Sentence"><em>Sentence</em></a><em>,</em><em>List</em><em>[</em><em>str</em><em>]</em><em>,</em><em>List</em><em>[</em><a class="reference internal" href="#koalanlp.data.Sentence" title="koalanlp.data.Sentence"><em>Sentence</em></a><em>]</em><em>]</em>) -- 분석할 문단(들).
+각 인자는 텍스트(str), 문장 객체(Sentence), 텍스트의 리스트, 문장 객체의 리스트 혼용 가능 (가변인자)</td>
 </tr>
-<tr class="field-even field"><th class="field-name">반환 형식:</th><td class="field-body">Sentence를 입력받은 경우 Sentence, 그 외의 경우 List[<a class="reference internal" href="#koalanlp.data.Sentence" title="koalanlp.data.Sentence">Sentence</a>]</td>
+<tr class="field-even field"><th class="field-name">반환 형식:</th><td class="field-body">List[<a class="reference internal" href="#koalanlp.data.Sentence" title="koalanlp.data.Sentence">Sentence</a>]</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">반환:</th><td class="field-body">분석된 결과.</td>
+<tr class="field-odd field"><th class="field-name">반환:</th><td class="field-body">분석된 결과들. (flattened list)</td>
 </tr>
 </tbody>
 </table>
@@ -3264,17 +3267,18 @@
 </table>
 <dl class="method">
 <dt id="koalanlp.proc.RoleLabeler.analyze">
-<code class="descname">analyze</code><span class="sig-paren">(</span><em>paragraph</em><span class="sig-paren">)</span> &#x2192; Union[koalanlp.data.Sentence, List[koalanlp.data.Sentence]]<a class="headerlink" href="#koalanlp.proc.RoleLabeler.analyze" title="정의 주소">¶</a></dt>
-<dd><p>문단을 분석합니다.</p>
+<code class="descname">analyze</code><span class="sig-paren">(</span><em>*text</em><span class="sig-paren">)</span> &#x2192; List[koalanlp.data.Sentence]<a class="headerlink" href="#koalanlp.proc.RoleLabeler.analyze" title="정의 주소">¶</a></dt>
+<dd><p>문단(들)을 분석합니다.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">매개 변수:</th><td class="field-body"><strong>paragraph</strong> -- 분석할 문단 텍스트(str), 문장 객체의 리스트 (List[Sentence]) 또는 문장 객체(Sentence).</td>
+<tr class="field-odd field"><th class="field-name">매개 변수:</th><td class="field-body"><strong>text</strong> (<em>Union</em><em>[</em><em>str</em><em>,</em><a class="reference internal" href="#koalanlp.data.Sentence" title="koalanlp.data.Sentence"><em>Sentence</em></a><em>,</em><em>List</em><em>[</em><em>str</em><em>]</em><em>,</em><em>List</em><em>[</em><a class="reference internal" href="#koalanlp.data.Sentence" title="koalanlp.data.Sentence"><em>Sentence</em></a><em>]</em><em>]</em>) -- 분석할 문단(들).
+각 인자는 텍스트(str), 문장 객체(Sentence), 텍스트의 리스트, 문장 객체의 리스트 혼용 가능 (가변인자)</td>
 </tr>
-<tr class="field-even field"><th class="field-name">반환 형식:</th><td class="field-body">Sentence를 입력받은 경우 Sentence, 그 외의 경우 List[<a class="reference internal" href="#koalanlp.data.Sentence" title="koalanlp.data.Sentence">Sentence</a>]</td>
+<tr class="field-even field"><th class="field-name">반환 형식:</th><td class="field-body">List[<a class="reference internal" href="#koalanlp.data.Sentence" title="koalanlp.data.Sentence">Sentence</a>]</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">반환:</th><td class="field-body">분석된 결과.</td>
+<tr class="field-odd field"><th class="field-name">반환:</th><td class="field-body">분석된 결과들. (flattened list)</td>
 </tr>
 </tbody>
 </table>

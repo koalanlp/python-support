@@ -4,7 +4,7 @@ from koalanlp.proc import *
 import pytest
 import inspect
 
-Util.initialize(KKMA="2.0.3", OKT="2.0.3")
+Util.initialize(KKMA="LATEST", OKT="LATEST")
 dict1 = Dictionary(API.KKMA)
 dict2 = Dictionary(API.OKT)
 

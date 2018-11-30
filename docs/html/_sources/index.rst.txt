@@ -54,6 +54,7 @@ KoalaNLP
 .. toctree::
     주요 기능 사용법 <https://koalanlp.github.io/koalanlp/usage/>
     koalanlp
+    사용법 샘플 <https://koalanlp.github.io/sample/>
     Kotlin/Java API <https://koalanlp.github.io/koalanlp/api/koalanlp/index.html>
     Scala API <https://koalanlp.github.io/scala-support>
     NodeJS API <https://koalanlp.github.io/nodejs-support>

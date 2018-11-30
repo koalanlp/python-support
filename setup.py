@@ -11,7 +11,7 @@ except(IOError, ImportError):
 
 setup(
     name='koalanlp',
-    version='2.0.2',
+    version='2.0.3',
     description='Python wrapper for KoalaNLP',
     long_description=long_description,
     author='koalanlp',

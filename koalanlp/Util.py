@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from jip import commands
+from jip import commands, logger
 from jip.maven import Artifact
 from typing import List
 from . import API
@@ -35,6 +35,22 @@ commands.repos_manager.add_repos('central1', 'http://repo1.maven.org/maven2/', '
 commands.repos_manager.add_repos('central2', 'http://central.maven.org/maven2/', 'remote',
                                  order=6)
 
+# Set logger level to warn.
+logger.setLevel('WARNING')
+
+
+def _retrieve_latest_version(group, artifact) -> str:
+    import requests
+    import re
+
+    url = 'https://oss.sonatype.org/content/repositories/public/%s/%s' % (group.replace('.', '/'), artifact)
+    result = requests.get(url).text
+    result = [line.split('/')[-1] for line in re.findall('%s/(\d+\.\d+\.\d+)/' % url, result)]
+    version = max(result)
+
+    logger.warning('[WARNING] Latest version of %s:%s (%s) will be used.', group, artifact, version)
+    return version
+
 
 class _ArtifactClsf(Artifact):
     def to_maven_name(self, ext):
@@ -56,6 +72,8 @@ class _ArtifactClsf(Artifact):
                                                    self.timestamp, self.build_number, self.classifier, ext)
 
     def __init__(self, group, artifact, version=None, classifier=None):
+        if version is None or version.upper() == "LATEST":
+            version = _retrieve_latest_version(group, artifact)
         super().__init__(group, artifact, version)
         self.classifier = classifier
 

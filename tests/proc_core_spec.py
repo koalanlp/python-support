@@ -8,7 +8,7 @@ import os
 import random
 from time import sleep
 
-Util.initialize(OKT="2.0.4-SNAPSHOT", HNN="2.0.4-SNAPSHOT", ETRI="2.0.4-SNAPSHOT")
+Util.initialize(OKT="LATEST", HNN="LATEST", ETRI="LATEST")
 
 EXAMPLES = [line.split(' ', maxsplit=1)
             for text in [
@@ -354,6 +354,7 @@ def compare_sentence(pysent, opts={}):
         assert pysent.reference.contains(word.reference)
         compare_words(word, opts)
 
+
 def test_SentenceSplitter_empty():
     sentences = splitter.sentences("")
     assert len(sentences) == 0
@@ -374,7 +375,10 @@ def test_Tagger_Sentence_typecheck():
             compare_sentence(sent)
 
         single = tagger.tagSentence(line)
-        compare_sentence(single)
+        assert type(single) is list
+        assert len(single) == 1
+
+        compare_sentence(single[0])
 
 
 def test_Parser_Syntax_Dep_typecheck():
@@ -388,8 +392,13 @@ def test_Parser_Syntax_Dep_typecheck():
 def test_Parser_Relay_typecheck():
     for _, line in EXAMPLES:
         print(line)
-        tagged = tagger(line)
+        splits = splitter(line)
+        tagged = tagger.tagSentence(*splits)
+        assert len(splits) == len(tagged)
+
         para = parser(tagged)
+        assert len(tagged) == len(para)
+
         assert type(para) is list
         for sent in para:
             compare_sentence(sent, {'SYN': True, 'DEP': True})

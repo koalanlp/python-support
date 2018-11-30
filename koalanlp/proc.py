@@ -3,7 +3,7 @@
 
 from . import API
 from .jnius import *
-from .data import Sentence
+from .data import Sentence, Word
 from .types import POS
 from typing import List, Union, Tuple, Set
 
@@ -18,40 +18,57 @@ class SentenceSplitter(object):
     def __init__(self, api: str):
         self.__api = API._query(api, __class__.__name__)()
 
-    def sentences(self, paragraph: str) -> List[str]:
+    def sentences(self, *text) -> List[str]:
         """
-        문단을 문장으로 분리합니다.
+        문단(들)을 문장으로 분리합니다.
 
-        :param str paragraph: 분석할 문단.
-        :rtype: List[str]
-        :return: 분리한 문장들.
-        """
-        return py_list(self.__api.invoke(string(paragraph)), lambda x: x)
-
-    def __call__(self, *args, **kwargs):
-        """
-        문단을 문장으로 분리합니다.
-
-        :param str paragraph: 분석할 문단들 (가변인자)
+        :param Union[str,List[str]] text: 분석할 문단(들). 각 인자는 텍스트와 string 리스트 혼용 가능. (가변인자)
         :rtype: List[str]
         :return: 분리한 문장들. (flattened list)
         """
-        if all(type(arg) is str for arg in args):
-            return [sent for arg in args for sent in self.sentences(arg)]
-        else:
-            raise TypeError('str 타입만 사용 가능합니다.')
+        result = []
+        for paragraph in text:
+            if type(paragraph) is list:
+                result += self.sentences(*paragraph)
+            elif type(paragraph) is str:
+                result += py_list(self.__api.invoke(string(paragraph)), lambda x: x)
+            else:
+                raise TypeError('%s type은 문단 분리를 수행할 수 없습니다.' % (type(paragraph)))
+
+        return result
+
+    def __call__(self, *args, **kwargs) -> List[str]:
+        """
+        문단을 문장으로 분리합니다.
+
+        :param Union[str,List[str]] text: 분석할 문단(들). 각 인자는 텍스트와 string 리스트 혼용 가능. (가변인자)
+        :rtype: List[str]
+        :return: 분리한 문장들. (flattened list)
+        """
+        return self.sentences(*args)
 
     @staticmethod
-    def sentencesTagged(paragraph: Sentence) -> List[Sentence]:
+    def sentencesTagged(*text: List[Word]) -> List[Sentence]:
         """
         KoalaNLP가 구현한 문장분리기를 사용하여, 문단을 문장으로 분리합니다.
 
-        :param Sentence paragraph: 분석할 문단. (품사표기가 되어있어야 합니다)
+        :param Union[List[Word],Sentence] text: 분석할 문단(들). 각 인자는 품사표기가 되어있는 Word의 list 또는 Sentence 혼용 가능. (가변인자)
         :rtype: List[Sentence]
-        :return: 분리된 문장
+        :return: 분리된 문장들. (flattened list)
         """
-        return py_list(koala_class_of('proc', 'SentenceSplitter').INSTANCE.invoke(paragraph.getReference()),
-                       item_converter=Sentence.fromJava)
+        result = []
+        for paragraph in text:
+            if type(paragraph) is Sentence:
+                reference = paragraph.getReference()
+            elif type(paragraph) is list and len(paragraph) > 0:
+                reference = Sentence(paragraph).getReference()
+            else:
+                raise TypeError('%s type은 sentencesTagged를 실행할 수 없습니다.' % (type(paragraph)))
+
+            result += py_list(koala_class_of('proc', 'SentenceSplitter').INSTANCE.invoke(reference),
+                              item_converter=Sentence.fromJava)
+
+        return result
 
 
 class Tagger(object):
@@ -71,41 +88,51 @@ class Tagger(object):
         else:
             self.__api = API._query(api, __class__.__name__)()
 
-    def tag(self, paragraph: str) -> List[Sentence]:
+    def tag(self, *text: str) -> List[Sentence]:
         """
-        문단을 품사분석합니다.
+        문단(들)을 품사분석합니다.
 
-        :param str paragraph: 분석할 문단.
-        :rtype: List[Sentence]
-        :return: 분석된 결과.
-        """
-        return py_list(self.__api.tag(string(paragraph)), item_converter=Sentence.fromJava)
-
-    def tagSentence(self, sentence: str) -> Sentence:
-        """
-        문장을 품사분석합니다.
-
-        :param str sentence: 분석할 문단.
-        :rtype: Sentence
-        :return: 분석된 결과.
-        """
-        return Sentence.fromJava(self.__api.tagSentence(string(sentence)))
-
-    def __call__(self, *args, **kwargs):
-        """
-        문단을 품사분석합니다.
-
-        :param str paragraph: 분석할 문단들. (가변인자)
+        :param Union[str,List[str]] text: 분석할 문단들. 텍스트와 string 리스트 혼용 가능. (가변인자)
         :rtype: List[Sentence]
         :return: 분석된 결과. (flattened list)
         """
-        if all(type(arg) is str for arg in args):
-            if len(args) == 1:
-                return self.tag(args[0])
+        result = []
+        for paragraph in text:
+            if type(paragraph) is list:
+                result += self.tag(*paragraph)
+            elif type(paragraph) is str:
+                result += py_list(self.__api.tag(string(paragraph)), item_converter=Sentence.fromJava)
             else:
-                return [sent for arg in args for sent in self.tag(arg)]
-        else:
-            raise TypeError('str 타입만 사용 가능합니다.')
+                raise TypeError('%s type은 품사 분석을 수행할 수 없습니다.' % (type(paragraph)))
+
+        return result
+
+    def tagSentence(self, *text: str) -> List[Sentence]:
+        """
+        문장을 품사분석합니다. (인자 하나를 문장 하나로 간주합니다)
+
+        :param Union[str] text: 분석할 문장들. (가변인자)
+        :rtype: List[Sentence]
+        :return: 분석된 결과.
+        """
+        result = []
+        for sentence in text:
+            if type(sentence) is str:
+                result.append(Sentence.fromJava(self.__api.tagSentence(string(sentence))))
+            else:
+                raise TypeError('%s type은 품사 분석을 수행할 수 없습니다.' % (type(sentence)))
+
+        return result
+
+    def __call__(self, *args, **kwargs) -> List[Sentence]:
+        """
+        문단(들)을 품사분석합니다.
+
+        :param Union[str,List[str]] text: 분석할 문단들. 텍스트와 string 리스트 혼용 가능. (가변인자)
+        :rtype: List[Sentence]
+        :return: 분석된 결과. (flattened list)
+        """
+        return self.tag(*args)
 
 
 class __CanAnalyzeProperty(object):
@@ -122,48 +149,38 @@ class __CanAnalyzeProperty(object):
         else:
             self.__api = API._query(api, cls)()
 
-    def analyze(self, paragraph) -> Union[Sentence, List[Sentence]]:
+    def analyze(self, *text) -> List[Sentence]:
         """
-        문단을 분석합니다.
+        문단(들)을 분석합니다.
 
-        :param paragraph: 분석할 문단 텍스트(str), 문장 객체의 리스트 (List[Sentence]) 또는 문장 객체(Sentence).
-        :rtype: Sentence를 입력받은 경우 Sentence, 그 외의 경우 List[Sentence].
-        :return: 분석된 결과.
+        :param Union[str,Sentence,List[str],List[Sentence]] text: 분석할 문단(들).
+                각 인자는 텍스트(str), 문장 객체(Sentence), 텍스트의 리스트, 문장 객체의 리스트 혼용 가능 (가변인자)
+        :rtype: List[Sentence].
+        :return: 분석된 결과들. (flattened list)
         """
-        if type(paragraph) is str:
-            return py_list(self.__api.analyze(string(paragraph)), item_converter=Sentence.fromJava)
-        elif type(paragraph) is list:
-            if len(paragraph) == 0:
-                return []
-            elif type(paragraph[0]) is Sentence:
-                # method overload makes hard to find apply(Ljava/util/ArrayList;)Ljava/util/ArrayList;
-                return [Sentence.fromJava(self.__api.analyze(s.getReference())) for s in paragraph]
+        result = []
+        for paragraph in text:
+            if type(paragraph) is str:
+                result += py_list(self.__api.analyze(string(paragraph)), item_converter=Sentence.fromJava)
+            elif type(paragraph) is Sentence:
+                result.append(Sentence.fromJava(self.__api.analyze(paragraph.getReference())))
+            elif type(paragraph) is list:
+                result += self.analyze(*paragraph)
             else:
                 raise Exception("List인 경우 Sentence의 List만 분석 가능합니다.")
-        else:  # Sentence
-            return Sentence.fromJava(self.__api.analyze(paragraph.getReference()))
 
-    def __call__(self, *args, **kwargs):
+        return result
+
+    def __call__(self, *args, **kwargs) -> List[Sentence]:
         """
-        문단을 분석합니다.
+        문단(들)을 분석합니다.
 
-        :param paragraph: 분석할 문단 텍스트(str), 문장 객체의 리스트 (List[Sentence]) 또는 문장 객체(Sentence)들 (가변인자)
-        :rtype: Union[Sentence, List[Sentence]]
-        :return: 분석된 결과. Sentence를 입력받은 경우 Sentence, 그 외의 경우 List[Sentence] (flattened list).
+        :param Union[str,Sentence,List[str],List[Sentence]] text: 분석할 문단(들).
+                각 인자는 텍스트(str), 문장 객체(Sentence), 텍스트의 리스트, 문장 객체의 리스트 혼용 가능 (가변인자)
+        :rtype: List[Sentence].
+        :return: 분석된 결과들. (flattened list)
         """
-        if len(args) == 1:
-            return self.analyze(args[0])
-        elif len(args) > 1 and all(type(arg) is Sentence for arg in args):
-            return self.analyze(args)
-        else:
-            result = []
-            for arg in args:
-                if type(arg) is str:
-                    result += self.analyze(arg)
-                else:
-                    result.append(self.analyze(arg))
-
-            return result
+        return self.analyze(*args)
 
 
 class Parser(__CanAnalyzeProperty):
@@ -270,7 +287,6 @@ class Dictionary(object):
 
         self.__api.importFrom(other.__api, fastAppend, java_pos_filter(filter))
 
-    # getBaseEntries()
     def getBaseEntries(self, filter=lambda t: t.isNoun()):
         """
         원본 사전에 등재된 항목 중에서, 지정된 형태소의 항목만을 가져옵니다. (복합 품사 결합 형태는 제외)
@@ -294,7 +310,6 @@ class Dictionary(object):
             item = entries.next()
             yield (item.getFirst(), POS(item.getSecond()))
 
-    # getItems()
     def getItems(self) -> List[Tuple[str, POS]]:
         """
         사용자 사전에 등재된 모든 항목을 가져옵니다.
@@ -306,7 +321,6 @@ class Dictionary(object):
         return py_list(self.__api.getItems(),
                        item_converter=lambda t: (t.getFirst(), POS.valueOf(t.getSecond().name())))
 
-    # getNotExists()
     def getNotExists(self, onlySystemDic: bool, *word: Tuple[str, POS]) -> List[Tuple[str, POS]]:
         """
         사전에 등재되어 있는지 확인하고, 사전에 없는단어만 반환합니다.
