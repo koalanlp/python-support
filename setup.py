@@ -3,15 +3,13 @@ from setuptools import setup, find_packages
 try:
     import pypandoc
     long_description = pypandoc.convert('README.md', 'rst')
-    desc_type = None
 except(IOError, ImportError):
     long_description = open('README.md').read()
-    desc_type = 'text/markdown'
 
 
 setup(
     name='koalanlp',
-    version='2.0.4-SNAPSHOT',
+    version='2.0.4',
     description='Python wrapper for KoalaNLP',
     long_description=long_description,
     author='koalanlp',

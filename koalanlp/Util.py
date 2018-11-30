@@ -35,9 +35,6 @@ commands.repos_manager.add_repos('central1', 'http://repo1.maven.org/maven2/', '
 commands.repos_manager.add_repos('central2', 'http://central.maven.org/maven2/', 'remote',
                                  order=6)
 
-# Set logger level to warn.
-logger.setLevel('WARNING')
-
 
 def _retrieve_latest_version(group, artifact) -> str:
     import requests
@@ -48,7 +45,7 @@ def _retrieve_latest_version(group, artifact) -> str:
     result = [line.split('/')[-1] for line in re.findall('%s/(\d+\.\d+\.\d+)/' % url, result)]
     version = max(result)
 
-    logger.warning('[WARNING] Latest version of %s:%s (%s) will be used.', group, artifact, version)
+    logger.info('[INFO] Latest version of %s:%s (%s) will be used.', group, artifact, version)
     return version
 
 

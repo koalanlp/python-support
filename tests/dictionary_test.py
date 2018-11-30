@@ -33,10 +33,17 @@ def test_get_not_exists():
 def test_base_entries_of():
     gen = dict1.getBaseEntries(POS.isNoun)
     assert inspect.isgenerator(gen)
+    assert next(gen) is not None
+
+    gen = dict1.getBaseEntries(lambda t: t.isAffix())
+    assert inspect.isgenerator(gen)
+    assert len(list(gen)) > 0
 
 
 def test_import_from():
     try:
+        item_sz_prev = len(dict2.getItems())
         dict2.importFrom(dict1, True, POS.isNoun)
+        assert item_sz_prev < len(dict2.getItems())
     except Exception:
         raise Exception()

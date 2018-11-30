@@ -283,7 +283,9 @@ class Dictionary(object):
         :param Union[Set[POS],POS->bool] filter: 가져올 품사나, 품사의 리스트, 또는 해당 품사인지 판단하는 함수.
         """
         if type(filter) is not set:
-            filter = {tag.reference for tag in POS.values() if filter(tag)}
+            filter = {tag.name for tag in POS.values() if filter(tag)}
+        else:
+            filter = {tag.name for tag in filter}
 
         self.__api.importFrom(other.__api, fastAppend, java_pos_filter(filter))
 
@@ -303,7 +305,9 @@ class Dictionary(object):
         :return: (형태소, 품사)의 generator
         """
         if type(filter) is not set:
-            filter = {tag for tag in POS.values() if filter(tag)}
+            filter = [tag.name for tag in POS.values() if filter(tag)]
+        else:
+            filter = {tag.name for tag in filter}
 
         entries = self.__api.getBaseEntries(java_pos_filter(filter))
         while entries.hasNext():

@@ -110,4 +110,5 @@ if [ "${YN,,}" != "p" ]; then
     git commit -m "Initial commit for v$LIB_VER_NEXT"
     git tag v$LIB_VER_NEXT
     git push --all
+    git push --tags
 fi
