@@ -10,11 +10,11 @@ class _PyListWrap(object):
     _ref_list = None
 
     def __setattr__(self, name, value):
-        if name not in ['_ref_list']:
+        if getattr(self, name) is None:
+            pass
+        elif name not in ['_ref_list']:
             pass
         elif name not in self.__dict__:
-            pass
-        elif getattr(self, name) is None:
             pass
         else:
             raise AttributeError("Can't touch {}".format(name))
@@ -128,11 +128,11 @@ class Entity(_PyListWrap):
             morph.entities.append(self)
 
     def __setattr__(self, name, value):
-        if name not in ['corefGroup', 'surface', 'label', 'fineLabel', 'originalLabel']:
+        if getattr(self, name) is None:
+            pass
+        elif name not in ['corefGroup', 'surface', 'label', 'fineLabel', 'originalLabel']:
             pass
         elif name not in self.__dict__:
-            pass
-        elif getattr(self, name) is None:
             pass
         else:
             raise AttributeError("Can't touch {}".format(name))
@@ -283,11 +283,11 @@ class Tree(_PyListWrap):
         self.terminal = terminal
 
     def __setattr__(self, name, value):
-        if name not in ['label', 'terminal', 'children', 'parent']:
+        if getattr(self, name) is None:
+            pass
+        elif name not in ['label', 'terminal', 'children', 'parent']:
             pass
         elif name not in self.__dict__:
-            pass
-        elif getattr(self, name) is None:
             pass
         else:
             raise AttributeError("Can't touch {}".format(name))
@@ -453,11 +453,11 @@ class SyntaxTree(Tree):
             child.parent = self
 
     def __setattr__(self, name, value):
-        if name not in ['label', 'terminal', 'children', 'parent', 'originalLabel']:
+        if getattr(self, name) is None:
+            pass
+        elif name not in ['label', 'terminal', 'children', 'parent', 'originalLabel']:
             pass
         elif name not in self.__dict__:
-            pass
-        elif getattr(self, name) is None:
             pass
         else:
             raise AttributeError("Can't touch {}".format(name))
@@ -506,11 +506,11 @@ class DAGEdge(object):
         self.label = label
 
     def __setattr__(self, name, value):
-        if name not in ['src', 'dest', 'label']:
+        if getattr(self, name) is None:
+            pass
+        elif name not in ['src', 'dest', 'label']:
             pass
         elif name not in self.__dict__:
-            pass
-        elif getattr(self, name) is None:
             pass
         else:
             raise AttributeError("Can't touch {}".format(name))
@@ -607,11 +607,11 @@ class DepEdge(DAGEdge):
         self.reference = None
 
     def __setattr__(self, name, value):
-        if name not in ['src', 'dest', 'governor', 'dependent', 'label', 'type', 'depType', 'originalLabel']:
+        if getattr(self, name) is None:
+            pass
+        elif name not in ['src', 'dest', 'governor', 'dependent', 'label', 'type', 'depType', 'originalLabel']:
             pass
         elif name not in self.__dict__:
-            pass
-        elif getattr(self, name) is None:
             pass
         else:
             raise AttributeError("Can't touch {}".format(name))
@@ -735,7 +735,7 @@ class RoleEdge(DAGEdge):
         self.originalLabel = originalLabel
 
         if self.dest is not None:
-            self.dest.predicateRole = self
+            self.dest.predicateRoles.append(self)
 
         if self.src is not None:
             self.src.argumentRoles.append(self)
@@ -745,11 +745,11 @@ class RoleEdge(DAGEdge):
         self.reference = None
 
     def __setattr__(self, name, value):
-        if name not in ['src', 'dest', 'predicate', 'argument', 'label', 'modifiers', 'originalLabel']:
+        if getattr(self, name) is None:
+            pass
+        elif name not in ['src', 'dest', 'predicate', 'argument', 'label', 'modifiers', 'originalLabel']:
             pass
         elif name not in self.__dict__:
-            pass
-        elif getattr(self, name) is None:
             pass
         else:
             raise AttributeError("Can't touch {}".format(name))
@@ -835,7 +835,7 @@ class Morpheme(object):
 
         아래를 참고해보세요.
 
-        * :py:class:`koalanlp.proc.CanTag` 형태소 분석기의 최상위 Interface
+        * :py:class:`koalanlp.proc.Tagger` 형태소 분석기의 최상위 Interface
         * :py:class:`koalanlp.types.POS` 형태소의 분류를 담은 Enum class
     """
 
@@ -865,15 +865,15 @@ class Morpheme(object):
         self.wordSense = None
         self.entities = []
 
-        if self.reference.getWordSense() is not None:
+        if self.reference is not None and self.reference.getWordSense() is not None:
             self.wordSense = self.reference.getWordSense()
 
     def __setattr__(self, name, value):
-        if name not in ['surface', 'tag', 'originalTag', 'id', 'word']:
+        if getattr(self, name) is None:
+            pass
+        elif name not in ['surface', 'tag', 'originalTag', 'id', 'word']:
             pass
         elif name not in self.__dict__:
-            pass
-        elif getattr(self, name) is None:
             pass
         else:
             raise AttributeError("Can't touch {}".format(name))
@@ -1063,7 +1063,7 @@ class Morpheme(object):
             * 품사 표기는 `비교표 <https://docs.google.com/spreadsheets/d/1OGM4JDdLk6URuegFKXg1huuKWynhg_EQnZYgTmG4h0s/edit?usp=sharing>` 에서 확인가능합니다.
 
 
-        :param str partialTag: 포함 여부를 확인할 상위 형태소 분류 품사표기들 (가변인자)
+        :param str tags: 포함 여부를 확인할 상위 형태소 분류 품사표기들 (가변인자)
 
         :rtype: bool
 
@@ -1099,7 +1099,7 @@ class Morpheme(object):
 
     def equalsWithoutTag(self, other):
         """
-        타 형태소 객체 [another]와 형태소의 표면형이 같은지 비교합니다.
+        타 형태소 객체 [other]와 형태소의 표면형이 같은지 비교합니다.
 
         :param Morpheme other: 표면형을 비교할 형태소
 
@@ -1160,11 +1160,11 @@ class Word(_PyListWrap):
             morph.id = i
 
     def __setattr__(self, name, value):
-        if name not in ['surface', 'morphemes', 'id']:
+        if getattr(self, name) is None:
+            pass
+        elif name not in ['surface', 'morphemes', 'id']:
             pass
         elif name not in self.__dict__:
-            pass
-        elif getattr(self, name) is None:
             pass
         else:
             raise AttributeError("Can't touch {}".format(name))
@@ -1354,7 +1354,7 @@ class Word(_PyListWrap):
         """
         return self.argumentRoles
 
-    def getPredicateRoles(self) -> RoleEdge:
+    def getPredicateRoles(self) -> List[RoleEdge]:
         """
         의미역 분석을 했다면, 현재 어절이 논항인 상위 의미역 구조를 돌려줌.
 
@@ -1378,9 +1378,9 @@ class Word(_PyListWrap):
             * :py:class:`koalanlp.data.RoleEdge` 의미역 구조를 저장하는 형태
             * :py:class:`koalanlp.types.RoleType` 의미역 분류를 갖는 Enum 값
 
-        :rtype: RoleEdge
+        :rtype: List[RoleEdge]
 
-        :return: 어절이 논항인 상위 의미역 구조 [RoleEdge]. 분석 결과가 없으면 None.
+        :return: 어절이 논항인 상위 의미역 구조 [RoleEdge]. 분석 결과가 없으면 빈 리스트.
         """
         return self.predicateRoles
 
@@ -1475,11 +1475,11 @@ class Sentence(_PyListWrap):
             word.id = i
 
     def __setattr__(self, name, value):
-        if name not in ['words', 'syntaxTree', 'dependencies', 'roles', 'entities', 'corefGroups']:
+        if getattr(self, name) is None or len(getattr(self, name)) == 0:
+            pass
+        elif name not in ['words', 'syntaxTree', 'dependencies', 'roles', 'entities', 'corefGroups']:
             pass
         elif name not in self.__dict__:
-            pass
-        elif getattr(self, name) is None or len(getattr(self, name)) == 0:
             pass
         else:
             raise AttributeError("Can't touch {}".format(name))
@@ -1659,7 +1659,7 @@ class Sentence(_PyListWrap):
 
         :rtype: List[RoleEdge]
 
-        :return: 어절이 술어로 기능하는 하위 의미역 구조 [RoleEdge]의 목록. 분석 결과가 없으면 빈 리스트.
+        :return: 문장 속의 모든 의미역 구조 [RoleEdge]의 목록. 분석 결과가 없으면 빈 리스트.
         """
         return self.roles
 
@@ -1712,7 +1712,7 @@ class Sentence(_PyListWrap):
             아래를 참고해보세요.
 
             * :py:class:`koalanlp.proc.CorefResolver` 공지시어 해소, 대용어 분석기 interface
-            * :py:meth:`koalanlp.data.Sentence.getCorefGroups` 문장 내에 포함된 개체명 묶음 [CoreferenceGroup]들의 목록을 반환하는 API
+            * :py:meth:`koalanlp.data.Entity.getCorefGroup` 해당 개체명이 포함된 개체명 묶음 [CoreferenceGroup]을 반환하는 API
             * :py:class:`koalanlp.data.CoreferenceGroup` 동일한 대상을 지칭하는 개체명을 묶는 API
 
 
@@ -1752,7 +1752,7 @@ class Sentence(_PyListWrap):
                 if exclusion != -1 and m.hasTagOneOf('XSV', 'XSA', 'XSM'):
                     exclusion = i
 
-            if inclusion != -1 and (exclusion == -1 or inclusion > exclusion):
+            if inclusion != -1 and inclusion > exclusion:
                 result.append(word)
 
         return result
@@ -1787,7 +1787,7 @@ class Sentence(_PyListWrap):
                 if exclusion != -1 and m.hasTagOneOf("ETN", "ETM", "XSN", "XSA", "XSM"):
                     exclusion = i
 
-            if inclusion != -1 and (exclusion == -1 or inclusion > exclusion):
+            if inclusion != -1 and inclusion > exclusion:
                 result.append(word)
 
         return result
@@ -1817,12 +1817,12 @@ class Sentence(_PyListWrap):
             inclusion = -1
             exclusion = -1
             for i, m in reversed(list(enumerate(word))):
-                if inclusion != -1 and (m.isPredicate() or m.hasTagOneOf("ETM", "XSA", "XSM")):
+                if inclusion != -1 and (m.isModifier() or m.hasTagOneOf("ETM", "XSA", "XSM")):
                     inclusion = i
                 if exclusion != -1 and m.hasTagOneOf("ETN", "XSN", "XSV"):
                     exclusion = i
 
-            if inclusion != -1 and (exclusion == -1 or inclusion > exclusion):
+            if inclusion != -1 and inclusion > exclusion:
                 result.append(word)
 
         return result

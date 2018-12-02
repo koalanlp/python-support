@@ -160,13 +160,6 @@ class PhraseTag(_JavaEnum):
 
     __VALUES__ = {}
 
-    def __init__(self, reference):
-        """
-        세종 구문구조 표지자를 Enum class로 담았습니다.
-        """
-        self.reference = reference
-        super().__init__(self.reference)
-
     @staticmethod
     def values():
         """
@@ -199,15 +192,6 @@ class DependencyTag(_JavaEnum):
     """ ETRI 의존구문구조 기능표지자 """
 
     __VALUES__ = {}
-
-    def __init__(self, reference):
-        """
-        의존구문구조 기능표지자를 담은 Enum class입니다. (ETRI 표준안)
-
-        http://aiopen.etri.re.kr/data/1.%20%EC%9D%98%EC%A1%B4%20%EA%B5%AC%EB%AC%B8%EB%B6%84%EC%84%9D%EC%9D%84%20%EC%9C%84%ED%95%9C%20%ED%95%9C%EA%B5%AD%EC%96%B4%20%EC%9D%98%EC%A1%B4%EA%B4%80%EA%B3%84%20%EA%B0%80%EC%9D%B4%EB%93%9C%EB%9D%BC%EC%9D%B8%20%EB%B0%8F%20%EC%97%91%EC%86%8C%EB%B8%8C%EB%A0%88%EC%9D%B8%20%EC%96%B8%EC%96%B4%EB%B6%84%EC%84%9D%20%EB%A7%90%EB%AD%89%EC%B9%98.pdf
-        """
-        self.reference = reference
-        super().__init__(self.reference)
 
     @staticmethod
     def values():
@@ -242,13 +226,6 @@ class RoleType(_JavaEnum):
 
     __VALUES__ = {}
 
-    def __init__(self, reference):
-        """
-        의미역(Semantic Role) 분석 표지를 담은 Enum class입니다. (ETRI 표준안)
-        """
-        self.reference = reference
-        super().__init__(self.reference)
-
     @staticmethod
     def values():
         """
@@ -281,13 +258,6 @@ class RoleType(_JavaEnum):
 class CoarseEntityType(_JavaEnum):
     """ ETRI 개체명 대분류 """
     __VALUES__ = {}
-
-    def __init__(self, reference):
-        """
-        대분류 개체명(Named Entity) 유형을 담은 Enum class입니다. (ETRI 표준안)
-        """
-        self.reference = reference
-        super().__init__(self.reference)
 
     @staticmethod
     def values():
