@@ -13,6 +13,7 @@ class _JavaEnum(object):
     ordinal = -1  #: 순서 번호
 
     def __init__(self, reference):
+        self.reference = reference
         self.name = reference.name()
         self.ordinal = reference.ordinal()
         self.classType = reference.getClass().getName()
@@ -33,8 +34,7 @@ class POS(_JavaEnum):
         """
         세종 품사표기 표준안을 Enum Class로 담았습니다.
         """
-        self.reference = reference
-        super().__init__(self.reference)
+        super().__init__(reference)
 
     @staticmethod
     def values():
@@ -159,6 +159,12 @@ class PhraseTag(_JavaEnum):
     """ 세종 구문구조 표지자 """
 
     __VALUES__ = {}
+    
+    def __init__(self, reference):
+        """
+        세종 구문구조 표지자를 Enum Class로 담았습니다.
+        """
+        super().__init__(reference)
 
     @staticmethod
     def values():
@@ -192,6 +198,12 @@ class DependencyTag(_JavaEnum):
     """ ETRI 의존구문구조 기능표지자 """
 
     __VALUES__ = {}
+    
+    def __init__(self, reference):
+        """
+        ETRI 의존구문구조 기능표지자를 Enum Class로 담았습니다.
+        """
+        super().__init__(reference)
 
     @staticmethod
     def values():
@@ -225,6 +237,12 @@ class RoleType(_JavaEnum):
     """ ETRI 의미역 분석 표지 """
 
     __VALUES__ = {}
+    
+    def __init__(self, reference):
+        """
+        ETRI 의미역 분석 표지를 Enum Class로 담았습니다.
+        """
+        super().__init__(reference)
 
     @staticmethod
     def values():
@@ -258,6 +276,12 @@ class RoleType(_JavaEnum):
 class CoarseEntityType(_JavaEnum):
     """ ETRI 개체명 대분류 """
     __VALUES__ = {}
+    
+    def __init__(self, reference):
+        """
+        ETRI 개체명 대분류를 Enum Class로 담았습니다.
+        """
+        super().__init__(reference)
 
     @staticmethod
     def values():

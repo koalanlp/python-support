@@ -417,7 +417,7 @@ def test_dissemble_hangul():
     jungsung = ExtUtil.getJungsung(sent)
     jongsung = ExtUtil.getJongsung(sent)
     
-    for ch, a, j1, j2, j3 in zip(sent, completeHangul, chosung, jungsung, jongsung):
+    for a, j1, j2, j3 in zip(completeHangul, chosung, jungsung, jongsung):
         if a:
             assert all(ExtUtil.isChosungJamo(j1))
             assert not any(ExtUtil.isJungsungJamo(j1))
@@ -469,8 +469,8 @@ def test_assemble_hangul():
         
         assert ExtUtil.dissembleHangul(str) == codestr
 
-        sampleString = "SNS '인플루엔서' 쇼핑 피해 심각... 법적 안전장치 미비: ㄱ씨는 요즘 ㄴ SNS에서 갤럭시S \u1100\u1100 \u11A8\u11A8"
-        assert ExtUtil.assembleHangul(ExtUtil.dissembleHangul(sampleString)) == sampleString
+    sampleString = "SNS '인플루엔서' 쇼핑 피해 심각... 법적 안전장치 미비: ㄱ씨는 요즘 ㄴ SNS에서 갤럭시S \u1100\u1100 \u11A8\u11A8"
+    assert ExtUtil.assembleHangul(ExtUtil.dissembleHangul(sampleString)) == sampleString
 
 
 def test_verb_correction():
@@ -597,8 +597,7 @@ V 울 ㅁ 울음
                 elif str[0] == 'ㅏ':
                     testcases.append((root, isVerb, '아' + str[1:], result))
                 elif str[0] == 'ㅓ':
-                    testcases.append(
-                        (root, isVerb, '어' + str[1:], result))
+                    testcases.append((root, isVerb, '어' + str[1:], result))
                 else:
                     testcases.append((root, isVerb, str, result))
 

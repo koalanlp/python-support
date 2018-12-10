@@ -3,7 +3,8 @@
 
 from .types import *
 from .jnius import *
-from typing import List, Optional
+from typing import List, Optional, Union
+from builtins import type as typeof
 
 
 class _PyListWrap(object):
@@ -76,6 +77,33 @@ class _PyListWrap(object):
         """
         return sum(hash(x) for x in self)
 
+    def index(self, obj, start=0, stop=None):
+        """
+        참고:
+            :py:meth:`builtins.list.index`
+        :rtype: number
+        :return: return first index of value. Raises ValueError if the value is not present.
+        """
+        stop = stop if stop is not None else len(self._ref_list)
+        return self._ref_list.index(obj, start, stop)
+
+    def count(self, obj):
+        """
+        참고:
+            :py:meth:`builtins.list.count`
+        :rtype: number
+        :return: return number of occurrences of value
+        """
+        return self._ref_list.count(obj)
+
+    def copy(self):
+        """
+        참고:
+            :py:meth:`builtins.list.copy`
+        :return: a shallow copied list of this
+        """
+        return self._ref_list.copy()
+
 
 class Entity(_PyListWrap):
     """
@@ -104,12 +132,14 @@ class Entity(_PyListWrap):
     label = None  #: 개체명 대분류 값
     fineLabel = None  #: 개체명 세분류 값
     originalLabel = None  #: 원본 분석기가 제시한 개체명 분류의 값.
+    reference = None
 
-    def __init__(self, surface: str, label: str, fineLabel: str, morphemes: List, originalLabel: str = None):
+    def __init__(self, surface: str, label: Union[str, CoarseEntityType], fineLabel: str, morphemes: List,
+                 originalLabel: str = None):
         """
         개체명 분석 결과를 저장합니다.
         :param str surface: 개체명의 표면형 문자열.
-        :param str label: 개체명 대분류 값, [CoarseEntityType]에 기록된 개체명 중 하나.
+        :param Union[str,CoarseEntityType] label: 개체명 대분류 값, [CoarseEntityType]에 기록된 개체명 중 하나.
         :param str fineLabel: 개체명 세분류 값으로, [label]으로 시작하는 문자열.
         :param List[Morpheme] morphemes: 개체명을 이루는 형태소의 목록
         :param str originalLabel: 원본 분석기가 제시한 개체명 분류의 값. 기본값은 None.
@@ -119,7 +149,7 @@ class Entity(_PyListWrap):
 
         super().__init__(morphemes)
         self.surface = surface
-        self.label = label
+        self.label = label if type(label) is str else label.name
         self.fineLabel = fineLabel
         self.originalLabel = originalLabel
         self.reference = None
@@ -212,7 +242,7 @@ class Entity(_PyListWrap):
         return self.corefGroup
 
     def __eq__(self, other):
-        return self.label == other.label and self.fineLabel == other.fineLabel and super().__eq__(other)
+        return super().__eq__(other) and self.label == other.label and self.fineLabel == other.fineLabel
 
     def __hash__(self):
         return hash(self.label) + hash(self.fineLabel) + sum(hash(x) for x in self)
@@ -243,6 +273,7 @@ class CoreferenceGroup(_PyListWrap):
         * :py:meth:`koalanlp.data.Sentence.getCorefGroups` 문장 내에 포함된 개체명 묶음 [CoreferenceGroup]들의 목록을 반환하는 API
         * :py:meth:`koalanlp.data.Entity.getCorefGroup` 각 개체명을 묶어 같은 지시 대상을 갖는 묶음인 [CoreferenceGroup]를 가져오는 API
     """
+    reference = None  #: Java CoreferenceGroup reference
 
     def __init__(self, entities):
         """
@@ -395,7 +426,7 @@ class Tree(_PyListWrap):
         return self
 
     def __eq__(self, other):
-        return self.label == other.label and self.terminal == other.terminal and super().__eq__(other)
+        return super().__eq__(other) and self.label == other.label and self.terminal == other.terminal
 
     def __hash__(self):
         return hash(self.label) + (hash(self.terminal) if self.terminal is not None else 0) + sum(hash(x) for x in self)
@@ -429,18 +460,20 @@ class SyntaxTree(Tree):
         * :py:class:`koalanlp.types.PhraseTag` 구구조의 형태 분류를 갖는 Enum 값
     """
     originalLabel = None  #: 원본 분석기의 표지자 값
+    reference = None
 
-    def __init__(self, label: str, terminal=None, children=None, originalLabel=None):
+    def __init__(self, label: Union[str, PhraseTag], terminal=None, children=None, originalLabel=None):
         """
         구문구조 분석의 결과를 생성합니다.
 
-        :param str label: 구구조 표지자입니다. [PhraseTag] Enum 값입니다.
+        :param Union[str,PhraseTag] label: 구구조 표지자입니다. [PhraseTag] Enum 값입니다.
         :param Word terminal: 현재 구구조에 직접 속하는 [Word]들. 중간 구문구조인 경우 leaf를 직접 포함하지 않으므로 None.
         :param List[SyntaxTree] children: 현재 구구조에 속하는 하위 구구조 [SyntaxTree]. 하위 구구조가 없다면 빈 리스트.
         :param str originalLabel: 원본 분석기의 표지자 String 값. 기본값은 None.
         """
         children = children if children is not None else []
-        super().__init__(label, terminal, children)
+        super().__init__(label if type(label) is str else label.name,
+                         terminal, children)
 
         self.originalLabel = originalLabel
         self.reference = None
@@ -580,19 +613,21 @@ class DepEdge(DAGEdge):
     governor = None  #: 의존구문구조의 지배소
     dependent = None  #: 의존구문구조의 피지배소
     depType = None  #: 의존구문구조 표지자 값
+    reference = None
 
-    def __init__(self, governor, dependent, type: str, depType: str = None, originalLabel: str = None):
+    def __init__(self, governor=None, dependent=None, type=None, depType=None, originalLabel: str = None):
         """
         의존구문 구조를 생성합니다.
         :param Word governor: 의존구문구조의 지배소
         :param Word dependent: 의존구문구조의 피지배소
-        :param str type: 구문분석 표지자
-        :param str depType: 의존구문구조 표지자
+        :param Union[str,PhraseTag] type: 구문분석 표지자
+        :param Union[str,DependencyTag] depType: 의존구문구조 표지자
         :param str originalLabel: 의존구문구조 표지자의 원본분석기 표기
         """
         assert type is not None, "type은 None일 수 없습니다."
-        super().__init__(governor, dependent, depType)
-        self.type = type
+        super().__init__(governor, dependent,
+                         depType if depType is None or typeof(depType) is str else depType.name)
+        self.type = type if typeof(type) is str else type.name
         self.depType = self.label
         self.originalLabel = originalLabel
 
@@ -684,7 +719,7 @@ class DepEdge(DAGEdge):
         return "%s%s" % (str(self.type), super().__repr__())
 
     def __eq__(self, other):
-        return self.type == other.type and super().__eq__(other)
+        return super().__eq__(other) and self.type == other.type
 
     def __hash__(self):
         return hash(self.type) + super().__hash__()
@@ -718,18 +753,19 @@ class RoleEdge(DAGEdge):
     modifiers = []  #: 논항의 수식어구 목록.
     predicate = None  #: 의미역 구조의 술어
     argument = None  #: 의미역 구조의 논항
+    reference = None
 
-    def __init__(self, predicate, argument, label: str, modifiers: List = None, originalLabel: str = None):
+    def __init__(self, predicate, argument, label, modifiers: List = None, originalLabel: str = None):
         """
         의미역 구조를 생성합니다.
         :param Word predicate: 의미역 구조의 술어
         :param Word argument: 의미역 구조의 논항
-        :param str label: 의미역 구조의 표지자
+        :param Union[str, RoleType] label: 의미역 구조의 표지자
         :param List[Word] modifiers: 논항의 수식어구들
         :param str originalLabel: 의미역 구조 표지자의 원본분석기 표기
         """
         assert predicate is not None and label is not None, "[predicate, label]은 not None이어야 합니다."
-        super().__init__(predicate, argument, label)
+        super().__init__(predicate, argument, label if type(label) is str else label.name)
 
         self.modifiers = modifiers if modifiers is not None else []
         self.originalLabel = originalLabel
@@ -846,18 +882,19 @@ class Morpheme(object):
     word = None  #: 형태소의 상위 어절.
     wordSense = None  #: 형태소의 의미 어깨번호. :py:meth:`getWordSense` 참고.
     entities = []  #: 형태소를 포함하는 개체명 목록. :py:meth:`getEntities` 참고.
+    reference = None
 
-    def __init__(self, surface: str, tag: str, originalTag: str = None, reference=None):
+    def __init__(self, surface: str, tag: Union[str, POS], originalTag: str = None, reference=None):
         """
         형태소를 생성합니다.
         :param str surface: 형태소 표면형
-        :param str tag: 형태소 품사 태그
+        :param Union[str,POS] tag: 형태소 품사 태그
         :param str originalTag: 형태소 품사 원본 표기
         """
         assert surface is not None and tag is not None, "surface, tag가 None이 아니어야 합니다."
 
         self.surface = surface
-        self.tag = tag
+        self.tag = tag if type(tag) is str else tag.name
         self.originalTag = originalTag
         self.reference = reference
         self.id = None
@@ -1133,6 +1170,7 @@ class Word(_PyListWrap):
     governorEdge = None  #: 의존구문분석을 했다면, 현재 어절이 의존소인 상위 의존구문 구조의 값. :py:meth:`getGovernorEdge` 참고
     argumentRoles = []  #: 의미역 분석을 했다면, 현재 어절이 술어로 기능하는 하위 의미역 구조의 목록. :py:meth:`getArgumentRoles` 참고.
     predicateRoles = []  #: 의미역 분석을 했다면, 현재 어절이 논항인 상위 의미역 구조의 목록. :py:meth:`getPredicateRoles` 참고.
+    reference = None
 
     def __init__(self, surface, morphemes, reference=None):
         """
@@ -1419,7 +1457,7 @@ class Word(_PyListWrap):
         return hash(self.surface) + super().__hash__()
 
     def __eq__(self, other):
-        return self.surface == other.surface and super().__eq__(other)
+        return super().__eq__(other) and self.surface == other.surface
 
 
 class Sentence(_PyListWrap):
@@ -1454,8 +1492,7 @@ class Sentence(_PyListWrap):
                                                 reference=w))
             super().__init__(self.words)
 
-            obj = reference.getSyntaxTree()
-            self.syntaxTree = self.__recon_syntax_tree(obj)
+            self.syntaxTree = self.__recon_syntax_tree(reference.getSyntaxTree())
             self.dependencies = py_list(reference.getDependencies(), self.__get_dep_edge)
             self.roles = py_list(reference.getRoles(), self.__get_role)
             self.entities = py_list(reference.getEntities(), self.__get_entity)
@@ -1746,11 +1783,14 @@ class Sentence(_PyListWrap):
         for word in self:
             inclusion = -1
             exclusion = -1
-            for i, m in reversed(list(enumerate(word))):
-                if inclusion != -1 and (m.isNoun() or m.hasTagOneOf('ETN', 'XSN')):
+            for i, m in enumerate(word):
+                if m.isNoun() or m.hasTagOneOf('ETN', 'XSN'):
                     inclusion = i
-                if exclusion != -1 and m.hasTagOneOf('XSV', 'XSA', 'XSM'):
+                    break
+            for i, m in reversed(list(enumerate(word))):
+                if m.hasTagOneOf('XSV', 'XSA', 'XSM'):
                     exclusion = i
+                    break
 
             if inclusion != -1 and inclusion > exclusion:
                 result.append(word)
@@ -1781,11 +1821,14 @@ class Sentence(_PyListWrap):
         for word in self:
             inclusion = -1
             exclusion = -1
-            for i, m in reversed(list(enumerate(word))):
-                if inclusion != -1 and (m.isPredicate() or m.tag == POS.XSV):
+            for i, m in enumerate(word):
+                if m.isPredicate() or m.tag == POS.XSV:
                     inclusion = i
-                if exclusion != -1 and m.hasTagOneOf("ETN", "ETM", "XSN", "XSA", "XSM"):
+                    break
+            for i, m in reversed(list(enumerate(word))):
+                if m.hasTagOneOf("ETN", "ETM", "XSN", "XSA", "XSM"):
                     exclusion = i
+                    break
 
             if inclusion != -1 and inclusion > exclusion:
                 result.append(word)
@@ -1816,11 +1859,14 @@ class Sentence(_PyListWrap):
         for word in self:
             inclusion = -1
             exclusion = -1
-            for i, m in reversed(list(enumerate(word))):
-                if inclusion != -1 and (m.isModifier() or m.hasTagOneOf("ETM", "XSA", "XSM")):
+            for i, m in enumerate(word):
+                if m.isModifier() or m.hasTagOneOf("ETM", "XSA", "XSM"):
                     inclusion = i
-                if exclusion != -1 and m.hasTagOneOf("ETN", "XSN", "XSV"):
+                    break
+            for i, m in reversed(list(enumerate(word))):
+                if m.hasTagOneOf("ETN", "XSN", "XSV"):
                     exclusion = i
+                    break
 
             if inclusion != -1 and inclusion > exclusion:
                 result.append(word)

@@ -31,19 +31,29 @@ def test_get_not_exists():
 
 
 def test_base_entries_of():
-    gen = dict1.getBaseEntries(POS.isNoun)
+    gen = dict1.getBaseEntries(lambda t: t.isNoun())
     assert inspect.isgenerator(gen)
     assert next(gen) is not None
+    gen = list(gen)
 
-    gen = dict1.getBaseEntries(lambda t: t.isAffix())
-    assert inspect.isgenerator(gen)
-    assert len(list(gen)) > 0
+    gen2 = dict1.getBaseEntries(lambda t: t.isAffix())
+    assert inspect.isgenerator(gen2)
+    gen2 = list(gen2)
+    assert len(gen2) > 0
+
+    counter = 0
+    for entry in gen:
+        counter += (entry in gen2)
+    assert counter == 0
 
 
 def test_import_from():
-    try:
-        item_sz_prev = len(dict2.getItems())
-        dict2.importFrom(dict1, True, POS.isNoun)
-        assert item_sz_prev < len(dict2.getItems())
-    except Exception:
-        raise Exception()
+    item_sz_prev = len(dict2.getItems())
+    item_noun_prev = sum(1 for _, p in dict2.getItems() if p.isNoun())
+
+    dict2.importFrom(dict1, True, lambda t: t.isNoun())
+
+    item_sz_after = len(dict2.getItems())
+    item_noun_after = sum(1 for _, p in dict2.getItems() if p.isNoun())
+    assert item_sz_prev < item_sz_after
+    assert item_sz_after - item_sz_prev == item_noun_after - item_noun_prev

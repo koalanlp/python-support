@@ -5,5 +5,7 @@ venv/
 .idea/
 .jip/
 .pytest_cache/
+.coverage
+coverage.xml
 
 **/__pycache__/

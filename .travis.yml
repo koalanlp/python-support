@@ -7,13 +7,16 @@ python:
 install:
 - pip install Cython
 - pip install pyjnius jip
-- pip install pytest
+- pip install pytest codecov pytest-cov
 - python3 setup.py bdist_wheel
 script:
-- python -m pytest tests/dictionary_test.py
-- python -m pytest tests/extension_core_spec.py
-- python -m pytest tests/proc_core_spec.py
-- python -m pytest tests/type_core_spec.py
+- python -m pytest --cov=./ tests/dictionary_test.py
+- python -m pytest --cov=./ --cov-append tests/extension_core_spec.py
+- python -m pytest --cov=./ --cov-append tests/proc_core_spec.py
+- python -m pytest --cov=./ --cov-append tests/type_core_spec.py
+- python -m pytest --cov=./ --cov-append tests/data_test.py
+after_success:
+- codecov
 env:
   global:
   - JAVA_HOME=/usr/lib/jvm/java-8-oracle

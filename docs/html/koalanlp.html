@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>KoalaNLP Python3 API &mdash; KoalaNLP 2.0.5 documentation</title>
+  <title>KoalaNLP Python3 API &mdash; KoalaNLP 2.0.6-SNAPSHOT documentation</title>
   
 
   
@@ -849,6 +849,11 @@
 </dd></dl>
 
 <dl class="attribute">
+<dt id="koalanlp.data.Entity.reference">
+<code class="descname">reference</code><em class="property"> = None</em><a class="headerlink" href="#koalanlp.data.Entity.reference" title="정의 주소">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
 <dt id="koalanlp.data.Entity.surface">
 <code class="descname">surface</code><em class="property"> = None</em><a class="headerlink" href="#koalanlp.data.Entity.surface" title="정의 주소">¶</a></dt>
 <dd><p>개체명 표면형.</p>
@@ -1303,6 +1308,11 @@
 <dd></dd></dl>
 
 <dl class="attribute">
+<dt id="koalanlp.data.SyntaxTree.reference">
+<code class="descname">reference</code><em class="property"> = None</em><a class="headerlink" href="#koalanlp.data.SyntaxTree.reference" title="정의 주소">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
 <dt id="koalanlp.data.SyntaxTree.terminal">
 <code class="descname">terminal</code><em class="property"> = None</em><a class="headerlink" href="#koalanlp.data.SyntaxTree.terminal" title="정의 주소">¶</a></dt>
 <dd></dd></dl>
@@ -1510,6 +1520,11 @@
 </dd></dl>
 
 <dl class="attribute">
+<dt id="koalanlp.data.DepEdge.reference">
+<code class="descname">reference</code><em class="property"> = None</em><a class="headerlink" href="#koalanlp.data.DepEdge.reference" title="정의 주소">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
 <dt id="koalanlp.data.DepEdge.src">
 <code class="descname">src</code><em class="property"> = None</em><a class="headerlink" href="#koalanlp.data.DepEdge.src" title="정의 주소">¶</a></dt>
 <dd></dd></dl>
@@ -1706,6 +1721,11 @@
 </dd></dl>
 
 <dl class="attribute">
+<dt id="koalanlp.data.RoleEdge.reference">
+<code class="descname">reference</code><em class="property"> = None</em><a class="headerlink" href="#koalanlp.data.RoleEdge.reference" title="정의 주소">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
 <dt id="koalanlp.data.RoleEdge.src">
 <code class="descname">src</code><em class="property"> = None</em><a class="headerlink" href="#koalanlp.data.RoleEdge.src" title="정의 주소">¶</a></dt>
 <dd></dd></dl>
@@ -1729,7 +1749,7 @@
 <p>로 대략 나눌 수 있습니다.</p>
 <p>아래를 참고해보세요.</p>
 <ul class="last simple">
-<li><code class="xref py py-class docutils literal notranslate"><span class="pre">koalanlp.proc.CanTag</span></code> 형태소 분석기의 최상위 Interface</li>
+<li><a class="reference internal" href="#koalanlp.proc.Tagger" title="koalanlp.proc.Tagger"><code class="xref py py-class docutils literal notranslate"><span class="pre">koalanlp.proc.Tagger</span></code></a> 형태소 분석기의 최상위 Interface</li>
 <li><a class="reference internal" href="#koalanlp.types.POS" title="koalanlp.types.POS"><code class="xref py py-class docutils literal notranslate"><span class="pre">koalanlp.types.POS</span></code></a> 형태소의 분류를 담은 Enum class</li>
 </ul>
 </dd>
@@ -1761,7 +1781,7 @@
 <dl class="method">
 <dt id="koalanlp.data.Morpheme.equalsWithoutTag">
 <code class="descname">equalsWithoutTag</code><span class="sig-paren">(</span><em>other</em><span class="sig-paren">)</span><a class="headerlink" href="#koalanlp.data.Morpheme.equalsWithoutTag" title="정의 주소">¶</a></dt>
-<dd><p>타 형태소 객체 [another]와 형태소의 표면형이 같은지 비교합니다.</p>
+<dd><p>타 형태소 객체 [other]와 형태소의 표면형이 같은지 비교합니다.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -2007,7 +2027,7 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">매개 변수:</th><td class="field-body"><strong>partialTag</strong> (<em>str</em>) -- 포함 여부를 확인할 상위 형태소 분류 품사표기들 (가변인자)</td>
+<tr class="field-odd field"><th class="field-name">매개 변수:</th><td class="field-body"><strong>tags</strong> (<em>str</em>) -- 포함 여부를 확인할 상위 형태소 분류 품사표기들 (가변인자)</td>
 </tr>
 <tr class="field-even field"><th class="field-name">반환 형식:</th><td class="field-body">bool</td>
 </tr>
@@ -2092,6 +2112,11 @@
 <code class="descname">originalTag</code><em class="property"> = None</em><a class="headerlink" href="#koalanlp.data.Morpheme.originalTag" title="정의 주소">¶</a></dt>
 <dd><p>형태소의 원본분석기 품사</p>
 </dd></dl>
+
+<dl class="attribute">
+<dt id="koalanlp.data.Morpheme.reference">
+<code class="descname">reference</code><em class="property"> = None</em><a class="headerlink" href="#koalanlp.data.Morpheme.reference" title="정의 주소">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="attribute">
 <dt id="koalanlp.data.Morpheme.surface">
@@ -2470,7 +2495,7 @@
 
 <dl class="method">
 <dt id="koalanlp.data.Word.getPredicateRoles">
-<code class="descname">getPredicateRoles</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; koalanlp.data.RoleEdge<a class="headerlink" href="#koalanlp.data.Word.getPredicateRoles" title="정의 주소">¶</a></dt>
+<code class="descname">getPredicateRoles</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; List[koalanlp.data.RoleEdge]<a class="headerlink" href="#koalanlp.data.Word.getPredicateRoles" title="정의 주소">¶</a></dt>
 <dd><p>의미역 분석을 했다면, 현재 어절이 논항인 상위 의미역 구조를 돌려줌.</p>
 <dl class="docutils">
 <dt>참고:</dt>
@@ -2497,9 +2522,9 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">반환 형식:</th><td class="field-body"><a class="reference internal" href="#koalanlp.data.RoleEdge" title="koalanlp.data.RoleEdge">RoleEdge</a></td>
+<tr class="field-odd field"><th class="field-name">반환 형식:</th><td class="field-body">List[<a class="reference internal" href="#koalanlp.data.RoleEdge" title="koalanlp.data.RoleEdge">RoleEdge</a>]</td>
 </tr>
-<tr class="field-even field"><th class="field-name">반환:</th><td class="field-body">어절이 논항인 상위 의미역 구조 [RoleEdge]. 분석 결과가 없으면 None.</td>
+<tr class="field-even field"><th class="field-name">반환:</th><td class="field-body">어절이 논항인 상위 의미역 구조 [RoleEdge]. 분석 결과가 없으면 빈 리스트.</td>
 </tr>
 </tbody>
 </table>
@@ -2554,6 +2579,11 @@
 <code class="descname">predicateRoles</code><em class="property"> = []</em><a class="headerlink" href="#koalanlp.data.Word.predicateRoles" title="정의 주소">¶</a></dt>
 <dd><p>의미역 분석을 했다면, 현재 어절이 논항인 상위 의미역 구조의 목록. <a class="reference internal" href="#koalanlp.data.Word.getPredicateRoles" title="koalanlp.data.Word.getPredicateRoles"><code class="xref py py-meth docutils literal notranslate"><span class="pre">getPredicateRoles()</span></code></a> 참고.</p>
 </dd></dl>
+
+<dl class="attribute">
+<dt id="koalanlp.data.Word.reference">
+<code class="descname">reference</code><em class="property"> = None</em><a class="headerlink" href="#koalanlp.data.Word.reference" title="정의 주소">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="method">
 <dt id="koalanlp.data.Word.singleLineString">
@@ -2745,7 +2775,7 @@
 <p>아래를 참고해보세요.</p>
 <ul class="last simple">
 <li><code class="xref py py-class docutils literal notranslate"><span class="pre">koalanlp.proc.CorefResolver</span></code> 공지시어 해소, 대용어 분석기 interface</li>
-<li><a class="reference internal" href="#koalanlp.data.Sentence.getCorefGroups" title="koalanlp.data.Sentence.getCorefGroups"><code class="xref py py-meth docutils literal notranslate"><span class="pre">koalanlp.data.Sentence.getCorefGroups()</span></code></a> 문장 내에 포함된 개체명 묶음 [CoreferenceGroup]들의 목록을 반환하는 API</li>
+<li><a class="reference internal" href="#koalanlp.data.Entity.getCorefGroup" title="koalanlp.data.Entity.getCorefGroup"><code class="xref py py-meth docutils literal notranslate"><span class="pre">koalanlp.data.Entity.getCorefGroup()</span></code></a> 해당 개체명이 포함된 개체명 묶음 [CoreferenceGroup]을 반환하는 API</li>
 <li><a class="reference internal" href="#koalanlp.data.CoreferenceGroup" title="koalanlp.data.CoreferenceGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">koalanlp.data.CoreferenceGroup</span></code></a> 동일한 대상을 지칭하는 개체명을 묶는 API</li>
 </ul>
 </dd>
@@ -2931,7 +2961,7 @@
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">반환 형식:</th><td class="field-body">List[<a class="reference internal" href="#koalanlp.data.RoleEdge" title="koalanlp.data.RoleEdge">RoleEdge</a>]</td>
 </tr>
-<tr class="field-even field"><th class="field-name">반환:</th><td class="field-body">어절이 술어로 기능하는 하위 의미역 구조 [RoleEdge]의 목록. 분석 결과가 없으면 빈 리스트.</td>
+<tr class="field-even field"><th class="field-name">반환:</th><td class="field-body">문장 속의 모든 의미역 구조 [RoleEdge]의 목록. 분석 결과가 없으면 빈 리스트.</td>
 </tr>
 </tbody>
 </table>
@@ -3341,11 +3371,6 @@
 <dt id="koalanlp.proc.Dictionary.getBaseEntries">
 <code class="descname">getBaseEntries</code><span class="sig-paren">(</span><em>filter=&lt;function Dictionary.&lt;lambda&gt;&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#koalanlp.proc.Dictionary.getBaseEntries" title="정의 주소">¶</a></dt>
 <dd><p>원본 사전에 등재된 항목 중에서, 지정된 형태소의 항목만을 가져옵니다. (복합 품사 결합 형태는 제외)</p>
-<p>사용법
-.. code-block:: python</p>
-<blockquote>
-<div>entries = Dictionary.base_entries_of(lambda tag: tag.startsWith(&quot;NN&quot;))
-next(entries)</div></blockquote>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -3404,10 +3429,6 @@ next(entries)</div></blockquote>
 <dt id="koalanlp.proc.Dictionary.importFrom">
 <code class="descname">importFrom</code><span class="sig-paren">(</span><em>other</em>, <em>fastAppend=False</em>, <em>filter=&lt;function Dictionary.&lt;lambda&gt;&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#koalanlp.proc.Dictionary.importFrom" title="정의 주소">¶</a></dt>
 <dd><p>다른 사전을 참조하여, 선택된 사전에 없는 단어를 사용자사전으로 추가합니다.</p>
-<p>사용법
-.. code-block:: python</p>
-<blockquote>
-<div>Dictionary.import_from(Other_Dictionary, False, lambda tag: tag.startsWith(&quot;NN&quot;))</div></blockquote>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />

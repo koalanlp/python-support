@@ -163,7 +163,8 @@ class __CanAnalyzeProperty(object):
             if type(paragraph) is str:
                 result += py_list(self.__api.analyze(string(paragraph)), item_converter=Sentence.fromJava)
             elif type(paragraph) is Sentence:
-                result.append(Sentence.fromJava(self.__api.analyze(paragraph.getReference())))
+                ref = paragraph.getReference()
+                result.append(Sentence.fromJava(self.__api.analyze(ref)))
             elif type(paragraph) is list:
                 result += self.analyze(*paragraph)
             else:
@@ -273,11 +274,6 @@ class Dictionary(object):
         """
         다른 사전을 참조하여, 선택된 사전에 없는 단어를 사용자사전으로 추가합니다.
 
-        사용법
-        .. code-block:: python
-
-            Dictionary.import_from(Other_Dictionary, False, lambda tag: tag.startsWith("NN"))
-
         :param Dictionary other: 참조할 사전
         :param bool fastAppend: 선택된 사전에 존재하는지를 검사하지 않고 빠르게 추가하고자 할 때. (기본값 False)
         :param Union[Set[POS],POS->bool] filter: 가져올 품사나, 품사의 리스트, 또는 해당 품사인지 판단하는 함수.
@@ -293,13 +289,6 @@ class Dictionary(object):
         """
         원본 사전에 등재된 항목 중에서, 지정된 형태소의 항목만을 가져옵니다. (복합 품사 결합 형태는 제외)
 
-
-        사용법
-        .. code-block:: python
-
-            entries = Dictionary.base_entries_of(lambda tag: tag.startsWith("NN"))
-            next(entries)
-
         :param Union[Set[POS],POS->bool] filter: 가져올 품사나, 품사의 리스트, 또는 해당 품사인지 판단하는 함수.
         :rtype: generator
         :return: (형태소, 품사)의 generator
@@ -312,7 +301,7 @@ class Dictionary(object):
         entries = self.__api.getBaseEntries(java_pos_filter(filter))
         while entries.hasNext():
             item = entries.next()
-            yield (item.getFirst(), POS(item.getSecond()))
+            yield (item.getFirst(), POS.valueOf(item.getSecond().name()))
 
     def getItems(self) -> List[Tuple[str, POS]]:
         """
@@ -338,7 +327,7 @@ class Dictionary(object):
         zipped = [java_tuple(string(t[0]), t[1].reference) for t in word]
 
         return py_list(self.__api.getNotExists(onlySystemDic, *zipped),
-                       item_converter=lambda t: (t.getFirst(), POS(t.getSecond())))
+                       item_converter=lambda t: (t.getFirst(), POS.valueOf(t.getSecond().name())))
 
 
 # ----- Define members exported -----
