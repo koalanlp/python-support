@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>KoalaNLP Python3 API &mdash; KoalaNLP 2.0.6-SNAPSHOT documentation</title>
+  <title>KoalaNLP Python3 API &mdash; KoalaNLP 2.0.6 documentation</title>
   
 
   
@@ -597,7 +597,7 @@
 <span id="id2"></span><h2>자료형<a class="headerlink" href="#module-koalanlp.data" title="제목 주소">¶</a></h2>
 <dl class="class">
 <dt id="koalanlp.data.Entity">
-<em class="property">class </em><code class="descclassname">koalanlp.data.</code><code class="descname">Entity</code><span class="sig-paren">(</span><em>surface: str</em>, <em>label: str</em>, <em>fineLabel: str</em>, <em>morphemes: List</em>, <em>originalLabel: str = None</em><span class="sig-paren">)</span><a class="headerlink" href="#koalanlp.data.Entity" title="정의 주소">¶</a></dt>
+<em class="property">class </em><code class="descclassname">koalanlp.data.</code><code class="descname">Entity</code><span class="sig-paren">(</span><em>surface: str, label: Union[str, koalanlp.types.CoarseEntityType], fineLabel: str, morphemes: List, originalLabel: str = None</em><span class="sig-paren">)</span><a class="headerlink" href="#koalanlp.data.Entity" title="정의 주소">¶</a></dt>
 <dd><p>개체명 분석 결과를 저장할 [Property] class</p>
 <dl class="docutils">
 <dt>참고:</dt>
@@ -723,10 +723,48 @@
 <dd><p>Return repr(self).</p>
 </dd></dl>
 
+<dl class="method">
+<dt id="koalanlp.data.Entity.copy">
+<code class="descname">copy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#koalanlp.data.Entity.copy" title="정의 주소">¶</a></dt>
+<dd><dl class="docutils">
+<dt>참고:</dt>
+<dd><code class="xref py py-meth docutils literal notranslate"><span class="pre">builtins.list.copy()</span></code></dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">반환:</th><td class="field-body">a shallow copied list of this</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="attribute">
 <dt id="koalanlp.data.Entity.corefGroup">
 <code class="descname">corefGroup</code><em class="property"> = None</em><a class="headerlink" href="#koalanlp.data.Entity.corefGroup" title="정의 주소">¶</a></dt>
 <dd><p>공지시어 해소 또는 대용어 분석 결과. <a class="reference internal" href="#koalanlp.data.Entity.getCorefGroup" title="koalanlp.data.Entity.getCorefGroup"><code class="xref py py-meth docutils literal notranslate"><span class="pre">getCorefGroup()</span></code></a> 참고.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="koalanlp.data.Entity.count">
+<code class="descname">count</code><span class="sig-paren">(</span><em>obj</em><span class="sig-paren">)</span><a class="headerlink" href="#koalanlp.data.Entity.count" title="정의 주소">¶</a></dt>
+<dd><dl class="docutils">
+<dt>참고:</dt>
+<dd><code class="xref py py-meth docutils literal notranslate"><span class="pre">builtins.list.count()</span></code></dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">매개 변수:</th><td class="field-body"><strong>obj</strong> -- 세고자 하는 객체</td>
+</tr>
+<tr class="field-even field"><th class="field-name">반환 형식:</th><td class="field-body">number</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">반환:</th><td class="field-body">return number of occurrences of value</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
@@ -831,6 +869,34 @@
 <tr class="field-odd field"><th class="field-name">반환 형식:</th><td class="field-body">str</td>
 </tr>
 <tr class="field-even field"><th class="field-name">반환:</th><td class="field-body">개체명의 표면형 문자열.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="koalanlp.data.Entity.index">
+<code class="descname">index</code><span class="sig-paren">(</span><em>obj</em>, <em>start=0</em>, <em>stop=None</em><span class="sig-paren">)</span><a class="headerlink" href="#koalanlp.data.Entity.index" title="정의 주소">¶</a></dt>
+<dd><dl class="docutils">
+<dt>참고:</dt>
+<dd><code class="xref py py-meth docutils literal notranslate"><span class="pre">builtins.list.index()</span></code></dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">매개 변수:</th><td class="field-body"><ul class="first simple">
+<li><strong>obj</strong> -- 찾고자 하는 객체</li>
+<li><strong>start</strong> (<em>number</em>) -- 시작 지점</li>
+<li><strong>stop</strong> (<em>Optional</em><em>[</em><em>number</em><em>]</em>) -- 종료 지점</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">반환 형식:</th><td class="field-body"><p class="first">number</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">반환:</th><td class="field-body"><p class="first last">return first index of value. Raises ValueError if the value is not present.</p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -988,15 +1054,87 @@
 </dd></dl>
 
 <dl class="method">
+<dt id="koalanlp.data.CoreferenceGroup.copy">
+<code class="descname">copy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#koalanlp.data.CoreferenceGroup.copy" title="정의 주소">¶</a></dt>
+<dd><dl class="docutils">
+<dt>참고:</dt>
+<dd><code class="xref py py-meth docutils literal notranslate"><span class="pre">builtins.list.copy()</span></code></dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">반환:</th><td class="field-body">a shallow copied list of this</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="koalanlp.data.CoreferenceGroup.count">
+<code class="descname">count</code><span class="sig-paren">(</span><em>obj</em><span class="sig-paren">)</span><a class="headerlink" href="#koalanlp.data.CoreferenceGroup.count" title="정의 주소">¶</a></dt>
+<dd><dl class="docutils">
+<dt>참고:</dt>
+<dd><code class="xref py py-meth docutils literal notranslate"><span class="pre">builtins.list.count()</span></code></dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">매개 변수:</th><td class="field-body"><strong>obj</strong> -- 세고자 하는 객체</td>
+</tr>
+<tr class="field-even field"><th class="field-name">반환 형식:</th><td class="field-body">number</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">반환:</th><td class="field-body">return number of occurrences of value</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="koalanlp.data.CoreferenceGroup.getReference">
 <code class="descname">getReference</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#koalanlp.data.CoreferenceGroup.getReference" title="정의 주소">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="method">
+<dt id="koalanlp.data.CoreferenceGroup.index">
+<code class="descname">index</code><span class="sig-paren">(</span><em>obj</em>, <em>start=0</em>, <em>stop=None</em><span class="sig-paren">)</span><a class="headerlink" href="#koalanlp.data.CoreferenceGroup.index" title="정의 주소">¶</a></dt>
+<dd><dl class="docutils">
+<dt>참고:</dt>
+<dd><code class="xref py py-meth docutils literal notranslate"><span class="pre">builtins.list.index()</span></code></dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">매개 변수:</th><td class="field-body"><ul class="first simple">
+<li><strong>obj</strong> -- 찾고자 하는 객체</li>
+<li><strong>start</strong> (<em>number</em>) -- 시작 지점</li>
+<li><strong>stop</strong> (<em>Optional</em><em>[</em><em>number</em><em>]</em>) -- 종료 지점</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">반환 형식:</th><td class="field-body"><p class="first">number</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">반환:</th><td class="field-body"><p class="first last">return first index of value. Raises ValueError if the value is not present.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="koalanlp.data.CoreferenceGroup.reference">
+<code class="descname">reference</code><em class="property"> = None</em><a class="headerlink" href="#koalanlp.data.CoreferenceGroup.reference" title="정의 주소">¶</a></dt>
+<dd><p>Java CoreferenceGroup reference</p>
+</dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="koalanlp.data.SyntaxTree">
-<em class="property">class </em><code class="descclassname">koalanlp.data.</code><code class="descname">SyntaxTree</code><span class="sig-paren">(</span><em>label: str</em>, <em>terminal=None</em>, <em>children=None</em>, <em>originalLabel=None</em><span class="sig-paren">)</span><a class="headerlink" href="#koalanlp.data.SyntaxTree" title="정의 주소">¶</a></dt>
+<em class="property">class </em><code class="descclassname">koalanlp.data.</code><code class="descname">SyntaxTree</code><span class="sig-paren">(</span><em>label: Union[str, koalanlp.types.PhraseTag], terminal=None, children=None, originalLabel=None</em><span class="sig-paren">)</span><a class="headerlink" href="#koalanlp.data.SyntaxTree" title="정의 주소">¶</a></dt>
 <dd><p>구문구조 분석의 결과를 저장할 [Property].</p>
 <dl class="docutils">
 <dt>참고:</dt>
@@ -1122,6 +1260,44 @@
 <dt id="koalanlp.data.SyntaxTree.__repr__">
 <code class="descname">__repr__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#koalanlp.data.SyntaxTree.__repr__" title="정의 주소">¶</a></dt>
 <dd><p>Return repr(self).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="koalanlp.data.SyntaxTree.copy">
+<code class="descname">copy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#koalanlp.data.SyntaxTree.copy" title="정의 주소">¶</a></dt>
+<dd><dl class="docutils">
+<dt>참고:</dt>
+<dd><code class="xref py py-meth docutils literal notranslate"><span class="pre">builtins.list.copy()</span></code></dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">반환:</th><td class="field-body">a shallow copied list of this</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="koalanlp.data.SyntaxTree.count">
+<code class="descname">count</code><span class="sig-paren">(</span><em>obj</em><span class="sig-paren">)</span><a class="headerlink" href="#koalanlp.data.SyntaxTree.count" title="정의 주소">¶</a></dt>
+<dd><dl class="docutils">
+<dt>참고:</dt>
+<dd><code class="xref py py-meth docutils literal notranslate"><span class="pre">builtins.list.count()</span></code></dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">매개 변수:</th><td class="field-body"><strong>obj</strong> -- 세고자 하는 객체</td>
+</tr>
+<tr class="field-even field"><th class="field-name">반환 형식:</th><td class="field-body">number</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">반환:</th><td class="field-body">return number of occurrences of value</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -1276,6 +1452,34 @@
 </dd></dl>
 
 <dl class="method">
+<dt id="koalanlp.data.SyntaxTree.index">
+<code class="descname">index</code><span class="sig-paren">(</span><em>obj</em>, <em>start=0</em>, <em>stop=None</em><span class="sig-paren">)</span><a class="headerlink" href="#koalanlp.data.SyntaxTree.index" title="정의 주소">¶</a></dt>
+<dd><dl class="docutils">
+<dt>참고:</dt>
+<dd><code class="xref py py-meth docutils literal notranslate"><span class="pre">builtins.list.index()</span></code></dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">매개 변수:</th><td class="field-body"><ul class="first simple">
+<li><strong>obj</strong> -- 찾고자 하는 객체</li>
+<li><strong>start</strong> (<em>number</em>) -- 시작 지점</li>
+<li><strong>stop</strong> (<em>Optional</em><em>[</em><em>number</em><em>]</em>) -- 종료 지점</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">반환 형식:</th><td class="field-body"><p class="first">number</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">반환:</th><td class="field-body"><p class="first last">return first index of value. Raises ValueError if the value is not present.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="koalanlp.data.SyntaxTree.isRoot">
 <code class="descname">isRoot</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#koalanlp.data.SyntaxTree.isRoot" title="정의 주소">¶</a></dt>
 <dd><p>이 노드가 최상위 노드인지 확인합니다.</p>
@@ -1321,7 +1525,7 @@
 
 <dl class="class">
 <dt id="koalanlp.data.DepEdge">
-<em class="property">class </em><code class="descclassname">koalanlp.data.</code><code class="descname">DepEdge</code><span class="sig-paren">(</span><em>governor</em>, <em>dependent</em>, <em>type: str</em>, <em>depType: str = None</em>, <em>originalLabel: str = None</em><span class="sig-paren">)</span><a class="headerlink" href="#koalanlp.data.DepEdge" title="정의 주소">¶</a></dt>
+<em class="property">class </em><code class="descclassname">koalanlp.data.</code><code class="descname">DepEdge</code><span class="sig-paren">(</span><em>governor=None</em>, <em>dependent=None</em>, <em>type=None</em>, <em>depType=None</em>, <em>originalLabel: str = None</em><span class="sig-paren">)</span><a class="headerlink" href="#koalanlp.data.DepEdge" title="정의 주소">¶</a></dt>
 <dd><p>의존구문구조 분석의 결과.</p>
 <dl class="docutils">
 <dt>참고:</dt>
@@ -1539,7 +1743,7 @@
 
 <dl class="class">
 <dt id="koalanlp.data.RoleEdge">
-<em class="property">class </em><code class="descclassname">koalanlp.data.</code><code class="descname">RoleEdge</code><span class="sig-paren">(</span><em>predicate</em>, <em>argument</em>, <em>label: str</em>, <em>modifiers: List = None</em>, <em>originalLabel: str = None</em><span class="sig-paren">)</span><a class="headerlink" href="#koalanlp.data.RoleEdge" title="정의 주소">¶</a></dt>
+<em class="property">class </em><code class="descclassname">koalanlp.data.</code><code class="descname">RoleEdge</code><span class="sig-paren">(</span><em>predicate</em>, <em>argument</em>, <em>label</em>, <em>modifiers: List = None</em>, <em>originalLabel: str = None</em><span class="sig-paren">)</span><a class="headerlink" href="#koalanlp.data.RoleEdge" title="정의 주소">¶</a></dt>
 <dd><p>의미역 구조 분석의 결과.</p>
 <dl class="docutils">
 <dt>참고:</dt>
@@ -1734,7 +1938,7 @@
 
 <dl class="class">
 <dt id="koalanlp.data.Morpheme">
-<em class="property">class </em><code class="descclassname">koalanlp.data.</code><code class="descname">Morpheme</code><span class="sig-paren">(</span><em>surface: str</em>, <em>tag: str</em>, <em>originalTag: str = None</em>, <em>reference=None</em><span class="sig-paren">)</span><a class="headerlink" href="#koalanlp.data.Morpheme" title="정의 주소">¶</a></dt>
+<em class="property">class </em><code class="descclassname">koalanlp.data.</code><code class="descname">Morpheme</code><span class="sig-paren">(</span><em>surface: str, tag: Union[str, koalanlp.types.POS], originalTag: str = None, reference=None</em><span class="sig-paren">)</span><a class="headerlink" href="#koalanlp.data.Morpheme" title="정의 주소">¶</a></dt>
 <dd><p>형태소를 저장하는 [Property] class입니다.</p>
 <dl class="docutils">
 <dt>참고:</dt>
@@ -2268,6 +2472,44 @@
 <dd><p>의미역 분석을 했다면, 현재 어절이 술어로 기능하는 하위 의미역 구조의 목록. <a class="reference internal" href="#koalanlp.data.Word.getArgumentRoles" title="koalanlp.data.Word.getArgumentRoles"><code class="xref py py-meth docutils literal notranslate"><span class="pre">getArgumentRoles()</span></code></a> 참고.</p>
 </dd></dl>
 
+<dl class="method">
+<dt id="koalanlp.data.Word.copy">
+<code class="descname">copy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#koalanlp.data.Word.copy" title="정의 주소">¶</a></dt>
+<dd><dl class="docutils">
+<dt>참고:</dt>
+<dd><code class="xref py py-meth docutils literal notranslate"><span class="pre">builtins.list.copy()</span></code></dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">반환:</th><td class="field-body">a shallow copied list of this</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="koalanlp.data.Word.count">
+<code class="descname">count</code><span class="sig-paren">(</span><em>obj</em><span class="sig-paren">)</span><a class="headerlink" href="#koalanlp.data.Word.count" title="정의 주소">¶</a></dt>
+<dd><dl class="docutils">
+<dt>참고:</dt>
+<dd><code class="xref py py-meth docutils literal notranslate"><span class="pre">builtins.list.count()</span></code></dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">매개 변수:</th><td class="field-body"><strong>obj</strong> -- 세고자 하는 객체</td>
+</tr>
+<tr class="field-even field"><th class="field-name">반환 형식:</th><td class="field-body">number</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">반환:</th><td class="field-body">return number of occurrences of value</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="attribute">
 <dt id="koalanlp.data.Word.dependentEdges">
 <code class="descname">dependentEdges</code><em class="property"> = []</em><a class="headerlink" href="#koalanlp.data.Word.dependentEdges" title="정의 주소">¶</a></dt>
@@ -2562,6 +2804,34 @@
 <dd><p>어절의 문장 내 위치</p>
 </dd></dl>
 
+<dl class="method">
+<dt id="koalanlp.data.Word.index">
+<code class="descname">index</code><span class="sig-paren">(</span><em>obj</em>, <em>start=0</em>, <em>stop=None</em><span class="sig-paren">)</span><a class="headerlink" href="#koalanlp.data.Word.index" title="정의 주소">¶</a></dt>
+<dd><dl class="docutils">
+<dt>참고:</dt>
+<dd><code class="xref py py-meth docutils literal notranslate"><span class="pre">builtins.list.index()</span></code></dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">매개 변수:</th><td class="field-body"><ul class="first simple">
+<li><strong>obj</strong> -- 찾고자 하는 객체</li>
+<li><strong>start</strong> (<em>number</em>) -- 시작 지점</li>
+<li><strong>stop</strong> (<em>Optional</em><em>[</em><em>number</em><em>]</em>) -- 종료 지점</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">반환 형식:</th><td class="field-body"><p class="first">number</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">반환:</th><td class="field-body"><p class="first last">return first index of value. Raises ValueError if the value is not present.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="attribute">
 <dt id="koalanlp.data.Word.morphemes">
 <code class="descname">morphemes</code><em class="property"> = []</em><a class="headerlink" href="#koalanlp.data.Word.morphemes" title="정의 주소">¶</a></dt>
@@ -2733,10 +3003,48 @@
 </table>
 </dd></dl>
 
+<dl class="method">
+<dt id="koalanlp.data.Sentence.copy">
+<code class="descname">copy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#koalanlp.data.Sentence.copy" title="정의 주소">¶</a></dt>
+<dd><dl class="docutils">
+<dt>참고:</dt>
+<dd><code class="xref py py-meth docutils literal notranslate"><span class="pre">builtins.list.copy()</span></code></dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">반환:</th><td class="field-body">a shallow copied list of this</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="attribute">
 <dt id="koalanlp.data.Sentence.corefGroups">
 <code class="descname">corefGroups</code><em class="property"> = []</em><a class="headerlink" href="#koalanlp.data.Sentence.corefGroups" title="정의 주소">¶</a></dt>
 <dd><p>문장 내에 포함된 공통 지시어 또는 대용어들의 묶음 (분석 결과가 없으면 []). <a class="reference internal" href="#koalanlp.data.Sentence.getCorefGroups" title="koalanlp.data.Sentence.getCorefGroups"><code class="xref py py-meth docutils literal notranslate"><span class="pre">getCorefGroups()</span></code></a> 참고</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="koalanlp.data.Sentence.count">
+<code class="descname">count</code><span class="sig-paren">(</span><em>obj</em><span class="sig-paren">)</span><a class="headerlink" href="#koalanlp.data.Sentence.count" title="정의 주소">¶</a></dt>
+<dd><dl class="docutils">
+<dt>참고:</dt>
+<dd><code class="xref py py-meth docutils literal notranslate"><span class="pre">builtins.list.count()</span></code></dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">매개 변수:</th><td class="field-body"><strong>obj</strong> -- 세고자 하는 객체</td>
+</tr>
+<tr class="field-even field"><th class="field-name">반환 형식:</th><td class="field-body">number</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">반환:</th><td class="field-body">return number of occurrences of value</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
@@ -3029,6 +3337,34 @@
 <tr class="field-odd field"><th class="field-name">반환 형식:</th><td class="field-body">List[<a class="reference internal" href="#koalanlp.data.Word" title="koalanlp.data.Word">Word</a>]</td>
 </tr>
 <tr class="field-even field"><th class="field-name">반환:</th><td class="field-body">용언 또는 용언 성격의 어휘를 포함하는 어절의 목록</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="koalanlp.data.Sentence.index">
+<code class="descname">index</code><span class="sig-paren">(</span><em>obj</em>, <em>start=0</em>, <em>stop=None</em><span class="sig-paren">)</span><a class="headerlink" href="#koalanlp.data.Sentence.index" title="정의 주소">¶</a></dt>
+<dd><dl class="docutils">
+<dt>참고:</dt>
+<dd><code class="xref py py-meth docutils literal notranslate"><span class="pre">builtins.list.index()</span></code></dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">매개 변수:</th><td class="field-body"><ul class="first simple">
+<li><strong>obj</strong> -- 찾고자 하는 객체</li>
+<li><strong>start</strong> (<em>number</em>) -- 시작 지점</li>
+<li><strong>stop</strong> (<em>Optional</em><em>[</em><em>number</em><em>]</em>) -- 종료 지점</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">반환 형식:</th><td class="field-body"><p class="first">number</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">반환:</th><td class="field-body"><p class="first last">return first index of value. Raises ValueError if the value is not present.</p>
+</td>
 </tr>
 </tbody>
 </table>

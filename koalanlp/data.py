@@ -81,6 +81,10 @@ class _PyListWrap(object):
         """
         참고:
             :py:meth:`builtins.list.index`
+
+        :param obj: 찾고자 하는 객체
+        :param number start: 시작 지점
+        :param Optional[number] stop: 종료 지점
         :rtype: number
         :return: return first index of value. Raises ValueError if the value is not present.
         """
@@ -91,6 +95,8 @@ class _PyListWrap(object):
         """
         참고:
             :py:meth:`builtins.list.count`
+
+        :param obj: 세고자 하는 객체
         :rtype: number
         :return: return number of occurrences of value
         """
@@ -100,6 +106,7 @@ class _PyListWrap(object):
         """
         참고:
             :py:meth:`builtins.list.copy`
+
         :return: a shallow copied list of this
         """
         return self._ref_list.copy()
