@@ -147,9 +147,17 @@ def initialize(java_options="-Xmx4g -Dfile.encoding=utf-8", **packages):
     초기화 함수. 필요한 Java library를 다운받습니다.
 
     :param str java_options: 자바 JVM option (기본값: "-Xmx4g -Dfile.encoding=utf-8")
-    :param Dict[str,str] packages: 사용할 분석기 API의 목록. (Keyword arguments; 기본값: EUNJEON="2.0.0", KKMA="2.0.0")
+    :param Dict[str,str] packages: 사용할 분석기 API의 목록. (Keyword arguments; 기본값: KMR="LATEST")
     :raise Exception: JVM이 2회 이상 초기화 될때 Exception.
     """
+
+    if len(packages) == 0:
+        packages = {
+            API.KMR: "LATEST"
+        }
+        commands.logger.info("[Warning] Since no package names are specified, I'll load packages by default: %s" %
+                             str(packages))
+
     import jnius_config
     if not jnius_config.vm_running:
         java_options = java_options.split(" ")

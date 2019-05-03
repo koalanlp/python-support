@@ -2,7 +2,7 @@ from koalanlp.data import *
 from koalanlp.Util import initialize
 from koalanlp.types import *
 
-initialize(CORE="LATEST")
+initialize()
 
 sent = None
 sent2 = None

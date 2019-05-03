@@ -95,13 +95,19 @@ KoalaNLP는 다음과 같은 특징을 가지고 있습니다.
 # 사용법
 
 ## Dependency 추가
-우선 Java 8 이상을 설치하고, `JAVA_HOME`을 환경변수에 등록해주십시오.
+우선 Java JDK 8 이상을 설치하고, JDK의 설치 위치를 `JAVA_HOME`으로 하여 환경변수에 등록해주십시오.
 그런 다음, 아래와 같이 설치하십시오. (현재 python-koalanlp 버전은 [![PyPI](https://img.shields.io/pypi/v/koalanlp.svg?style=flat-square)](https://github.com/koalanlp/python-support)입니다.)
 
 ```bash
 $ pip install Cython # Cython은 별도 설치가 필요합니다.
 $ pip install koalanlp
 ```
+
+> [참고] Windows 환경의 경우, 설치 전 다음을 확인하세요:
+> * Windows 환경의 Java 12는 충분히 테스트되지 않았습니다.
+> * Windows 환경의 경우 VisualStudio C++ Toolkit v14.x와 Windows SDK가 필요합니다.
+>   이 [StackOverflow](https://stackoverflow.com/a/49986365) 답을 참조하셔서 설치하시면 됩니다.
+> * Windows 환경에서 사용시 PATH에 `%JAVA_HOME%\jre\bin`과 `%JAVA_HOME%\jre\bin\server`를 넣어주세요. 
 
 ### Packages
 각 형태소 분석기는 별도의 패키지로 나뉘어 있습니다.
@@ -134,6 +140,7 @@ initialize(java_options="-Xmx4g", KKMA="2.0.2", ETRI="2.0.2")
 
 * `java_options` 인자는 JVM을 실행하기 위한 option string입니다.
 * 이후 인자들은 keyword argument들로, 상단 표를 참고하여 지정하실 수 있습니다.
+* 키워드가 지정되지 않으면 다음 코드와 같은 효과를 나타냅니다: `KMR="LATEST"`
 * 나머지 문서는 초기화 과정이 모두 완료되었다고 보고 진행합니다.
 * API 참고: [initialize](https://koalanlp.github.io/python-support/html/koalanlp.html#koalanlp.Util.initialize)
 
