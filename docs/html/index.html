@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>KoalaNLP &mdash; KoalaNLP 2.0.6 documentation</title>
+  <title>KoalaNLP &mdash; KoalaNLP 2.0.7 문서</title>
   
 
   
@@ -17,33 +17,36 @@
   
 
   
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script type="text/javascript" src="_static/translations.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="색인" href="genindex.html" />
     <link rel="search" title="검색" href="search.html" />
     <link rel="next" title="KoalaNLP Python3 API" href="koalanlp.html" /> 
-
-  
-  <script src="_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -162,32 +165,24 @@
 <p>이 프로젝트는 <strong>서로 다른 형태의 형태소 분석기를</strong> 모아, <strong>동일한
 인터페이스</strong> 아래에서 사용할 수 있도록 하는 것이 목적입니다.</p>
 <ul>
-<li><p class="first">Hannanum: KAIST의 <a class="reference external" href="http://kldp.net/projects/hannanum/">한나눔 형태소
+<li><p>Hannanum: KAIST의 <a class="reference external" href="http://kldp.net/projects/hannanum/">한나눔 형태소
 분석기</a>와 <a class="reference external" href="http://semanticweb.kaist.ac.kr/home/index.php/NLP_HUB">NLP_HUB
-구문분석기</a></p>
-</li>
-<li><p class="first">KKMA: 서울대의 <a class="reference external" href="http://kkma.snu.ac.kr/documents/index.jsp">꼬꼬마 형태소/구문
-분석기</a></p>
-</li>
-<li><p class="first">KOMORAN: Junsoo
-Shin님의 <a class="reference external" href="https://github.com/shin285/KOMORAN">코모란 v3.x</a></p>
-</li>
-<li><p class="first">OKT: OpenKoreanText의 <a class="reference external" href="http://openkoreantext.org">오픈 소스 한국어
-처리기</a></p>
-</li>
-<li><p class="first">Eunjeon: 은전한닢 프로젝트의
-<a class="reference external" href="https://bitbucket.org/eunjeon/seunjeon">SEunjeon(S은전)</a></p>
-</li>
-<li><p class="first">Arirang:
+구문분석기</a></p></li>
+<li><p>KKMA: 서울대의 <a class="reference external" href="http://kkma.snu.ac.kr/documents/index.jsp">꼬꼬마 형태소/구문
+분석기</a></p></li>
+<li><p>KOMORAN: Junsoo
+Shin님의 <a class="reference external" href="https://github.com/shin285/KOMORAN">코모란 v3.x</a></p></li>
+<li><p>OKT: OpenKoreanText의 <a class="reference external" href="http://openkoreantext.org">오픈 소스 한국어
+처리기</a></p></li>
+<li><p>Eunjeon: 은전한닢 프로젝트의
+<a class="reference external" href="https://bitbucket.org/eunjeon/seunjeon">SEunjeon(S은전)</a></p></li>
+<li><p>Arirang:
 이수명님의 <a class="reference external" href="http://cafe.naver.com/korlucene">Arirang Morpheme
-Analyzer</a> 1-1</p>
-</li>
-<li><p class="first">RHINO: 최석재님의
-<a class="reference external" href="https://github.com/SukjaeChoi/RHINO">RHINO v2.5.4</a></p>
-</li>
-<li><p class="first">Daon: 김상준님의 <a class="reference external" href="https://github.com/rasoio/daon/tree/master/daon-core">Daon 분석기</a></p>
-</li>
-<li><p class="first">ETRI: ETRI의 <a class="reference external" href="http://aiopen.etri.re.kr/doc_language.php">공공 인공지능 Open API</a></p>
+Analyzer</a> 1-1</p></li>
+<li><p>RHINO: 최석재님의
+<a class="reference external" href="https://github.com/SukjaeChoi/RHINO">RHINO v2.5.4</a></p></li>
+<li><p>Daon: 김상준님의 <a class="reference external" href="https://github.com/rasoio/daon/tree/master/daon-core">Daon 분석기</a></p></li>
+<li><p>ETRI: ETRI의 <a class="reference external" href="http://aiopen.etri.re.kr/doc_language.php">공공 인공지능 Open API</a></p>
 <blockquote>
 <div><p>주1-1 Arirang 분석기의 출력을 형태소분석에 적합하게 조금
 다듬었으므로, 원본과 약간 다른 결과를 낼 수도 있습니다.</p>
@@ -219,9 +214,9 @@ Analyzer</a> 1-1</p>
 <div class="section" id="id3">
 <h2>색인<a class="headerlink" href="#id3" title="제목 주소">¶</a></h2>
 <ul class="simple">
-<li><a class="reference internal" href="genindex.html"><span class="std std-ref">색인</span></a></li>
-<li><a class="reference internal" href="py-modindex.html"><span class="std std-ref">모듈 목록</span></a></li>
-<li><a class="reference internal" href="search.html"><span class="std std-ref">검색 페이지</span></a></li>
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">색인</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">모듈 목록</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">검색 페이지</span></a></p></li>
 </ul>
 </div>
 </div>
@@ -261,26 +256,16 @@ Analyzer</a> 1-1</p>
   
 
 
-  
-
-    
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-        <script type="text/javascript" src="_static/translations.js"></script>
-    
-
-  
-
-  <script type="text/javascript" src="_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>
