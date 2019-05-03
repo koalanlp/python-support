@@ -1,13 +1,50 @@
 language: python
-jdk:
-- oraclejdk8
-python:
-- '3.5'
-- '3.6'
+matrix:
+  include:
+    - name: "Python 3.6 on Ubuntu Trusty"
+      python: 3.6
+      jdk: openjdk8
+    - name: "Python 3.7 on Ubuntu Xenial"
+      python: 3.7
+      dist: xenial
+      jdk: openjdk8
+    - name: "Python 3.7 on macOS"
+      os: osx
+      osx_image: xcode10.2
+      language: shell
+      jdk: openjdk8
+    - name: "Python 3.7 on Windows"
+      os: windows
+      language: shell
+      jdk: openjdk8
+      before_install: choco install python
+      env:
+        - PATH=/c/Python37:/c/Python37/Scripts:$PATH
+    - name: "Python 3.6 on Ubuntu Trusty (JDK12)"
+      python: 3.6
+      jdk: openjdk12
+    - name: "Python 3.7 on Ubuntu Xenial (JDK12)"
+      python: 3.7
+      dist: xenial
+      jdk: openjdk12
+    - name: "Python 3.7 on macOS (JDK12)"
+      os: osx
+      osx_image: xcode10.2
+      language: shell
+      jdk: openjdk10
+      env: JAVA_HOME=$HOME/openjdk11
+      before_install: $TRAVIS_BUILD_DIR/install-jdk.sh --install openjdk12 --target $JAVA_HOME
+    - name: "Python 3.7 on Windows (JDK12)"
+      os: windows
+      language: shell
+      jdk: openjdk8
+      before_install: choco install python
+      env:
+        - PATH=/c/Python37:/c/Python37/Scripts:$PATH
 install:
 - pip install Cython
 - pip install pyjnius jip
-- pip install pytest codecov pytest-cov
+- pip install pytest codecov pytest-cov --upgrade
 - python3 setup.py bdist_wheel
 script:
 - python -m pytest --cov=./ tests/dictionary_test.py
