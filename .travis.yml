@@ -19,7 +19,11 @@ matrix:
         - pyenv install 3.6.3
         - pyenv shell 3.6.3
         - wget https://bootstrap.pypa.io/get-pip.py
-        - CFLAGS="-I$(brew --prefix readline)/include -I$(brew --prefix openssl)/include -I$(xcrun --show-sdk-path)/usr/include" LDFLAGS="-L$(brew --prefix readline)/lib -L$(brew --prefix openssl)/lib" PYTHON_CONFIGURE_OPTS=--enable-unicode=ucs2 python3 get-pip.py --user
+        - PYTHON_CONFIGURE_OPTS=--enable-unicode=ucs2 python3 get-pip.py --user
+      env:
+        - LDFLAGS="${LDFLAGS} -L$(brew --prefix zlib)/lib -L$(brew --prefix readline)/lib -L$(brew --prefix openssl)/lib"
+        - CPPFLAGS="${CPPFLAGS} -I$(brew --prefix zlib)/include -I$(brew --prefix readline)/include -I$(brew --prefix openssl)/include -I$(xcrun --show-sdk-path)/include"
+        - PKG_CONFIG_PATH="${PKG_CONFIG_PATH} $(brew --prefix zlib)/lib/pkgconfig"
     - name: "Python 3.6 on Windows (JDK12)"
       os: windows
       language: shell
