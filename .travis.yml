@@ -34,16 +34,13 @@ matrix:
       language: shell
       filter_secrets: false
       before_install: 
-        - choco install openjdk --version 11.0 -y
+        - choco install openjdk --version 11.0.1 -y
         - choco install python --version 3.6.8 -y
+        - choco install visualcpp-build-tools --version 14.0.25420.1 -y
         - refreshenv
         - $PYTHON --version
-#         - wget https://bootstrap.pypa.io/get-pip.py
-#         - $PYTHON get-pip.py --user
       env:
-        - JAVA_HOME=/c/Program Files/OpenJDK/jdk-11.0
-#         - PATH=/c/Python36:/c/Python36/Scripts:$JAVA_HOME/bin:$PATH
-#         - PYTHON=python
+        - PYTHON=python
 #     - name: "Python 3.7 on Ubuntu Xenial (JDK12)"
 #       python: 3.7
 #       dist: xenial
