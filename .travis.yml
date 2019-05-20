@@ -5,11 +5,11 @@ matrix:
       python: 3.6
       dist: xenial
       jdk: openjdk8
-    - name: "Python 3.6 on macOS (JDK11)"
+    - name: "Python 3.6 on macOS"
       os: osx
       osx_image: xcode10.2
       language: shell
-      jdk: openjdk11
+      jdk: openjdk8
       addons:
         homebrew:
           packages:
@@ -18,18 +18,21 @@ matrix:
       cache:
         - $HOME/.pyenv
       before_install:
-        - eval "$(pyenv init -)"
         - pyenv install 3.6.3
+        - eval "$(pyenv init -)"
         - pyenv shell 3.6.3
         - $PYTHON --version
-        - wget https://bootstrap.pypa.io/get-pip.py
-        - PYTHON_CONFIGURE_OPTS=--enable-unicode=ucs2 $PYTHON get-pip.py --user
       env:
         - LDFLAGS="${LDFLAGS} -L$(brew --prefix zlib)/lib -L$(brew --prefix readline)/lib -L$(brew --prefix openssl)/lib"
         - CPPFLAGS="${CPPFLAGS} -I$(brew --prefix zlib)/include -I$(brew --prefix readline)/include -I$(brew --prefix openssl)/include -I$(xcrun --show-sdk-path)/include"
         - PKG_CONFIG_PATH="${PKG_CONFIG_PATH} $(brew --prefix zlib)/lib/pkgconfig"
         - PATH="$HOME/.pyenv:$PATH"
-    - name: "Python 3.6 on Windows (JDK12)"
+      env:
+        - LDFLAGS="${LDFLAGS} -L$(brew --prefix zlib)/lib -L$(brew --prefix readline)/lib -L$(brew --prefix openssl)/lib"
+        - CPPFLAGS="${CPPFLAGS} -I$(brew --prefix zlib)/include -I$(brew --prefix readline)/include -I$(brew --prefix openssl)/include -I$(xcrun --show-sdk-path)/include"
+        - PKG_CONFIG_PATH="${PKG_CONFIG_PATH} $(brew --prefix zlib)/lib/pkgconfig"
+        - PATH="$HOME/.pyenv:$PATH"
+    - name: "Python 3.6 on Windows (JDK11)"
       os: windows
       language: shell
       filter_secrets: false
@@ -37,10 +40,11 @@ matrix:
         - choco install openjdk --version 11.0.1 -y
         - choco install python --version 3.6.8 -y
         - choco install visualcpp-build-tools --version 14.0.25420.1 -y
-        - refreshenv
         - $PYTHON --version
       env:
         - PYTHON=python
+        - PATH=/c/Python36:/c/Python36/Scripts:$PATH
+        - JAVA_HOME="/c/Program Files/OpenJDK/jdk-11.0.1"
 #     - name: "Python 3.7 on Ubuntu Xenial (JDK12)"
 #       python: 3.7
 #       dist: xenial
