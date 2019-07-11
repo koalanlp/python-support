@@ -98,8 +98,9 @@ KoalaNLP는 다음과 같은 특징을 가지고 있습니다.
 우선 Java JDK 8 이상을 설치하고, JDK의 설치 위치를 `JAVA_HOME`으로 하여 환경변수에 등록해주십시오.
 그런 다음, 아래와 같이 설치하십시오. (현재 python-koalanlp 버전은 [![PyPI](https://img.shields.io/pypi/v/koalanlp.svg?style=flat-square)](https://github.com/koalanlp/python-support)입니다.)
 
+* Python 3.7은 일부 의존 라이브러리의 문제로 인해 사용이 불가능합니다. 해당 라이브러리에서 문제를 해결하기 전까지는 3.6 이하를 사용해주세요.
+
 ```bash
-$ pip install Cython # Cython은 별도 설치가 필요합니다.
 $ pip install koalanlp
 ```
 
