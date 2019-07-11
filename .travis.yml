@@ -41,28 +41,28 @@ matrix:
         - JAVA_HOME=/c/Program Files/OpenJDK/jdk-12.0.0
         - PATH=/c/Python36:/c/Python36/Scripts:$JAVA_HOME/bin:$PATH
         - PYTHON=python3.6
-     - name: "Python 3.7 on Ubuntu Xenial (JDK12)"
-       python: 3.7
-       dist: xenial
-       jdk: openjdk12
-     - name: "Python 3.7 on macOS (JDK12)"
-       os: osx
-       osx_image: xcode10.2
-       language: shell
-       jdk: openjdk12
-     - name: "Python 3.7 on Windows (JDK12)"
-       os: windows
-       language: shell
-       jdk: openjdk8
-       before_install:
-         - choco install openjdk --version 12.0.0 -y
-         - choco install python --version 3.7.3 -y
-         - $PYTHON --version
-         - wget https://bootstrap.pypa.io/get-pip.py
-         - $PYTHON get-pip.py --user
-       env:
-         - PATH=/c/Python37:/c/Python37/Scripts:$JAVA_HOME/bin:$PATH
-         - PYTHON=python3.7
+    - name: "Python 3.7 on Ubuntu Xenial (JDK12)"
+      python: 3.7
+      dist: xenial
+      jdk: openjdk12
+    - name: "Python 3.7 on macOS (JDK12)"
+      os: osx
+      osx_image: xcode10.2
+      language: shell
+      jdk: openjdk12
+    - name: "Python 3.7 on Windows (JDK12)"
+      os: windows
+      language: shell
+      jdk: openjdk8
+      before_install:
+        - choco install openjdk --version 12.0.0 -y
+        - choco install python --version 3.7.3 -y
+        - $PYTHON --version
+        - wget https://bootstrap.pypa.io/get-pip.py
+        - $PYTHON get-pip.py --user
+      env:
+        - PATH=/c/Python37:/c/Python37/Scripts:$JAVA_HOME/bin:$PATH
+        - PYTHON=python3.7
 install:
 - $PYTHON -m pip install py4j jip
 - $PYTHON -m pip install pytest codecov pytest-cov --upgrade
