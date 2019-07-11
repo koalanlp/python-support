@@ -9,13 +9,13 @@ except(IOError, ImportError):
 
 setup(
     name='koalanlp',
-    version='2.0.9-SNAPSHOT',
+    version='2.0.9',
     description='Python wrapper for KoalaNLP',
     long_description=long_description,
     author='koalanlp',
     url='https://koalanlp.github.io/python-support',
     install_requires=[
-        "Cython~=0.29", "pyjnius~=1.1.3", "jip~=0.9.13"
+        "py4j~=0.10", "jip~=0.9.13"
     ],
     packages=find_packages(exclude=["docs", "tests", "doc_source"]),
     keywords=['korean', 'natural language processing', 'koalanlp', '한국어 처리', '한국어 분석',
