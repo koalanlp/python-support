@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from .jnius import *
+from .jvm import *
 
 
 def _enum_value_dict(cls, item_converter):

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from .jnius import *
+from .jvm import *
 
 HNN = 'hnn'          #: 한나눔. 현재 |ver_hnn| 버전이 최신입니다. 문장분리, 품사분석, 구문분석, 의존분석이 가능합니다.
 KMR = 'kmr'          #: 코모란. 현재 |ver_kmr| 버전이 최신입니다. 품사분석만 가능합니다.

@@ -4,10 +4,14 @@ import pytest
 import random
 
 
-Util.initialize(CORE="LATEST")
+@pytest.fixture(scope="session")
+def jvm():
+    Util.initialize(CORE="LATEST")
+    yield None
+    Util.finalize()
 
 
-def test_POS_discriminate_tags():
+def test_POS_discriminate_tags(jvm):
     SET_NOUNS = lambda x: x.isNoun()
     SET_PREDICATES = lambda x: x.isPredicate()
     SET_MODIFIERS = lambda x: x.isModifier()
@@ -88,7 +92,7 @@ def test_POS_discriminate_tags():
             assert getattr(POS, tag) == POS.valueOf(tag)
 
 
-def test_POS_startsWith():
+def test_POS_startsWith(jvm):
     partialCodes = set()
     for tag in POS.values():
         if tag != POS.TEMP:
@@ -111,7 +115,7 @@ def test_POS_startsWith():
                     assert tag.startsWith(code) == tag.name.startswith(code.upper())
 
 
-def test_PhraseTag_ExtUtil():
+def test_PhraseTag_ExtUtil(jvm):
     values = PhraseTag.values()
     codes = {it.name for it in values}
 
@@ -125,7 +129,7 @@ def test_PhraseTag_ExtUtil():
         assert PhraseTag.valueOf(code) == getattr(PhraseTag, code)
 
 
-def test_DepTag_ExtUtil():
+def test_DepTag_ExtUtil(jvm):
     values = DependencyTag.values()
     codes = {it.name for it in values}
 
@@ -139,7 +143,7 @@ def test_DepTag_ExtUtil():
         assert DependencyTag.valueOf(code) == getattr(DependencyTag, code)
 
 
-def test_RoleType_ExtUtil():
+def test_RoleType_ExtUtil(jvm):
     values = RoleType.values()
     codes = {it.name for it in values}
 
@@ -153,7 +157,7 @@ def test_RoleType_ExtUtil():
         assert RoleType.valueOf(code) == getattr(RoleType, code)
 
 
-def test_CET_ExtUtil():
+def test_CET_ExtUtil(jvm):
     values = CoarseEntityType.values()
     codes = {it.name for it in values}
 

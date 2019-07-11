@@ -5,7 +5,7 @@ from jip import commands, logger
 from jip.maven import Artifact
 from typing import List
 from . import API
-from .jnius import koala_class_of, string, java_list
+from .jvm import koala_class_of, string, java_list, is_jvm_running, start_jvm, check_jvm, shutdown_jvm
 from .types import *
 from pathlib import Path
 
@@ -145,6 +145,7 @@ def _resolve_artifacts_modified(artifacts, exclusions=[]):
 def initialize(java_options="-Xmx4g -Dfile.encoding=utf-8", **packages):
     """
     초기화 함수. 필요한 Java library를 다운받습니다.
+    한번 초기화 된 다음에는 :py:func:`koalanlp.Util.finalize` 을 사용해 종료하지 않으면 다시 초기화 할 수 없습니다.
 
     :param str java_options: 자바 JVM option (기본값: "-Xmx4g -Dfile.encoding=utf-8")
     :param Dict[str,str] packages: 사용할 분석기 API의 목록. (Keyword arguments; 기본값: KMR="LATEST")
@@ -158,15 +159,16 @@ def initialize(java_options="-Xmx4g -Dfile.encoding=utf-8", **packages):
         commands.logger.info("[Warning] Since no package names are specified, I'll load packages by default: %s" %
                              str(packages))
 
-    import jnius_config
-    if not jnius_config.vm_running:
+    if not is_jvm_running():
         java_options = java_options.split(" ")
-        jnius_config.add_options(*java_options)
         packages = {getattr(API, k.upper()): v for k, v in packages.items()}
 
         deps = [_ArtifactClsf('kr.bydelta', 'koalanlp-%s' % pack, version,
                               'assembly' if pack in API._REQUIRE_ASSEMBLY_ else None)
                 for pack, version in packages.items()]
+        # Add py4j jar
+        deps.append(_ArtifactClsf('net.sf.py4j', 'py4j', '0.10.8.1'))
+
         exclusions = [_ArtifactClsf('com.jsuereth', 'sbt-pgp', '*')]
 
         down_list = _resolve_artifacts_modified(deps, exclusions=exclusions)
@@ -180,15 +182,12 @@ def initialize(java_options="-Xmx4g -Dfile.encoding=utf-8", **packages):
         classpaths = [commands.cache_manager.get_jar_path(artifact, filepath=True)
                       for artifact in down_list]
         commands.pool.join()
-        jnius_config.add_classpath(*classpaths)
+        start_jvm(java_options, classpaths)
 
         try:
-            # Test jvm
-            from jnius import autoclass
-            JString = autoclass("java.lang.String")
-            JString("")
+            check_jvm()
         except Exception as e:
-            raise Exception("JVM cannot be initialized because of %s" % str(e))
+            raise Exception("JVM test failed because %s" % str(e))
 
         # Enum 항목 초기화
         POS.values()
@@ -199,8 +198,16 @@ def initialize(java_options="-Xmx4g -Dfile.encoding=utf-8", **packages):
 
         commands.logger.info("JVM initialization procedure is completed.")
     else:
-        raise Exception("JVM cannot be initialized. "
-                        "I think JVM has been initialized by other packages already. Please check!")
+        raise Exception("JVM cannot be initialized more than once."
+                        "Please call koalanlp.Util.done() when you want to re-initialize the JVM with other options.")
+
+
+def finalize():
+    """
+    사용이 종료된 다음, 실행되어 있는 JVM을 종료합니다.
+    """
+    if is_jvm_running():
+        shutdown_jvm()
 
 
 def contains(string_list: List[str], tag) -> bool:
@@ -221,4 +228,4 @@ def contains(string_list: List[str], tag) -> bool:
 
 # -------- Declare members exported ---------
 
-__all__ = ['initialize', 'contains']
+__all__ = ['initialize', 'contains', 'finalize']

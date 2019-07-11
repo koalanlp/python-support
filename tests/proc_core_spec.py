@@ -2,13 +2,25 @@ from koalanlp import *
 from koalanlp.proc import *
 from koalanlp.data import *
 from koalanlp.types import *
-from koalanlp.jnius import *
-from typing import Optional
+from koalanlp.jvm import *
 import os
 import random
+import pytest
 from time import sleep
 
-Util.initialize(OKT="LATEST", HNN="LATEST", ETRI="LATEST")
+
+@pytest.fixture(scope="session")
+def environ():
+    Util.initialize(OKT="LATEST", HNN="LATEST", ETRI="LATEST")
+    splitter = SentenceSplitter(API.OKT)
+    tagger = Tagger(API.OKT)
+    parser = Parser(API.HNN)
+    entityRecog = EntityRecognizer(API.ETRI, apiKey=os.environ['API_KEY'])
+    roleLabeler = RoleLabeler(API.ETRI, apiKey=os.environ['API_KEY'])
+
+    yield splitter, tagger, parser, entityRecog, roleLabeler
+    Util.finalize()
+
 
 EXAMPLES = [line.strip().split(' ', maxsplit=1)
             for text in [
@@ -103,12 +115,6 @@ EXAMPLES = [line.strip().split(' ', maxsplit=1)
             for line in text.split('\n')]
 EXAMPLES = [(int(t[0]), t[1]) for t in EXAMPLES]
 
-splitter = SentenceSplitter(API.OKT)
-tagger = Tagger(API.OKT)
-parser = Parser(API.HNN)
-entityRecog = EntityRecognizer(API.ETRI, apiKey=os.environ['API_KEY'])
-roleLabeler = RoleLabeler(API.ETRI, apiKey=os.environ['API_KEY'])
-
 
 def compare_morphemes(pymorph, opts):
     assert type(pymorph) is Morpheme
@@ -139,7 +145,8 @@ def compare_morphemes(pymorph, opts):
     assert all(pymorph.hasTag(tag.name) == pymorph.reference.hasTag(string(tag.name)) for tag in POS.values())
 
     sampled = random.sample([x.name for x in POS.values()], 3)
-    assert pymorph.hasTagOneOf(*sampled) == pymorph.reference.hasTagOneOf(*[string(x) for x in sampled])
+    assert pymorph.hasTagOneOf(*sampled) == pymorph.reference.hasTagOneOf(java_varargs([string(x) for x in sampled],
+                                                                                       class_of('java.lang.String')))
 
     assert str(pymorph) == pymorph.reference.toString()
 
@@ -364,12 +371,15 @@ def compare_sentence(pysent, opts={}):
         compare_words(word, opts)
 
 
-def test_SentenceSplitter_empty():
+def test_SentenceSplitter_empty(environ):
+    splitter, tagger, parser, entityRecog, roleLabeler = environ
     sentences = splitter.sentences("")
     assert len(sentences) == 0
 
 
-def test_SentenceSplitter_typecheck():
+def test_SentenceSplitter_typecheck(environ):
+    splitter, tagger, parser, entityRecog, roleLabeler = environ
+
     for _, line in EXAMPLES:
         res = splitter(line)
         assert type(res) is list
@@ -379,7 +389,9 @@ def test_SentenceSplitter_typecheck():
         assert len(res) == len(res2) and all(x == y for x, y in zip(res, res2))
 
 
-def test_Tagger_Sentence_typecheck():
+def test_Tagger_Sentence_typecheck(environ):
+    splitter, tagger, parser, entityRecog, roleLabeler = environ
+
     for cnt, line in EXAMPLES:
         para = tagger(line)
         assert type(para) is list
@@ -399,7 +411,9 @@ def test_Tagger_Sentence_typecheck():
             assert len(para) == len(singles) and all(x == y for x, y in zip(para, singles))
 
 
-def test_Parser_Syntax_Dep_typecheck():
+def test_Parser_Syntax_Dep_typecheck(environ):
+    splitter, tagger, parser, entityRecog, roleLabeler = environ
+
     for cnt, line in EXAMPLES:
         para = parser(line)
         assert type(para) is list
@@ -410,7 +424,9 @@ def test_Parser_Syntax_Dep_typecheck():
         assert len(para) == len(singles)
 
 
-def test_Parser_Relay_typecheck():
+def test_Parser_Relay_typecheck(environ):
+    splitter, tagger, parser, entityRecog, roleLabeler = environ
+
     for _, line in EXAMPLES:
         splits = splitter(line)
         tagged = tagger.tagSentence(*splits)
@@ -424,7 +440,9 @@ def test_Parser_Relay_typecheck():
             compare_sentence(sent, {'SYN': True, 'DEP': True})
 
 
-def test_RoleLabeler_Role_typecheck():
+def test_RoleLabeler_Role_typecheck(environ):
+    splitter, tagger, parser, entityRecog, roleLabeler = environ
+
     for _, line in random.sample(EXAMPLES, 5):
         # 429 Too Many Request를 방지하기 위해 의도적으로 속도를 좀 조절함
         for t in range(random.randint(5, 10)):
@@ -441,7 +459,9 @@ def test_RoleLabeler_Role_typecheck():
                    for x, y in zip(s1.getRoles(), s2.getRoles()))
 
 
-def test_EntityRecog_Entity_typecheck():
+def test_EntityRecog_Entity_typecheck(environ):
+    splitter, tagger, parser, entityRecog, roleLabeler = environ
+
     for _, line in random.sample(EXAMPLES, 5):
         for t in range(random.randint(5, 10)):
             sleep(1)

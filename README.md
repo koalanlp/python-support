@@ -147,7 +147,7 @@ initialize(java_options="-Xmx4g", KKMA="2.0.2", ETRI="2.0.2")
 ## 간단한 예시
 다음과 같이 사용합니다.
 ```python
-from koalanlp.Util import initialize
+from koalanlp.Util import initialize, finalize
 from koalanlp.proc import *
 from koalanlp import API
 
@@ -179,6 +179,8 @@ print(wordAt0.exists(lambda m: m.isPredicate())) # 첫번째 어절에, 용언(�
 print(sentence.exists(lambda w: w.exists(lambda m: m.isNoun()))) # 문장 전체에 체언(명사 등)을 포함한 어절이 있는지 확인합니다.
 print(sentence.getNouns()) # 문장에서 체언만 추출합니다.
 print(sentence.getVerbs()) # 문장에서 용언만 추출합니다.
+
+finalize() # KoalaNLP 사용을 종료합니다.
 ```
 
 # 결과 비교

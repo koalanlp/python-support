@@ -4,12 +4,16 @@ from koalanlp.proc import *
 import pytest
 import inspect
 
-Util.initialize(KKMA="LATEST", OKT="LATEST")
-dict1 = Dictionary(API.KKMA)
-dict2 = Dictionary(API.OKT)
+
+@pytest.fixture(scope="session")
+def dicts():
+    Util.initialize(KKMA="LATEST", OKT="LATEST")
+    yield Dictionary(API.KKMA), Dictionary(API.OKT)
+    Util.finalize()
 
 
-def test_add_user_dictionary():
+def test_add_user_dictionary(dicts):
+    dict1, dict2 = dicts
     dict1.addUserDictionary(("설빙", POS.NNP))
     assert dict1.contains("설빙", POS.NNP)
 
@@ -26,11 +30,13 @@ def test_add_user_dictionary():
     assert len(list(dict1.getItems())) == 5
 
 
-def test_get_not_exists():
+def test_get_not_exists(dicts):
+    dict1, dict2 = dicts
     assert len(dict2.getNotExists(True, ("쓰국", POS.NNP), ("일", POS.NNG))) == 1
 
 
-def test_base_entries_of():
+def test_base_entries_of(dicts):
+    dict1, dict2 = dicts
     gen = dict1.getBaseEntries(lambda t: t.isNoun())
     assert inspect.isgenerator(gen)
     assert next(gen) is not None
@@ -47,7 +53,8 @@ def test_base_entries_of():
     assert counter == 0
 
 
-def test_import_from():
+def test_import_from(dicts):
+    dict1, dict2 = dicts
     item_sz_prev = len(dict2.getItems())
     item_noun_prev = sum(1 for _, p in dict2.getItems() if p.isNoun())
 

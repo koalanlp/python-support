@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from . import API
-from .jnius import *
+from .jvm import *
 from .data import Sentence, Word
 from .types import POS
 from typing import List, Union, Tuple, Set
@@ -326,7 +326,7 @@ class Dictionary(object):
 
         zipped = [java_tuple(string(t[0]), t[1].reference) for t in word]
 
-        return py_list(self.__api.getNotExists(onlySystemDic, *zipped),
+        return py_list(self.__api.getNotExists(onlySystemDic, java_varargs(zipped, class_of('kotlin.Pair'))),
                        item_converter=lambda t: (t.getFirst(), POS.valueOf(t.getSecond().name())))
 
 

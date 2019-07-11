@@ -1,13 +1,20 @@
+from koalanlp import Util
 from koalanlp.data import *
-from koalanlp.Util import initialize
 from koalanlp.types import *
-
-initialize()
+import pytest
 
 sent = None
 sent2 = None
 sent3 = None
 sent4 = None
+
+
+@pytest.fixture(scope="session")
+def jvm():
+    Util.initialize()
+    yield None
+    Util.finalize()
+
 
 def set_sentence():
     global sent, sent2, sent3, sent4
@@ -84,7 +91,7 @@ def set_sentence():
     ])
 
 
-def test_Morpheme():
+def test_Morpheme(jvm):
     dummy1 = None
     dummy2 = None
     unknown = None
@@ -270,7 +277,7 @@ def test_Morpheme():
             method()
 
 
-def test_Word():
+def test_Word(jvm):
     dummy1 = None
     dummy2 = None
 
@@ -408,7 +415,7 @@ def test_Word():
             method()
 
 
-def test_Sentence():
+def test_Sentence(jvm):
     def reset():
         set_sentence()
 
@@ -545,7 +552,7 @@ def test_Sentence():
             method()
 
 
-def test_SyntaxTree():
+def test_SyntaxTree(jvm):
     dummy1 = None
     dummy2 = None
 
@@ -712,7 +719,7 @@ NP-Node()
             method()
 
 
-def test_DepEdge():
+def test_DepEdge(jvm):
     dummy1 = None
     dummy2 = None
     dummy3 = None
@@ -803,7 +810,7 @@ def test_DepEdge():
             method()
 
 
-def test_RoleEdge():
+def test_RoleEdge(jvm):
     dummy1 = None
     dummy2 = None
     dummy3 = None
@@ -885,7 +892,7 @@ def test_RoleEdge():
             method()
 
 
-def test_Entity():
+def test_Entity(jvm):
     dummy1 = None
     dummy2 = None
     dummy3 = None
@@ -968,7 +975,7 @@ def test_Entity():
             method()
 
 
-def test_CorefGroup():
+def test_CorefGroup(jvm):
     dummy1 = None
     dummy2 = None
     dummy3 = None

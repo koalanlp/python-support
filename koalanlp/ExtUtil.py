@@ -3,7 +3,7 @@
 
 from typing import Union, Dict, List
 
-from .jnius import *
+from .jvm import *
 
 # 'ㄱ', 'ㄲ', 'ㄴ', 'ㄷ', 'ㄸ', 'ㄹ', 'ㅁ', 'ㅂ', 'ㅃ', 'ㅅ', 'ㅆ', 'ㅇ', 'ㅈ', 'ㅉ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'
 HanFirstList = [chr(x) for x in range(0x1100, 0x1112 + 1)]  #: 초성 조합형 문자열 리스트 (UNICODE 순서)
@@ -72,7 +72,7 @@ def alphaToHangul(text: str) -> str:
     :return: 국문 발음 표기된 문자열
     """
 
-    return koala_class_of('ExtUtil').alphaToHangul(string(text))
+    return str(koala_class_of('ExtUtil').alphaToHangul(string(text)))
 
 
 def hangulToAlpha(text: str) -> str:
@@ -84,7 +84,7 @@ def hangulToAlpha(text: str) -> str:
     :return: 영문 변환된 문자열
     """
 
-    return koala_class_of('ExtUtil').hangulToAlpha(string(text))
+    return str(koala_class_of('ExtUtil').hangulToAlpha(string(text)))
 
 
 def isAlphaPronounced(text: str) -> bool:
@@ -141,7 +141,7 @@ def hanjaToHangul(text: str, headCorrection: bool = True) -> str:
     :return: 국문 표기로 전환된 문자열
     """
 
-    return koala_class_of('ExtUtil').hanjaToHangul(string(text), headCorrection)
+    return str(koala_class_of('ExtUtil').hanjaToHangul(string(text), headCorrection))
 
 
 def isCompleteHangul(text: str) -> List[bool]:
@@ -189,7 +189,8 @@ def isHangulEnding(text: str) -> bool:
     :return: 맞다면 True.
     """
 
-    return koala_class_of('ExtUtil').isHangulEnding(string(text))
+    # Workaround... Py4J calls Character version first.
+    return koala_class_of('ExtUtil').isHangulEnding(string(text[-1]))
 
 
 def isChosungJamo(text: str) -> List[bool]:
@@ -237,7 +238,8 @@ def isJongsungEnding(text: str) -> bool:
     :return: 맞다면 True.
     """
 
-    return koala_class_of('ExtUtil').isJongsungEnding(string(text))
+    # Workaround... Py4J calls Character version first.
+    return koala_class_of('ExtUtil').isJongsungEnding(string(text[-1]))
 
 
 def getChosung(text: str) -> List[Union[None, str]]:
@@ -318,7 +320,18 @@ def dissembleHangul(text: str) -> str:
     :return: 분해된 문자열
     """
 
-    return koala_class_of('ExtUtil').dissembleHangul(string(text))
+    # Workaround... Py4J calls Triplet version first.
+    result = ''
+    for ch in text:
+        char_dissemble = py_triple(koala_class_of('ExtUtil').dissembleHangul(ch))
+        if char_dissemble is None:
+            result += ch
+        else:
+            for c in char_dissemble:
+                if c is not None:
+                    result += c
+
+    return result
 
 
 def assembleHangulTriple(cho: Union[str, None] = None, jung: Union[str, None] = None,
@@ -340,7 +353,7 @@ def assembleHangulTriple(cho: Union[str, None] = None, jung: Union[str, None] = 
     jung = jung if jung is not None else HanSecondList[18]
     jong = jong if jong is not None else ''
 
-    return koala_class_of('ExtUtil').assembleHangulString(string(cho + jung + jong))
+    return str(koala_class_of('ExtUtil').assembleHangulString(string(cho + jung + jong)))
 
 
 def assembleHangul(text: str) -> str:
@@ -353,7 +366,7 @@ def assembleHangul(text: str) -> str:
     """
 
     # This is an bypass...
-    return koala_class_of('ExtUtil').assembleHangulString(string(text))
+    return str(koala_class_of('ExtUtil').assembleHangulString(string(text)))
 
 
 def correctVerbApply(verb: str, isVerb: bool, rest: str) -> str:
@@ -367,7 +380,7 @@ def correctVerbApply(verb: str, isVerb: bool, rest: str) -> str:
     :return: 모음조화나 불규칙 활용이 교정된 원형+어미 결합
     """
 
-    return koala_class_of('ExtUtil').correctVerbApply(string(verb), isVerb, string(rest))
+    return str(koala_class_of('ExtUtil').correctVerbApply(string(verb), isVerb, string(rest)))
 
 
 # ----- Define members exported -----

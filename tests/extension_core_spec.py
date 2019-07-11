@@ -1,11 +1,17 @@
 import random
 
 from koalanlp import *
+import pytest
 
-Util.initialize(CORE="LATEST")
+
+@pytest.fixture(scope="session")
+def environ():
+    Util.initialize(CORE="LATEST")
+    yield None
+    Util.finalize()
 
 
-def test_read_alphabet():
+def test_read_alphabet(environ):
     examples = [
             ("A", "에이"),
             ("B", "비"),
@@ -52,7 +58,7 @@ def test_read_alphabet():
     assert not ExtUtil.isAlphaPronounced("이마트")
 
 
-def test_translate_hanja():
+def test_translate_hanja(environ):
     sample = [("可高可下", "가고가하"),
                     ("家道和平", "가도화평"),
                     ("家傳忠孝", "가전충효"),
@@ -344,7 +350,7 @@ def test_translate_hanja():
     assert ExtUtil.hanjaToHangul("한 女人이 길을 건넜다", True) == "한 여인이 길을 건넜다"
 
 
-def test_recognize_hanja():
+def test_recognize_hanja(environ):
     assert ExtUtil.isHanja('金') == [True]
     assert ExtUtil.isHanja('㹤') == [True]
 
@@ -354,7 +360,7 @@ def test_recognize_hanja():
     assert all(ExtUtil.isHanja("⺀⺁⺂⻱⻲⻳"))
     
     
-def test_identify_hangul():
+def test_identify_hangul(environ):
     assert ExtUtil.isCompleteHangul('k') == [False]
     assert ExtUtil.isCompleteHangul('車') == [False]
     assert ExtUtil.isCompleteHangul('\u1161') == [False]
@@ -410,7 +416,7 @@ def test_identify_hangul():
         assert ExtUtil.isJongsungEnding(fragment) == (fragment in ("쇼핑", "법적", "ㄱ씨는", "요즘"))
     
 
-def test_dissemble_hangul():
+def test_dissemble_hangul(environ):
     sent = "SNS '인플루엔서' 쇼핑 피해 심각... 법적 안전장치 미비: ㄱ씨는 요즘 ㄴ SNS에서 갤럭시S"
     completeHangul = ExtUtil.isCompleteHangul(sent)
     chosung = ExtUtil.getChosung(sent)
@@ -449,7 +455,7 @@ def test_dissemble_hangul():
             assert j3 is None
 
 
-def test_assemble_hangul():
+def test_assemble_hangul(environ):
     for _ in range(100):
         code = [(chr(0x1100 + random.randint(0, 17)), chr(0x1161 + random.randint(0, 19)),
                  None if random.random() < 1/28.0 else chr(0x11A8 + random.randint(0, 26)))
@@ -473,7 +479,7 @@ def test_assemble_hangul():
     assert ExtUtil.assembleHangul(ExtUtil.dissembleHangul(sampleString)) == sampleString
 
 
-def test_verb_correction():
+def test_verb_correction(environ):
     map = """
 V 벗 아/어/ㅏ/ㅓ 벗어 자 벗자
 V 솟 아/어/ㅏ/ㅓ 솟아 니 솟니 자 솟자

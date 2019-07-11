@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from .types import *
-from .jnius import *
+from .jvm import *
 from typing import List, Optional, Union
 from builtins import type as typeof
 
