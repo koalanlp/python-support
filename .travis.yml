@@ -67,7 +67,6 @@ matrix:
 install:
 - $PYTHON -m pip install py4j jip
 - $PYTHON -m pip install pytest codecov pytest-cov --upgrade
-- $PYTHON setup.py bdist_wheel
 script:
 - $PYTHON -m pytest --cov=./ tests/dictionary_test.py
 - $PYTHON -m pytest --cov=./ --cov-append tests/extension_core_spec.py

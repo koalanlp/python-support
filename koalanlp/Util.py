@@ -142,12 +142,12 @@ def _resolve_artifacts_modified(artifacts, exclusions=[]):
     return download_list
 
 
-def initialize(java_options="-Xmx4g -Dfile.encoding=utf-8", **packages):
+def initialize(java_options="-Xmx1g -Dfile.encoding=utf-8", **packages):
     """
     초기화 함수. 필요한 Java library를 다운받습니다.
     한번 초기화 된 다음에는 :py:func:`koalanlp.Util.finalize` 을 사용해 종료하지 않으면 다시 초기화 할 수 없습니다.
 
-    :param str java_options: 자바 JVM option (기본값: "-Xmx4g -Dfile.encoding=utf-8")
+    :param str java_options: 자바 JVM option (기본값: "-Xmx1g -Dfile.encoding=utf-8")
     :param Dict[str,str] packages: 사용할 분석기 API의 목록. (Keyword arguments; 기본값: KMR="LATEST")
     :raise Exception: JVM이 2회 이상 초기화 될때 Exception.
     """
