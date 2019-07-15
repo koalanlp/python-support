@@ -7,8 +7,9 @@ matrix:
       filter_secrets: false
       before_install:
         - choco install openjdk --version 12.0.0 -y
-        - java --version
         - choco install python --version 3.6.8 -y
+        - refreshenv
+        - java --version
         - $PYTHON --version
         - wget https://bootstrap.pypa.io/get-pip.py
         - $PYTHON get-pip.py --user
