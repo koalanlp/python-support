@@ -18,11 +18,21 @@ _REQUIRE_ASSEMBLY_ = [HNN, KKMA, ARIRANG, RHINO, DAON]   #: 'assembly' classifie
 
 
 def _query(api: str, type: str):
+    api = api.lower()
+
+    if not is_jvm_running():
+        raise Exception("사용 전 초기화 과정이 필요합니다. 사용법의 Util.initialize 문서를 참고하여 초기화를 해주세요."
+                        "사용하신 코드를 토대로는 다음 코드의 실행을 추천해드립니다.\n"
+                        "from koalanlp.Util import initialize"
+                        "initialize(%s='LATEST')" % api)
+
     try:
         java_api = koala_class_of(api, type)
         return java_api
     except Exception:
-        raise Exception('API.%s는 %s를 지원하지 않습니다!' % (api.upper(), str(type)))
+        raise Exception('API.%s는 %s를 지원하지 않는 것 같습니다.'
+                        'API 문서에서 지원여부를 다시 한번 확인해주시고, 지원한다고 적혀있어도 혹시 문제가 지속된다면 이슈를 올려주세요.' %
+                        (api.upper(), str(type)))
 
 
 # ----- Define members exported -----
