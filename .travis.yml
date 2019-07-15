@@ -1,10 +1,21 @@
 language: python
 matrix:
   include:
-    - name: "Python 3.6 on Ubuntu Xenial"
-      python: 3.6
-      dist: xenial
-      jdk: openjdk8
+    - name: "Python 3.6 on Windows (JDK12)"
+      os: windows
+      language: shell
+      filter_secrets: false
+      before_install:
+        - choco install openjdk --version 12.0.0 -y
+        - java --version
+        - choco install python --version 3.6.8 -y
+        - $PYTHON --version
+        - wget https://bootstrap.pypa.io/get-pip.py
+        - $PYTHON get-pip.py --user
+      env:
+        - JAVA_HOME="/c/Program Files/OpenJDK/jdk-12.0.0"
+        - PATH="/c/Python36:/c/Python36/Scripts:$JAVA_HOME/bin:$PATH"
+        - PYTHON="python"
     - name: "Python 3.6 on macOS (JDK12)"
       os: osx
       osx_image: xcode10.2
@@ -27,20 +38,10 @@ matrix:
         - CPPFLAGS="${CPPFLAGS} -I$(brew --prefix zlib)/include -I$(brew --prefix readline)/include -I$(brew --prefix openssl)/include -I$(xcrun --show-sdk-path)/include"
         - PKG_CONFIG_PATH="${PKG_CONFIG_PATH} $(brew --prefix zlib)/lib/pkgconfig"
         - PATH="$HOME/.pyenv:$PATH"
-    - name: "Python 3.6 on Windows (JDK12)"
-      os: windows
-      language: shell
-      filter_secrets: false
-      before_install: 
-        - choco install openjdk --version 12.0.0 -y
-        - choco install python --version 3.6.8 -y
-        - $PYTHON --version
-        - wget https://bootstrap.pypa.io/get-pip.py
-        - $PYTHON get-pip.py --user
-      env:
-        - JAVA_HOME="/c/Program Files/OpenJDK/jdk-12.0.0"
-        - PATH="/c/Python36:/c/Python36/Scripts:$JAVA_HOME/bin:$PATH"
-        - PYTHON="python"
+    - name: "Python 3.6 on Ubuntu Xenial"
+      python: 3.6
+      dist: xenial
+      jdk: openjdk8
 #    - name: "Python 3.7 on Ubuntu Xenial (JDK12)"
 #      python: 3.7
 #      dist: xenial
