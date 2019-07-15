@@ -38,9 +38,9 @@ matrix:
         - wget https://bootstrap.pypa.io/get-pip.py
         - $PYTHON get-pip.py --user
       env:
-        - JAVA_HOME=/c/Program Files/OpenJDK/jdk-12.0.0
-        - PATH=/c/Python36:/c/Python36/Scripts:$JAVA_HOME/bin:$PATH
-        - PYTHON=python
+        - JAVA_HOME="/c/Program Files/OpenJDK/jdk-12.0.0"
+        - PATH="/c/Python36:/c/Python36/Scripts:$JAVA_HOME/bin:$PATH"
+        - PYTHON="python"
 #    - name: "Python 3.7 on Ubuntu Xenial (JDK12)"
 #      python: 3.7
 #      dist: xenial
