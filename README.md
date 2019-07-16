@@ -99,16 +99,11 @@ KoalaNLP는 다음과 같은 특징을 가지고 있습니다.
 그런 다음, 아래와 같이 설치하십시오. (현재 python-koalanlp 버전은 [![PyPI](https://img.shields.io/pypi/v/koalanlp.svg?style=flat-square)](https://github.com/koalanlp/python-support)입니다.)
 
 * Python 3.7은 일부 의존 라이브러리의 문제로 인해 사용이 불가능합니다. 해당 라이브러리에서 문제를 해결하기 전까지는 3.6 이하를 사용해주세요.
+* Windows나 OSX에서 미리 설치할 항목들은 [OS별 사전설치 항목](https://koalanlp.github.io/koalanlp/PlatformInstall.md)을 참고하세요.
 
 ```bash
 $ pip install koalanlp
-```
-
-> [참고] Windows 환경의 경우, 설치 전 다음을 확인하세요:
-> * Windows 환경의 Java 12는 충분히 테스트되지 않았습니다.
-> * Windows 환경의 경우 VisualStudio C++ Toolkit v14.x와 Windows SDK가 필요합니다.
->   이 [StackOverflow](https://stackoverflow.com/a/49986365) 답을 참조하셔서 설치하시면 됩니다.
-> * Windows 환경에서 사용시 PATH에 `%JAVA_HOME%\jre\bin`과 `%JAVA_HOME%\jre\bin\server`를 넣어주세요. 
+``` 
 
 ### Packages
 각 형태소 분석기는 별도의 패키지로 나뉘어 있습니다.
@@ -133,10 +128,12 @@ $ pip install koalanlp
 때문에, 프로그램 실행시 최초 1회에 한하여 초기화 작업이 필요합니다.
 
 ```python
-from koalanlp.Util import initialize
+from koalanlp.Util import initialize, finalize
 
 # 꼬꼬마와 은전한닢 분석기의 2.0.0 버전을 참조합니다.
 initialize(java_options="-Xmx4g", KKMA="2.0.2", ETRI="2.0.2")
+# 사용이 끝나면 반드시 finalize를 호출합니다.
+finalize()
 ```
 
 * `java_options` 인자는 JVM을 실행하기 위한 option string입니다.
