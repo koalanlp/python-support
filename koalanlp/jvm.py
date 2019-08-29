@@ -32,6 +32,7 @@ def start_jvm(option, classpath):
 
 def check_jvm():
     class_of('java.lang.String')('123')
+    del _CLASS_DIC['java.lang.String']
 
 
 def shutdown_jvm():
