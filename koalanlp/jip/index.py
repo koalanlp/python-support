@@ -20,8 +20,10 @@
 # SOFTWARE.
 #
 import threading
-import os
-import pickle
+import json
+
+from pathlib import Path
+from koalanlp.jip.maven import Artifact
 
 
 class IndexManager(object):
@@ -29,17 +31,21 @@ class IndexManager(object):
     keep it consistent"""
 
     def __init__(self, basepath):
-        self.filepath = os.path.join(basepath, '.jip', 'index.chkpt')
         self.installed = set()
         self.committed = False
         self.persist_lock = threading.Lock()
 
         # Initialize index manager
         self.committed = False
-        if os.path.exists(self.filepath):
-            pickle_data = open(self.filepath, 'rb').read()
-            for artifact in pickle.loads(pickle_data):
-                self.installed.add(artifact)
+        if Path(basepath, '.jip').exists():
+            for jarname in Path(basepath, '.jip').glob('**/*.jar'):
+                group_id = jarname.parent.parent.name
+                artifact_id = jarname.parent.name
+
+                name = jarname.name.replace('.jar', '')
+                version_string = name[len(artifact_id)+1:]
+
+                self.installed.add(Artifact(group_id, artifact_id, version_string))
 
     def add_artifact(self, artifact):
         self.committed = True
@@ -68,21 +74,6 @@ class IndexManager(object):
 
     def is_same_installed(self, artifact):
         return any(a.is_same_artifact(artifact) for a in self.installed)
-
-    def persist(self):
-        if not self.committed:
-            return
-        try:
-            self.persist_lock.acquire()
-
-            pickle_file = open(self.filepath, 'wb')
-            pickle.dump(self.installed, pickle_file)
-            pickle_file.close()
-        finally:
-            self.persist_lock.release()
-
-    def finalize(self):
-        self.persist()
 
 
 __all__ = ['IndexManager']

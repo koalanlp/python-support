@@ -66,8 +66,8 @@ matrix:
         - PATH=/c/Python37:/c/Python37/Scripts:$JAVA_HOME/bin:$PATH
         - PYTHON=python3.7
 install:
-- $PYTHON -m pip install py4j jip
-- $PYTHON -m pip install pytest codecov pytest-cov --upgrade
+- $PYTHON -m pip install py4j --user
+- $PYTHON -m pip install pytest codecov pytest-cov --upgrade --user
 script:
 - $PYTHON -m pytest --cov=./ tests/dictionary_test.py
 - $PYTHON -m pytest --cov=./ --cov-append tests/extension_core_spec.py

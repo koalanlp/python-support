@@ -4,6 +4,7 @@
 from typing import List, Dict, Tuple, Optional
 from py4j.java_gateway import JavaGateway, GatewayParameters, CallbackServerParameters, launch_gateway
 from py4j.java_collections import JavaArray
+from py4j.protocol import Py4JNetworkError
 
 _CLASS_DIC = {}
 GATEWAY = None

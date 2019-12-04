@@ -26,15 +26,31 @@ import re
 from xml.etree import ElementTree
 from string import Template, whitespace
 
-
 logger = logging.getLogger('MavenArtifactManagement')
 
 
+def _retrieve_latest_version(group, artifact) -> str:
+    import requests
+    import re
+
+    url = 'https://oss.sonatype.org/content/repositories/public/%s/%s' % (group.replace('.', '/'), artifact)
+    result = requests.get(url).text
+    result = [line.split('/')[-1] for line in re.findall('%s/(\\d+\\.\\d+\\.\\d+)/' % url, result)]
+    version = max(result)
+
+    logging.info('[INFO] Latest version of %s:%s (%s) will be used.', group, artifact, version)
+    return version
+
+
 class Artifact(object):
-    def __init__(self, group, artifact, version=None):
+    def __init__(self, group, artifact, version=None, classifier=None):
+        if version is not None and version.upper() == "LATEST":
+            version = _retrieve_latest_version(group, artifact)
+
         self.group = group
         self.artifact = artifact
         self.version = version
+        self.classifier = classifier
         self.timestamp = None
         self.build_number = None
         self.exclusions = []
@@ -47,14 +63,26 @@ class Artifact(object):
         return filename
 
     def to_maven_name(self, ext):
-        group = self.group.replace('.', '/')
-        return "%s/%s/%s/%s-%s.%s" % (group, self.artifact, self.version, self.artifact, self.version, ext)
+        if self.classifier is None or ext == "pom":
+            group = self.group.replace('.', '/')
+            return "%s/%s/%s/%s-%s.%s" % (group, self.artifact, self.version, self.artifact, self.version, ext)
+        else:
+            group = self.group.replace('.', '/')
+            return "%s/%s/%s/%s-%s-%s.%s" % (group, self.artifact, self.version, self.artifact,
+                                             self.version, self.classifier, ext)
 
     def to_maven_snapshot_name(self, ext):
-        group = self.group.replace('.', '/')
-        version_wo_snapshot = self.version.replace('-SNAPSHOT', '')
-        return "%s/%s/%s/%s-%s-%s-%s.%s" % (group, self.artifact, self.version, self.artifact, version_wo_snapshot,
-                                            self.timestamp, self.build_number, ext)
+        if self.classifier is None or ext == "pom":
+            group = self.group.replace('.', '/')
+            version_wo_snapshot = self.version.replace('-SNAPSHOT', '')
+            return "%s/%s/%s/%s-%s-%s-%s.%s" % (group, self.artifact, self.version, self.artifact, version_wo_snapshot,
+                                                self.timestamp, self.build_number, ext)
+        else:
+            group = self.group.replace('.', '/')
+            version_wo_snapshot = self.version.replace('-SNAPSHOT', '')
+            return "%s/%s/%s/%s-%s-%s-%s-%s.%s" % (group, self.artifact, self.version, self.artifact,
+                                                   version_wo_snapshot,
+                                                   self.timestamp, self.build_number, self.classifier, ext)
 
     def __eq__(self, other):
         if isinstance(other, Artifact):
@@ -86,11 +114,22 @@ class Artifact(object):
         artif_match = True if self.artifact == '*' or other.artifact == '*' else self.artifact == other.artifact
         return group_match and artif_match
 
+    @property
+    def id(self):
+        return '%s:%s:%s%s' % (
+            self.group,
+            self.artifact,
+            self.version,
+            (':%s' % self.classifier) if self.classifier else ''
+        )
+
     @classmethod
     def from_id(cls, artifact_id):
-        group, artifact, version = artifact_id.split(":")
-        artifact = Artifact(group, artifact, version)
-        return artifact
+        splits = artifact_id.split(":")
+        group, artifact, version = splits[:3]
+        classifier = splits[3] if len(splits) > 3 else None
+
+        return Artifact(group, artifact, version, classifier=classifier)
 
 
 class WhitespaceNormalizer(ElementTree.TreeBuilder, object):  # The target object of the parser

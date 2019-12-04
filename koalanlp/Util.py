@@ -3,17 +3,22 @@
 
 import logging
 
+from pathlib import Path
+from typing import List
+
+from . import API
+from .jvm import koala_class_of, string, java_list, is_jvm_running, start_jvm, check_jvm, shutdown_jvm
+from .types import *
+
 from koalanlp.jip.repository import RepositoryManager
 from koalanlp.jip.index import IndexManager
 from koalanlp.jip.cache import CacheManager
 from koalanlp.jip.maven import Artifact, Pom
 from koalanlp.jip.util import wait_until_download_finished
 
-from typing import List
-from . import API
-from .jvm import koala_class_of, string, java_list, is_jvm_running, start_jvm, check_jvm, shutdown_jvm
-from .types import *
-from pathlib import Path
+# Logging setup
+logging.basicConfig(level=logging.INFO, format="[%(name)s] %(message)s")
+logging.getLogger("requests").setLevel(logging.WARNING)
 
 # ------- Repository Setup --------
 repos_manager = RepositoryManager()
@@ -34,45 +39,6 @@ repos_manager.add_repos('jitpack.io', 'https://jitpack.io/', 'remote', order=4)
 # Maven Central & its mirror
 repos_manager.add_repos('central1', 'http://repo1.maven.org/maven2/', 'remote', order=5)
 repos_manager.add_repos('central2', 'http://central.maven.org/maven2/', 'remote', order=6)
-
-
-def _retrieve_latest_version(group, artifact) -> str:
-    import requests
-    import re
-
-    url = 'https://oss.sonatype.org/content/repositories/public/%s/%s' % (group.replace('.', '/'), artifact)
-    result = requests.get(url).text
-    result = [line.split('/')[-1] for line in re.findall('%s/(\d+\.\d+\.\d+)/' % url, result)]
-    version = max(result)
-
-    logging.info('[INFO] Latest version of %s:%s (%s) will be used.', group, artifact, version)
-    return version
-
-
-class _ArtifactClsf(Artifact):
-    def to_maven_name(self, ext):
-        if self.classifier is None or ext == "pom":
-            return super().to_maven_name(ext)
-        else:
-            group = self.group.replace('.', '/')
-            return "%s/%s/%s/%s-%s-%s.%s" % (group, self.artifact, self.version, self.artifact,
-                                             self.version, self.classifier, ext)
-
-    def to_maven_snapshot_name(self, ext):
-        if self.classifier is None or ext == "pom":
-            return super().to_maven_snapshot_name(ext)
-        else:
-            group = self.group.replace('.', '/')
-            version_wo_snapshot = self.version.replace('-SNAPSHOT', '')
-            return "%s/%s/%s/%s-%s-%s-%s-%s.%s" % (group, self.artifact, self.version, self.artifact,
-                                                   version_wo_snapshot,
-                                                   self.timestamp, self.build_number, self.classifier, ext)
-
-    def __init__(self, group, artifact, version=None, classifier=None):
-        if version is None or version.upper() == "LATEST":
-            version = _retrieve_latest_version(group, artifact)
-        super().__init__(group, artifact, version)
-        self.classifier = classifier
 
 
 # JIP 코드 참조하여 변경함.
@@ -119,7 +85,7 @@ def _resolve_artifacts_modified(artifacts, exclusions=None):
 
         pominfo = _find_pom(artifact)
         if pominfo is None:
-            if not any(map(artifact.is_same_artifact, exclusions)):
+            if not any(artifact.is_same_artifact(a) for a in exclusions):
                 logging.warning("[Warning] Artifact is not found: %s", artifact)
             # Ignore this unknown pom.
             continue
@@ -157,7 +123,6 @@ def initialize(java_options="-Xmx1g -Dfile.encoding=utf-8", lib_path=None, **pac
     :param Dict[str,str] packages: 사용할 분석기 API의 목록. (Keyword arguments; 기본값: KMR="LATEST")
     :raise Exception: JVM이 2회 이상 초기화 될때 Exception.
     """
-
     if len(packages) == 0:
         packages = {
             API.KMR: "LATEST"
@@ -177,13 +142,13 @@ def initialize(java_options="-Xmx1g -Dfile.encoding=utf-8", lib_path=None, **pac
         java_options = java_options.split(" ")
         packages = {getattr(API, k.upper()): v for k, v in packages.items()}
 
-        deps = [_ArtifactClsf('kr.bydelta', 'koalanlp-%s' % pack, version,
-                              'assembly' if pack in API._REQUIRE_ASSEMBLY_ else None)
+        deps = [Artifact('kr.bydelta', 'koalanlp-%s' % pack, version,
+                         'assembly' if pack in API._REQUIRE_ASSEMBLY_ else None)
                 for pack, version in packages.items()]
         # Add py4j jar
-        deps.append(_ArtifactClsf('net.sf.py4j', 'py4j', '0.10.8.1'))
+        deps.append(Artifact('net.sf.py4j', 'py4j', '0.10.8.1'))
 
-        exclusions = [_ArtifactClsf('com.jsuereth', 'sbt-pgp', '*')]
+        exclusions = [Artifact('com.jsuereth', 'sbt-pgp', '*')]
 
         down_list = _resolve_artifacts_modified(deps, exclusions=exclusions)
         down_list.sort(key=lambda a: a.repos.uri)
@@ -199,13 +164,11 @@ def initialize(java_options="-Xmx1g -Dfile.encoding=utf-8", lib_path=None, **pac
         wait_until_download_finished()
         start_jvm(java_options, classpaths)
 
+
         try:
             check_jvm()
         except Exception as e:
             raise Exception("JVM test failed because %s" % str(e))
-
-        # Save current state of index manager
-        index_manager.persist()
 
         # Enum 항목 초기화
         POS.values()
@@ -230,6 +193,19 @@ def finalize():
         return not is_running
     else:
         return True
+
+
+def clear_all_downloaded_jars(lib_path=None):
+    """
+    TODO adddoc
+    :param Optional[str] lib_path: Path for saving downloaded Jar files. (Default: None, i.e. os.cwd())
+    """
+    if not lib_path:
+        lib_path = Path.cwd()
+
+    jip_path = Path(lib_path, '.jip')
+    if jip_path.exists():
+        jip_path.unlink()
 
 
 def contains(string_list: List[str], tag) -> bool:

@@ -452,12 +452,6 @@ def test_RoleLabeler_Role_typecheck(environ):
         for sent in para:
             compare_sentence(sent, {'SRL': True, 'NER': True, 'DEP': True, 'WSD': True})
 
-        singles = roleLabeler(*[sent.surfaceString() for sent in para])
-        assert len(para) == len(singles) and all(x == y for x, y in zip(para, singles)) and \
-               all(x == y
-                   for s1, s2 in zip(para, singles)
-                   for x, y in zip(s1.getRoles(), s2.getRoles()))
-
 
 def test_EntityRecog_Entity_typecheck(environ):
     splitter, tagger, parser, entityRecog, roleLabeler = environ
@@ -468,9 +462,3 @@ def test_EntityRecog_Entity_typecheck(environ):
         para = entityRecog(line)
         for sent in para:
             compare_sentence(sent, {'NER': True, 'WSD': True})
-
-        singles = entityRecog(*[sent.surfaceString() for sent in para])
-        assert len(para) == len(singles) and all(x == y for x, y in zip(para, singles)) and \
-               all(x == y
-                   for s1, s2 in zip(para, singles)
-                   for x, y in zip(s1.getEntities(), s2.getEntities()))
