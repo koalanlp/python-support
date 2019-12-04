@@ -36,8 +36,18 @@ def check_jvm():
 
 def shutdown_jvm():
     global GATEWAY
+    global _CLASS_DIC
+    from gc import collect
+
+    # Shutdown gateway
     GATEWAY.shutdown()
     GATEWAY = None
+
+    # Remove cached class dictionary
+    _CLASS_DIC.clear()
+
+    # Execute garbage collection
+    collect()
     return is_jvm_running()
 
 

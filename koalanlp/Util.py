@@ -1,8 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from jip import commands, logger
-from jip.maven import Artifact
+import logging
+
+from koalanlp.jip.repository import RepositoryManager
+from koalanlp.jip.index import IndexManager
+from koalanlp.jip.cache import CacheManager
+from koalanlp.jip.maven import Artifact, Pom
+from koalanlp.jip.util import wait_until_download_finished
+
 from typing import List
 from . import API
 from .jvm import koala_class_of, string, java_list, is_jvm_running, start_jvm, check_jvm, shutdown_jvm
@@ -10,30 +16,24 @@ from .types import *
 from pathlib import Path
 
 # ------- Repository Setup --------
+repos_manager = RepositoryManager()
+index_manager = None
+cache_manager = None
 
-# Local Maven repo
-commands.repos_manager.add_repos('local-maven',
-                                 str(Path(Path.home(), ".m2", "repository").absolute()), 'local',
-                                 order=0)
 # Local Ivy2 repo
-commands.repos_manager.add_repos('local-ivy2',
-                                 str(Path(Path.home(), ".ivy2", "cache").absolute()), 'local',
-                                 order=1)
+repos_manager.add_repos('local-ivy2', str(Path(Path.home(), ".ivy2", "cache").absolute()), 'local', order=1)
 # Sonatype repo
-commands.repos_manager.add_repos('sonatype',
-                                 'https://oss.sonatype.org/content/repositories/public/', 'remote',
-                                 order=2)
+repos_manager.add_repos('sonatype',
+                        'https://oss.sonatype.org/content/repositories/public/', 'remote', order=2)
 # JCenter
-commands.repos_manager.add_repos('jcenter', 'http://jcenter.bintray.com/', 'remote', order=3)
+repos_manager.add_repos('jcenter', 'http://jcenter.bintray.com/', 'remote', order=3)
 
 # Jitpack for Komoran v3
-commands.repos_manager.add_repos('jitpack.io', 'https://jitpack.io/', 'remote', order=4)
+repos_manager.add_repos('jitpack.io', 'https://jitpack.io/', 'remote', order=4)
 
 # Maven Central & its mirror
-commands.repos_manager.add_repos('central1', 'http://repo1.maven.org/maven2/', 'remote',
-                                 order=5)
-commands.repos_manager.add_repos('central2', 'http://central.maven.org/maven2/', 'remote',
-                                 order=6)
+repos_manager.add_repos('central1', 'http://repo1.maven.org/maven2/', 'remote', order=5)
+repos_manager.add_repos('central2', 'http://central.maven.org/maven2/', 'remote', order=6)
 
 
 def _retrieve_latest_version(group, artifact) -> str:
@@ -45,7 +45,7 @@ def _retrieve_latest_version(group, artifact) -> str:
     result = [line.split('/')[-1] for line in re.findall('%s/(\d+\.\d+\.\d+)/' % url, result)]
     version = max(result)
 
-    logger.info('[INFO] Latest version of %s:%s (%s) will be used.', group, artifact, version)
+    logging.info('[INFO] Latest version of %s:%s (%s) will be used.', group, artifact, version)
     return version
 
 
@@ -79,21 +79,26 @@ class _ArtifactClsf(Artifact):
 def _find_pom(artifact):
     """ find pom and repos contains pom """
     # lookup cache first
-    if commands.cache_manager.is_artifact_in_cache(artifact):
-        pom = commands.cache_manager.get_artifact_pom(artifact)
-        return pom, commands.cache_manager.as_repos()
+    if cache_manager.is_artifact_in_cache(artifact):
+        pom = cache_manager.get_artifact_pom(artifact)
+        return pom, cache_manager.as_repos()
     else:
-        for repos in commands.repos_manager.repos:
+        for repos in repos_manager.repos:
             pom = repos.download_pom(artifact)
             # find the artifact
             if pom is not None:
-                commands.cache_manager.put_artifact_pom(artifact, pom)
+                cache_manager.put_artifact_pom(artifact, pom)
                 return pom, repos
         return None
 
 
 # JIP 코드 참조하여 변경함.
-def _resolve_artifacts_modified(artifacts, exclusions=[]):
+def _resolve_artifacts_modified(artifacts, exclusions=None):
+    global index_manager, cache_manager, repos_manager
+
+    if exclusions is None:
+        exclusions = []
+
     # download queue
     download_list = []
 
@@ -106,7 +111,7 @@ def _resolve_artifacts_modified(artifacts, exclusions=[]):
     while len(dependency_stack) > 0:
         artifact = dependency_stack.pop()
 
-        if commands.index_manager.is_same_installed(artifact) and artifact not in download_list:
+        if index_manager.is_same_installed(artifact) and artifact not in download_list:
             continue
 
         if any(map(artifact.is_same_artifact, exclusions)):
@@ -115,11 +120,11 @@ def _resolve_artifacts_modified(artifacts, exclusions=[]):
         pominfo = _find_pom(artifact)
         if pominfo is None:
             if not any(map(artifact.is_same_artifact, exclusions)):
-                commands.logger.warning("[Warning] Artifact is not found: %s", artifact)
+                logging.warning("[Warning] Artifact is not found: %s", artifact)
             # Ignore this unknown pom.
             continue
 
-        if not commands.index_manager.is_installed(artifact):
+        if not index_manager.is_installed(artifact):
             pom, repos = pominfo
 
             # repos.download_jar(artifact, get_lib_path())
@@ -127,27 +132,28 @@ def _resolve_artifacts_modified(artifacts, exclusions=[]):
 
             if not any(map(artifact.is_same_artifact, exclusions)):
                 download_list.append(artifact)
-                commands.index_manager.add_artifact(artifact)
+                index_manager.add_artifact(artifact)
 
-            pom_obj = commands.Pom(pom)
+            pom_obj = Pom(pom, repos_manager, cache_manager)
             for r in pom_obj.get_repositories():
-                commands.repos_manager.add_repos(*r)
+                repos_manager.add_repos(*r)
 
             more_dependencies = pom_obj.get_dependencies()
             for d in more_dependencies:
                 d.exclusions.extend(artifact.exclusions)
-                if not commands.index_manager.is_same_installed(d):
+                if not index_manager.is_same_installed(d):
                     dependency_stack.add(d)
 
     return download_list
 
 
-def initialize(java_options="-Xmx1g -Dfile.encoding=utf-8", **packages):
+def initialize(java_options="-Xmx1g -Dfile.encoding=utf-8", lib_path=None, **packages):
     """
     초기화 함수. 필요한 Java library를 다운받습니다.
     한번 초기화 된 다음에는 :py:func:`koalanlp.Util.finalize` 을 사용해 종료하지 않으면 다시 초기화 할 수 없습니다.
 
     :param str java_options: 자바 JVM option (기본값: "-Xmx1g -Dfile.encoding=utf-8")
+    :param Optional[str] lib_path: Path for saving downloaded Jar files. (Default: None, i.e. os.cwd())
     :param Dict[str,str] packages: 사용할 분석기 API의 목록. (Keyword arguments; 기본값: KMR="LATEST")
     :raise Exception: JVM이 2회 이상 초기화 될때 Exception.
     """
@@ -156,8 +162,16 @@ def initialize(java_options="-Xmx1g -Dfile.encoding=utf-8", **packages):
         packages = {
             API.KMR: "LATEST"
         }
-        commands.logger.info("[Warning] Since no package names are specified, I'll load packages by default: %s" %
-                             str(packages))
+        logging.info("[Warning] Since no package names are specified, I'll load packages by default: %s" %
+                     str(packages))
+
+    if not lib_path:
+        lib_path = Path.cwd()
+
+    # Initialize cache & index manager
+    global cache_manager, index_manager
+    cache_manager = CacheManager(lib_path)
+    index_manager = IndexManager(lib_path)
 
     if not is_jvm_running():
         java_options = java_options.split(" ")
@@ -175,19 +189,23 @@ def initialize(java_options="-Xmx1g -Dfile.encoding=utf-8", **packages):
         down_list.sort(key=lambda a: a.repos.uri)
 
         for artifact in down_list:
-            local_path = commands.cache_manager.get_jar_path(artifact)
-            if artifact.repos != commands.cache_manager.as_repos():
+            local_path = cache_manager.get_jar_path(artifact)
+            if artifact.repos != cache_manager.as_repos():
                 artifact.repos.download_jar(artifact, local_path)
 
-        classpaths = [commands.cache_manager.get_jar_path(artifact, filepath=True)
-                      for artifact in down_list]
-        commands.pool.join()
+        # Get all installed JAR files
+        classpaths = [cache_manager.get_jar_path(artifact, filepath=True)
+                      for artifact in index_manager.installed]
+        wait_until_download_finished()
         start_jvm(java_options, classpaths)
 
         try:
             check_jvm()
         except Exception as e:
             raise Exception("JVM test failed because %s" % str(e))
+
+        # Save current state of index manager
+        index_manager.persist()
 
         # Enum 항목 초기화
         POS.values()
@@ -196,18 +214,22 @@ def initialize(java_options="-Xmx1g -Dfile.encoding=utf-8", **packages):
         RoleType.values()
         CoarseEntityType.values()
 
-        commands.logger.info("JVM initialization procedure is completed.")
+        logging.info("JVM initialization procedure is completed.")
     else:
         raise Exception("JVM cannot be initialized more than once."
-                        "Please call koalanlp.Util.done() when you want to re-initialize the JVM with other options.")
+                        "Please call koalanlp.Util.finalize() when you want to re-init the JVM with other options.")
 
 
 def finalize():
     """
     사용이 종료된 다음, 실행되어 있는 JVM을 종료합니다.
+    :return: 실행 이후 JVM이 꺼져있다면 True.
     """
     if is_jvm_running():
-        shutdown_jvm()
+        is_running = shutdown_jvm()
+        return not is_running
+    else:
+        return True
 
 
 def contains(string_list: List[str], tag) -> bool:
@@ -221,7 +243,7 @@ def contains(string_list: List[str], tag) -> bool:
     """
 
     if type(tag) is PhraseTag or type(tag) is DependencyTag or type(tag) is CoarseEntityType or type(tag) is RoleType:
-        return koala_class_of('Util').contains(java_list([string(s) for s in string_list]) ,tag.reference)
+        return koala_class_of('Util').contains(java_list([string(s) for s in string_list]), tag.reference)
     else:
         return False
 
