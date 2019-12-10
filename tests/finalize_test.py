@@ -6,7 +6,6 @@ import inspect
 
 
 def test_init_finalize_tagger():
-    Util.clear_all_downloaded_jars()
     Util.initialize(EUNJEON="LATEST")
     assert is_jvm_running()
     tagger = Tagger(api=API.EUNJEON)
