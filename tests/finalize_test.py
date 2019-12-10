@@ -17,7 +17,8 @@ def test_init_finalize_tagger():
     assert Util.finalize()
     assert not is_jvm_running()
 
-    Util.initialize(EUNJEON="LATEST")
+    # clear all and initialize
+    Util.initialize(EUNJEON="LATEST", force_download=True)
     assert is_jvm_running()
 
     tagger = Tagger(api=API.EUNJEON)

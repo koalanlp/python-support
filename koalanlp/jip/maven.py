@@ -29,14 +29,31 @@ from string import Template, whitespace
 logger = logging.getLogger('MavenArtifactManagement')
 
 
+def _parse_version_string(version: str):
+    if '-' in version:
+        version, subversion = version.split('-')
+
+        if subversion == 'SNAPSHOT':
+            # Make snapshot as the lowest priority
+            subversion = ('zzzzzzz', float('-inf'))
+        else:
+            typename, subver = subversion.split('.')
+            subversion = (typename, int(subver))
+    else:
+        subversion = ('', 0)
+
+    return tuple(version.split('.')) + subversion
+
+
 def _retrieve_latest_version(group, artifact) -> str:
     import requests
     import re
 
     url = 'https://oss.sonatype.org/content/repositories/public/%s/%s' % (group.replace('.', '/'), artifact)
     result = requests.get(url).text
-    result = [line.split('/')[-1] for line in re.findall('%s/(\\d+\\.\\d+\\.\\d+)/' % url, result)]
-    version = max(result)
+    result = [line[0].split('/')[-1]
+              for line in re.findall('%s/(\\d+\\.\\d+\\.\\d+(-[A-Za-z]+(\\.\\d+)?)?)/' % url, result)]
+    version = max(result, key=_parse_version_string)
 
     logging.info('[INFO] Latest version of %s:%s (%s) will be used.', group, artifact, version)
     return version

@@ -11,6 +11,8 @@ ARIRANG = 'arirang'  #: 아리랑. 현재 |ver_arirang| 버전이 최신입니�
 RHINO = 'rhino'      #: 라이노. 현재 |ver_rhino| 버전이 최신입니다. 품사분석만 가능합니다.
 OKT = 'okt'          #: 트위터. 현재 |ver_okt| 버전이 최신입니다. 문장분리, 품사분석만 가능합니다.
 DAON = 'daon'        #: 다온. 현재 |ver_daon| 버전이 최신입니다. 품사분석만 가능합니다.
+KHAIII = 'khaiii'    #: Khaiii. 현재 |ver_khaiii| 버전이 최신입니다. 품사분석만 가능합니다.
+UTAGGER = 'utagger'  #: UTagger. 현재 |ver_utagger| 버전이 최신입니다.
 ETRI = 'etri'        #: ETRI Open API. 현재 |ver_etri| 버전이 최신입니다.
 CORE = 'core'        #: 분석기 Interface 정의 라이브러리. 현재 |ver_core| 버전이 최신입니다. 편의기능을 제공하며 타 분석기 참조시 함께 참조됩니다.
 
@@ -37,4 +39,4 @@ def _query(api: str, type: str):
 
 # ----- Define members exported -----
 
-__all__ = ['HNN', 'KMR', 'KKMA', 'EUNJEON', 'ARIRANG', 'RHINO', 'OKT', 'DAON', 'ETRI', 'CORE']
+__all__ = ['HNN', 'KMR', 'KKMA', 'EUNJEON', 'ARIRANG', 'RHINO', 'OKT', 'DAON', 'ETRI', 'KHAIII', 'UTAGGER', 'CORE']

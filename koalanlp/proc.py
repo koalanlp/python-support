@@ -1,11 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import logging
+from typing import List, Tuple
 
 from . import API
-from .jvm import *
 from .data import Sentence, Word
+from .jvm import *
 from .types import POS
-from typing import List, Union, Tuple, Set
 
 
 class SentenceSplitter(object):
@@ -16,7 +17,10 @@ class SentenceSplitter(object):
     """
 
     def __init__(self, api: str):
-        self.__api = API._query(api, __class__.__name__)()
+        try:
+            self.__api = API._query(api, __class__.__name__)()
+        except JavaError as e:
+            error_handler(e)
 
     def sentences(self, *text) -> List[str]:
         """
@@ -31,7 +35,10 @@ class SentenceSplitter(object):
             if type(paragraph) is list:
                 result += self.sentences(*paragraph)
             elif type(paragraph) is str:
-                result += py_list(self.__api.invoke(string(paragraph)), lambda x: x)
+                try:
+                    result += py_list(self.__api.invoke(string(paragraph)), lambda x: x)
+                except JavaError as e:
+                    error_handler(e)
             else:
                 raise TypeError('%s type은 문단 분리를 수행할 수 없습니다.' % (type(paragraph)))
 
@@ -65,8 +72,11 @@ class SentenceSplitter(object):
             else:
                 raise TypeError('%s type은 sentencesTagged를 실행할 수 없습니다.' % (type(paragraph)))
 
-            result += py_list(koala_class_of('proc', 'SentenceSplitter').INSTANCE.invoke(reference),
-                              item_converter=Sentence.fromJava)
+            try:
+                result += py_list(koala_class_of('proc', 'SentenceSplitter').INSTANCE.invoke(reference),
+                                  item_converter=Sentence.fromJava)
+            except JavaError as e:
+                error_handler(e)
 
         return result
 
@@ -76,17 +86,40 @@ class Tagger(object):
     품사분석기를 초기화합니다.
 
     :param str api: 사용할 품사분석기의 유형.
-    :param str apiKey: ETRI 분석기의 경우, ETRI에서 발급받은 API Key
-    :param bool useLightTagger: 코모란(KMR) 분석기의 경우, 경량 분석기를 사용할 것인지의 여부. (기본값 False)
+    :keyword str etri_key: ETRI 분석기의 경우, ETRI에서 발급받은 API Key
+    :keyword bool kmr_light: 코모란(KMR) 분석기의 경우, 경량 분석기를 사용할 것인지의 여부. (기본값 False)
+    :keyword str kha_resource: Khaiii 분석기의 경우, Khaiii의 Resource 파일의 위치.
+    :keyword bool kha_preanal: Khaiii 분석기의 경우, 기분석 사전을 사용할지의 여부. (기본값 True)
+    :keyword bool kha_errorpatch: Khaiii 분석기의 경우, 오분석 사전 사용 여부 (기본값 True)
+    :keyword bool kha_restore: Khaiii 분석기의 경우, 형태소 재구성 여부 (기본값 True)
+
+    :keyword str apiKey: ETRI 분석기의 경우, ETRI에서 발급받은 API Key (2.2.0 삭제 예정)
+    :keyword bool useLightTagger: 코모란(KMR) 분석기의 경우, 경량 분석기를 사용할 것인지의 여부. (2.2.0 삭제 예정)
     """
 
-    def __init__(self, api: str, apiKey: str = '', useLightTagger: bool = False):
-        if api == API.ETRI:
-            self.__api = API._query(api, __class__.__name__)(apiKey)
-        elif api == API.KMR:
-            self.__api = API._query(api, __class__.__name__)(useLightTagger)
-        else:
-            self.__api = API._query(api, __class__.__name__)()
+    def __init__(self, api: str, **kwargs):
+        try:
+            if api == API.ETRI:
+                if 'apiKey' in kwargs:
+                    logging.warning('2.2.0부터 %s의 키워드 인자 "apiKey"가 삭제될 예정입니다. '
+                                    '2.1.0부터 추가된 인자인 "etri_key"를 사용해주세요.', __class__.__name__)
+                    kwargs['etri_key'] = kwargs['apiKey']
+                self.__api = API._query(api, __class__.__name__)(kwargs['etri_key'])
+            elif api == API.KMR:
+                if 'useLightTagger' in kwargs:
+                    logging.warning('2.2.0부터 %s의 키워드 인자 "useLightTagger"가 삭제될 예정입니다. '
+                                    '2.1.0부터 추가된 인자인 "kmr_light"를 사용해주세요.', __class__.__name__)
+                    kwargs['kmr_light'] = kwargs['useLightTagger']
+                self.__api = API._query(api, __class__.__name__)(kwargs.get('kmr_light', False))
+            elif api == API.KHAIII:
+                config = koala_class_of('khaiii', 'KhaiiiConfig')(kwargs.get('kha_preanal', True),
+                                                                  kwargs.get('kha_errorpatch', True),
+                                                                  kwargs.get('kha_restore', True))
+                self.__api = API._query(api, __class__.__name__)(kwargs['kha_resource'], config)
+            else:
+                self.__api = API._query(api, __class__.__name__)()
+        except JavaError as e:
+            error_handler(e)
 
     def tag(self, *text: str) -> List[Sentence]:
         """
@@ -101,7 +134,10 @@ class Tagger(object):
             if type(paragraph) is list:
                 result += self.tag(*paragraph)
             elif type(paragraph) is str:
-                result += py_list(self.__api.tag(string(paragraph)), item_converter=Sentence.fromJava)
+                try:
+                    result += py_list(self.__api.tag(string(paragraph)), item_converter=Sentence.fromJava)
+                except JavaError as e:
+                    error_handler(e)
             else:
                 raise TypeError('%s type은 품사 분석을 수행할 수 없습니다.' % (type(paragraph)))
 
@@ -118,7 +154,10 @@ class Tagger(object):
         result = []
         for sentence in text:
             if type(sentence) is str:
-                result.append(Sentence.fromJava(self.__api.tagSentence(string(sentence))))
+                try:
+                    result.append(Sentence.fromJava(self.__api.tagSentence(string(sentence))))
+                except JavaError as e:
+                    error_handler(e)
             else:
                 raise TypeError('%s type은 품사 분석을 수행할 수 없습니다.' % (type(sentence)))
 
@@ -140,14 +179,23 @@ class __CanAnalyzeProperty(object):
     특성 부착형 분석기를 초기화합니다.
 
     :param str api: 사용할 분석기의 유형.
-    :param str apiKey: ETRI 분석기의 경우, ETRI에서 발급받은 API Key
+    :keyword str etri_key: ETRI 분석기의 경우, ETRI에서 발급받은 API Key
+
+    :keyword str apiKey: ETRI 분석기의 경우, ETRI에서 발급받은 API Key (2.2.0 삭제 예정)
     """
 
-    def __init__(self, api: str, cls: str, apiKey: str = ''):
-        if api == API.ETRI:
-            self.__api = API._query(api, cls)(apiKey)
-        else:
-            self.__api = API._query(api, cls)()
+    def __init__(self, api: str, cls: str, **kwargs):
+        try:
+            if api == API.ETRI:
+                if 'apiKey' in kwargs:
+                    logging.warning('2.2.0부터 %s의 키워드 인자 "apiKey"가 삭제될 예정입니다. '
+                                    '2.1.0부터 추가된 인자인 "etri_key"를 사용해주세요.', __class__.__name__)
+                    kwargs['etri_key'] = kwargs['apiKey']
+                self.__api = API._query(api, cls)(kwargs['etri_key'])
+            else:
+                self.__api = API._query(api, cls)()
+        except JavaError as e:
+            error_handler(e)
 
     def analyze(self, *text) -> List[Sentence]:
         """
@@ -161,10 +209,16 @@ class __CanAnalyzeProperty(object):
         result = []
         for paragraph in text:
             if type(paragraph) is str:
-                result += py_list(self.__api.analyze(string(paragraph)), item_converter=Sentence.fromJava)
+                try:
+                    result += py_list(self.__api.analyze(string(paragraph)), item_converter=Sentence.fromJava)
+                except JavaError as e:
+                    error_handler(e)
             elif type(paragraph) is Sentence:
                 ref = paragraph.getReference()
-                result.append(Sentence.fromJava(self.__api.analyze(ref)))
+                try:
+                    result.append(Sentence.fromJava(self.__api.analyze(ref)))
+                except JavaError as e:
+                    error_handler(e)
             elif type(paragraph) is list:
                 result += self.analyze(*paragraph)
             else:
@@ -189,11 +243,12 @@ class Parser(__CanAnalyzeProperty):
     구문구조/의존구조분석기를 초기화합니다.
 
     :param str api: 사용할 분석기의 유형.
-    :param str apiKey: ETRI 분석기의 경우, ETRI에서 발급받은 API Key
+    :keyword str etri_key: ETRI 분석기의 경우, ETRI에서 발급받은 API Key
+    :keyword str apiKey: ETRI 분석기의 경우, ETRI에서 발급받은 API Key (2.2.0 삭제 예정)
     """
 
-    def __init__(self, api: str, apiKey: str = ''):
-        super().__init__(api, __class__.__name__, apiKey)
+    def __init__(self, api: str, **kwargs):
+        super().__init__(api, __class__.__name__, **kwargs)
 
 
 class EntityRecognizer(__CanAnalyzeProperty):
@@ -201,11 +256,12 @@ class EntityRecognizer(__CanAnalyzeProperty):
     개체명 인식기를 초기화합니다.
 
     :param str api: 사용할 분석기의 유형.
-    :param str apiKey: ETRI 분석기의 경우, ETRI에서 발급받은 API Key
+    :keyword str etri_key: ETRI 분석기의 경우, ETRI에서 발급받은 API Key
+    :keyword str apiKey: ETRI 분석기의 경우, ETRI에서 발급받은 API Key (2.2.0 삭제 예정)
     """
 
-    def __init__(self, api: str, apiKey: str = ''):
-        super().__init__(api, __class__.__name__, apiKey)
+    def __init__(self, api: str, **kwargs):
+        super().__init__(api, __class__.__name__, **kwargs)
 
 
 class RoleLabeler(__CanAnalyzeProperty):
@@ -213,11 +269,12 @@ class RoleLabeler(__CanAnalyzeProperty):
     의미역 분석기를 초기화합니다.
 
     :param str api: 사용할 분석기의 유형.
-    :param str apiKey: ETRI 분석기의 경우, ETRI에서 발급받은 API Key
+    :keyword str etri_key: ETRI 분석기의 경우, ETRI에서 발급받은 API Key
+    :keyword str apiKey: ETRI 분석기의 경우, ETRI에서 발급받은 API Key (2.2.0 삭제 예정)
     """
 
-    def __init__(self, api: str, apiKey: str = ''):
-        super().__init__(api, __class__.__name__, apiKey)
+    def __init__(self, api: str, **kwargs):
+        super().__init__(api, __class__.__name__, **kwargs)
 
 
 class Dictionary(object):
@@ -228,7 +285,10 @@ class Dictionary(object):
     """
 
     def __init__(self, api: API):
-        self.__api = API._query(api, __class__.__name__).INSTANCE
+        try:
+            self.__api = API._query(api, __class__.__name__).INSTANCE
+        except JavaError as e:
+            error_handler(e)
 
     def addUserDictionary(self, *pairs: Tuple[str, POS]):
         """
@@ -238,7 +298,10 @@ class Dictionary(object):
         """
         surface_list = [string(t[0]) for t in pairs]
         tag_list = [t[1].reference for t in pairs]
-        self.__api.addUserDictionary(java_list(surface_list), java_list(tag_list))
+        try:
+            self.__api.addUserDictionary(java_list(surface_list), java_list(tag_list))
+        except JavaError as e:
+            error_handler(e)
 
     def contains(self, word: str, *pos_tags: POS) -> bool:
         """
@@ -254,11 +317,14 @@ class Dictionary(object):
         else:
             tags = [POS.NNP, POS.NNG]
 
-        if len(tags) == 1:
-            tag = tags[0]
-            return self.__api.contains(java_tuple(string(word), tag.reference))
-        else:
-            return self.__api.contains(string(word), java_set([tag.reference for tag in tags]))
+        try:
+            if len(tags) == 1:
+                tag = tags[0]
+                return self.__api.contains(java_tuple(string(word), tag.reference))
+            else:
+                return self.__api.contains(string(word), java_set([tag.reference for tag in tags]))
+        except JavaError as e:
+            error_handler(e)
 
     def __contains__(self, item: Tuple[str, POS]) -> bool:
         """
@@ -283,7 +349,10 @@ class Dictionary(object):
         else:
             filter = {tag.name for tag in filter}
 
-        self.__api.importFrom(other.__api, fastAppend, java_pos_filter(filter))
+        try:
+            self.__api.importFrom(other.__api, fastAppend, java_pos_filter(filter))
+        except JavaError as e:
+            error_handler(e)
 
     def getBaseEntries(self, filter=lambda t: t.isNoun()):
         """
@@ -298,10 +367,14 @@ class Dictionary(object):
         else:
             filter = {tag.name for tag in filter}
 
-        entries = self.__api.getBaseEntries(java_pos_filter(filter))
-        while entries.hasNext():
-            item = entries.next()
-            yield (item.getFirst(), POS.valueOf(item.getSecond().name()))
+        try:
+            entries = self.__api.getBaseEntries(java_pos_filter(filter))
+
+            while entries.hasNext():
+                item = entries.next()
+                yield (item.getFirst(), POS.valueOf(item.getSecond().name()))
+        except JavaError as e:
+            error_handler(e)
 
     def getItems(self) -> List[Tuple[str, POS]]:
         """
@@ -311,8 +384,11 @@ class Dictionary(object):
         :return: (형태소, 품사)의 set
         """
 
-        return py_list(self.__api.getItems(),
-                       item_converter=lambda t: (t.getFirst(), POS.valueOf(t.getSecond().name())))
+        try:
+            return py_list(self.__api.getItems(),
+                           item_converter=lambda t: (t.getFirst(), POS.valueOf(t.getSecond().name())))
+        except JavaError as e:
+            error_handler(e)
 
     def getNotExists(self, onlySystemDic: bool, *word: Tuple[str, POS]) -> List[Tuple[str, POS]]:
         """
@@ -326,10 +402,32 @@ class Dictionary(object):
 
         zipped = [java_tuple(string(t[0]), t[1].reference) for t in word]
 
-        return py_list(self.__api.getNotExists(onlySystemDic, java_varargs(zipped, class_of('kotlin.Pair'))),
-                       item_converter=lambda t: (t.getFirst(), POS.valueOf(t.getSecond().name())))
+        try:
+            return py_list(self.__api.getNotExists(onlySystemDic, java_varargs(zipped, class_of('kotlin.Pair'))),
+                           item_converter=lambda t: (t.getFirst(), POS.valueOf(t.getSecond().name())))
+        except JavaError as e:
+            error_handler(e)
+
+
+class UTagger:
+    """
+    울산대 UTagger 라이브러리 연결용 Static class
+    """
+
+    @staticmethod
+    def setPath(library_path: str, conf_path: str):
+        """
+        UTagger의 라이브러리와 설정파일의 위치를 지정합니다.
+
+        :param library_path: 라이브러리 파일의 위치
+        :param conf_path: 설정 파일의 위치
+        """
+        try:
+            koala_class_of('utagger', 'UTagger').Companion.setPath(string(library_path), string(conf_path))
+        except JavaError as e:
+            error_handler(e)
 
 
 # ----- Define members exported -----
 
-__all__ = ['SentenceSplitter', 'Tagger', 'Parser', 'EntityRecognizer', 'RoleLabeler', 'Dictionary']
+__all__ = ['SentenceSplitter', 'Tagger', 'Parser', 'EntityRecognizer', 'RoleLabeler', 'Dictionary', 'UTagger']

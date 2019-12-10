@@ -82,5 +82,11 @@ API 목록
 .. |ver_okt| image:: https://img.shields.io/maven-central/v/kr.bydelta/koalanlp-okt.svg?style=flat-square&label=API
                 :alt: API.okt Version
 
+.. |ver_khaiii| image:: https://img.shields.io/maven-central/v/kr.bydelta/koalanlp-khaiii.svg?style=flat-square&label=API
+                :alt: API.khaiii Version
+
+.. |ver_utagger| image:: https://img.shields.io/maven-central/v/kr.bydelta/koalanlp-utagger.svg?style=flat-square&label=API
+                :alt: API.utagger Version
+
 .. |ver_core| image:: https://img.shields.io/maven-central/v/kr.bydelta/koalanlp-core.svg?style=flat-square&label=API
                 :alt: API.core Version

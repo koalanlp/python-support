@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import logging
+import shutil
 
 from pathlib import Path
 from typing import List
@@ -113,13 +114,14 @@ def _resolve_artifacts_modified(artifacts, exclusions=None):
     return download_list
 
 
-def initialize(java_options="-Xmx1g -Dfile.encoding=utf-8", lib_path=None, **packages):
+def initialize(java_options="-Xmx1g -Dfile.encoding=utf-8", lib_path=None, force_download=False, **packages):
     """
     초기화 함수. 필요한 Java library를 다운받습니다.
     한번 초기화 된 다음에는 :py:func:`koalanlp.Util.finalize` 을 사용해 종료하지 않으면 다시 초기화 할 수 없습니다.
 
     :param str java_options: 자바 JVM option (기본값: "-Xmx1g -Dfile.encoding=utf-8")
-    :param Optional[str] lib_path: Path for saving downloaded Jar files. (Default: None, i.e. os.cwd())
+    :param Optional[str] lib_path: 자바 라이브러리를 저장할 '.java' 디렉터리/폴더가 위치할 곳. (기본값: None = os.cwd())
+    :param bool force_download: 자바 라이브러리를 모두 다 다시 다운로드할 지의 여부. (기본값: False)
     :param Dict[str,str] packages: 사용할 분석기 API의 목록. (Keyword arguments; 기본값: KMR="LATEST")
     :raise Exception: JVM이 2회 이상 초기화 될때 Exception.
     """
@@ -132,6 +134,9 @@ def initialize(java_options="-Xmx1g -Dfile.encoding=utf-8", lib_path=None, **pac
 
     if not lib_path:
         lib_path = Path.cwd()
+
+    if force_download:
+        clear_all_downloaded_jars(lib_path)
 
     # Initialize cache & index manager
     global cache_manager, index_manager
@@ -197,15 +202,15 @@ def finalize():
 
 def clear_all_downloaded_jars(lib_path=None):
     """
-    TODO adddoc
-    :param Optional[str] lib_path: Path for saving downloaded Jar files. (Default: None, i.e. os.cwd())
+    다운로드 된 자바 라이브러리를 삭제합니다.
+    :param Optional[str] lib_path: 자바 라이브러리를 저장할 '.java' 디렉터리/폴더가 위치한 곳. (Default: None, i.e. os.cwd())
     """
     if not lib_path:
         lib_path = Path.cwd()
 
-    jip_path = Path(lib_path, '.jip')
-    if jip_path.exists():
-        jip_path.unlink()
+    java_path = Path(lib_path, '.java')
+    if java_path.exists():
+        shutil.rmtree(java_path)
 
 
 def contains(string_list: List[str], tag) -> bool:
@@ -226,4 +231,4 @@ def contains(string_list: List[str], tag) -> bool:
 
 # -------- Declare members exported ---------
 
-__all__ = ['initialize', 'contains', 'finalize']
+__all__ = ['initialize', 'contains', 'finalize', 'clear_all_downloaded_jars']

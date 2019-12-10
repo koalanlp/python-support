@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import logging
 from typing import List, Dict, Tuple, Optional
 from py4j.java_gateway import JavaGateway, GatewayParameters, CallbackServerParameters, launch_gateway
 from py4j.java_collections import JavaArray
-from py4j.protocol import Py4JNetworkError
+from py4j.protocol import Py4JJavaError as JavaError
 
 _CLASS_DIC = {}
 GATEWAY = None
@@ -190,6 +191,22 @@ def java_varargs(pylist, java_class):
     return varargs
 
 
+def error_handler(e: JavaError):
+    string = str(e)
+    if 'NoClassDefFoundError' in string or \
+            'ClassNotFoundException' in string or \
+            'NoSuchMethodException' in string:
+        logging.exception('Java와 통신 중에 필요한 클래스가 없다는 것을 확인했습니다. '
+                          '자바 Jar 파일을 강제로 다시 다운로드하는 것을 추천합니다. '
+                          '처음 initialize() 함수를 호출하실 때, force_download=True를 추가해주세요.\n'
+                          '(예) initialize(KKMA="LATEST", force_download=True).\n'
+                          '이렇게 해도 문제가 계속된다면, Issue를 등록해주세요.', exc_info=e)
+    else:
+        logging.exception('Java에서 처리하던 중에 문제가 발생했습니다. '
+                          '문제가 계속된다면, Issue를 등록해주세요.', exc_info=e)
+    raise e
+
+
 # ----- Define members exported -----
 
 __all__ = [
@@ -211,5 +228,7 @@ __all__ = [
     'is_jvm_running',
     'start_jvm',
     'check_jvm',
-    'shutdown_jvm'
+    'shutdown_jvm',
+    'error_handler',
+    'JavaError'
 ]

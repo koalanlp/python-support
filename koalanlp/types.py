@@ -5,7 +5,10 @@ from .jvm import *
 
 
 def _enum_value_dict(cls, item_converter):
-    return {value.name: value for value in py_list(koala_class_of(cls).values(), item_converter)}
+    try:
+        return {value.name: value for value in py_list(koala_class_of(cls).values(), item_converter)}
+    except JavaError as e:
+        error_handler(e)
 
 
 class _JavaEnum(object):
@@ -14,9 +17,12 @@ class _JavaEnum(object):
 
     def __init__(self, reference):
         self.reference = reference
-        self.name = reference.name()
-        self.ordinal = reference.ordinal()
-        self.classType = reference.getClass().getName()
+        try:
+            self.name = reference.name()
+            self.ordinal = reference.ordinal()
+            self.classType = reference.getClass().getName()
+        except JavaError as e:
+            error_handler(e)
 
     def __repr__(self):
         return self.name
@@ -70,7 +76,10 @@ class POS(_JavaEnum):
         :rtype: bool
         :return: 체언인 경우 True
         """
-        return self.reference.isNoun()
+        try:
+            return self.reference.isNoun()
+        except JavaError as e:
+            error_handler(e)
 
     def isPredicate(self) -> bool:
         """
@@ -79,7 +88,10 @@ class POS(_JavaEnum):
         :rtype: bool
         :return: 용언인 경우 True
         """
-        return self.reference.isPredicate()
+        try:
+            return self.reference.isPredicate()
+        except JavaError as e:
+            error_handler(e)
 
     def isModifier(self) -> bool:
         """
@@ -88,7 +100,10 @@ class POS(_JavaEnum):
         :rtype: bool
         :return: 수식언인 경우 True
         """
-        return self.reference.isModifier()
+        try:
+            return self.reference.isModifier()
+        except JavaError as e:
+            error_handler(e)
 
     def isPostPosition(self) -> bool:
         """
@@ -97,7 +112,10 @@ class POS(_JavaEnum):
         :rtype: bool
         :return: 관계언인 경우 True
         """
-        return self.reference.isPostPosition()
+        try:
+            return self.reference.isPostPosition()
+        except JavaError as e:
+            error_handler(e)
 
     def isEnding(self) -> bool:
         """
@@ -106,7 +124,10 @@ class POS(_JavaEnum):
         :rtype: bool
         :return: 어미인 경우 True
         """
-        return self.reference.isEnding()
+        try:
+            return self.reference.isEnding()
+        except JavaError as e:
+            error_handler(e)
 
     def isAffix(self) -> bool:
         """
@@ -115,7 +136,10 @@ class POS(_JavaEnum):
         :rtype: bool
         :return: 접사인 경우 True
         """
-        return self.reference.isAffix()
+        try:
+            return self.reference.isAffix()
+        except JavaError as e:
+            error_handler(e)
 
     def isSuffix(self) -> bool:
         """
@@ -124,7 +148,10 @@ class POS(_JavaEnum):
         :rtype: bool
         :return: 접미사인 경우 True
         """
-        return self.reference.isSuffix()
+        try:
+            return self.reference.isSuffix()
+        except JavaError as e:
+            error_handler(e)
 
     def isSymbol(self) -> bool:
         """
@@ -133,7 +160,10 @@ class POS(_JavaEnum):
         :rtype: bool
         :return: 기호인 경우 True
         """
-        return self.reference.isSymbol()
+        try:
+            return self.reference.isSymbol()
+        except JavaError as e:
+            error_handler(e)
 
     def isUnknown(self) -> bool:
         """
@@ -142,7 +172,10 @@ class POS(_JavaEnum):
         :rtype: bool
         :return: 미확인 단어인 경우 True
         """
-        return self.reference.isUnknown()
+        try:
+            return self.reference.isUnknown()
+        except JavaError as e:
+            error_handler(e)
 
     def startsWith(self, tag: str) -> bool:
         """
@@ -152,7 +185,10 @@ class POS(_JavaEnum):
 
         :return: 포함되는 경우(시작하는 경우) True
         """
-        return self.reference.startsWith(string(tag))
+        try:
+            return self.reference.startsWith(string(tag))
+        except JavaError as e:
+            error_handler(e)
 
 
 class PhraseTag(_JavaEnum):

@@ -1,60 +1,24 @@
 language: python
 matrix:
   include:
-    - name: "Python 3.6 on Windows (JDK12)"
-      os: windows
-      language: shell
-      filter_secrets: false
-      before_install:
-        - choco install openjdk --version 12.0.0 -y
-        - choco install python --version 3.6.8 -y
-        - java --version
-        - $PYTHON --version
-        - wget https://bootstrap.pypa.io/get-pip.py
-        - $PYTHON get-pip.py --user
-      env:
-        - JAVA_HOME="/c/Progra~1/OpenJDK/jdk-12"
-        - PATH="/c/Python36:/c/Python36/Scripts:$JAVA_HOME/bin:$PATH"
-        - PYTHON="python"
-    - name: "Python 3.6 on macOS (JDK12)"
+    - name: "Python 3 on Ubuntu Bionic (JDK12)"
+      python: 3.7
+      dist: bionic
+      jdk: openjdk12
+    - name: "Python 3.7 on macOS 11.2 (JDK13)"
       os: osx
-      osx_image: xcode10.2
+      osx_image: xcode11.2
       language: shell
       jdk: openjdk12
-      addons:
-        homebrew:
-          packages:
-          - zlib
-          - pyenv
-      before_install:
-        - eval "$(pyenv init -)"
-        - pyenv install 3.6.3
-        - pyenv shell 3.6.3
-        - $PYTHON --version
-        - wget https://bootstrap.pypa.io/get-pip.py
-        - PYTHON_CONFIGURE_OPTS=--enable-unicode=ucs2 $PYTHON get-pip.py --user
       env:
         - LDFLAGS="${LDFLAGS} -L$(brew --prefix zlib)/lib -L$(brew --prefix readline)/lib -L$(brew --prefix openssl)/lib"
         - CPPFLAGS="${CPPFLAGS} -I$(brew --prefix zlib)/include -I$(brew --prefix readline)/include -I$(brew --prefix openssl)/include -I$(xcrun --show-sdk-path)/include"
         - PKG_CONFIG_PATH="${PKG_CONFIG_PATH} $(brew --prefix zlib)/lib/pkgconfig"
         - PATH="$HOME/.pyenv:$PATH"
-    - name: "Python 3.6 on Ubuntu Xenial"
-      python: 3.6
-      dist: xenial
-      jdk: openjdk8
-    - name: "Python 3.7 on Ubuntu Xenial (JDK12)"
-      python: 3.7
-      dist: xenial
-      jdk: openjdk12
-    - name: "Python 3.7 on macOS (JDK12)"
-      os: osx
-      osx_image: xcode10.2
-      language: shell
-      jdk: openjdk12
     - name: "Python 3.7 on Windows (JDK12)"
       os: windows
       language: shell
-      jdk: openjdk8
+      filter_secrets: false
       before_install:
         - choco install openjdk --version 12.0.0 -y
         - choco install python --version 3.7.3 -y
@@ -64,20 +28,26 @@ matrix:
         - $PYTHON get-pip.py --user
       env:
         - PATH=/c/Python37:/c/Python37/Scripts:$JAVA_HOME/bin:$PATH
-        - PYTHON=python3.7
+        - PYTHON=python
 install:
-- $PYTHON -m pip install py4j --user
-- $PYTHON -m pip install pytest codecov pytest-cov --upgrade --user
+  - $PYTHON -m pip install py4j --user
+  - $PYTHON -m pip install pytest codecov pytest-cov --upgrade --user
+  - bash ./scripts/khaiii_install.sh
+  - bash ./scripts/utagger_install.sh
 script:
-- $PYTHON -m pytest --cov=./ tests/dictionary_test.py
-- $PYTHON -m pytest --cov=./ --cov-append tests/extension_core_spec.py
-- $PYTHON -m pytest --cov=./ --cov-append tests/proc_core_spec.py
-- $PYTHON -m pytest --cov=./ --cov-append tests/type_core_spec.py
-- $PYTHON -m pytest --cov=./ --cov-append tests/data_test.py
+  - $PYTHON -m pytest --cov=./ tests/finalize_test.py
+  - $PYTHON -m pytest --cov=./ --cov-append tests/dictionary_test.py
+  - $PYTHON -m pytest --cov=./ --cov-append tests/extension_core_spec.py
+  - $PYTHON -m pytest --cov=./ --cov-append tests/proc_core_spec.py
+  - $PYTHON -m pytest --cov=./ --cov-append tests/type_core_spec.py
+  - $PYTHON -m pytest --cov=./ --cov-append tests/data_test.py
+  - if [ $TRAVIS_OS_NAME != 'windows' ]; then $PYTHON -m pytest --cov=./ --cov-append tests/khaiii_spec.py; fi
+  - if [ $TRAVIS_OS_NAME != 'osx' ]; then $PYTHON -m pytest --cov=./ --cov-append tests/utagger_spec.py; fi
 after_success:
-- codecov
+  - if [ $TRAVIS_OS_NAME == 'linux' ]; then codecov; fi
 env:
   global:
-  - secure: f/Qsj0v9bUCplwXVjM1PrDTU0Cyp1hqra4k9mwUU7JJwkX51OQO61l2PPVEixX5Q6OQzIwvYI6bxusJVLPU+WV0lQzQmTK9UPSATNmwURU8btzYNJInwZ563Q7KkTR/NuIm3CNvuj4CGgQLZS22eLdDTQsw8q41CCP3BtybWrP+bsx2kZoGY7GJ12gWkS327QY87+ZO+2vAkl+NSGghtrkbcYVLgodInq4Q6GjjhMvmJPp3WBcC/N1O3q8Q88ED+t06ok1j76xd0Ay/qQPAx0U1J2uaK0/oQbw8F978EyHOPHc3EqTKgSJLERj6zXBgWfSf7rzqtofDKkrG3qE0KT6vqU/WhMiz/wkm1/KJay0vkPKdnjhVHhw7lPbowbhm91MA4bEBKISzp7Yge3cGzLLcapa7FgiFTrCFAqiTsfWKiLLe8I+reFYvPA15PmOigf2iUXGWji2RT+HbiOLR4K14PADcmV9OheGKt0Lfanxy55RxJttAyQdJ7Bh6ICWlR185O2LV/iSmVnsDK7rAxNrjZ1TYSjp/eqlrEdt1MlawYPTZGYjMkcYP00LKynOLEFWWFBJN/XRk4wdIoUt0E1d8XBc55L8gpamFNGac9aifQxJOgEdnIHwT6Enr3mih4LXl43srbLbSyPOzifJJ7M5As0+8ZZHqbiFLAWDTTHP0=
-  - secure: fJgd4np/MzH7IkK+vEkHEQete6DsqvfmYu50ZH8DuFLaG0iXuK/8Df4dgkKHJU9vm9/aa+Xua5SlkeWhVcU/JAOHZqCUtV2fdeqtIXWQEAYY9DNj5QRg2wzs+z3V/SyhBbJwPQWKM3U7YoO5Y8Gfp642FIcTlVoURVIN24KdbV08iuSxpVXMKiN0jeOqcty8cbKm1jZ8rH0iqvruBMxZnQRwBch2flIVef65yqHnNUVkReXh9kUQadknl7aGMBYvFFGkrT5AxGrGsStV4vRFPDf1kOhLn327zrlkenLkevGnUXPym6OH2UHJJPmZr/A6XP00VZx4uRGyX+hf4AhmAnFO9Bf6155bhXX5xkryd9utN/TGWLJgZHPKdvGBynIq8ue8YA5yTNP3out6WN9SGdRdwwUMM1qmDEx4bl5UmQnghMFp4JZq4/ZF8axzopeGekNhSM8Rtlr892Hnu3sfqhKPecOR0hoDPBR0icecUO1mQLvPfl9yIQyAPBVsLPeWwr7mXp+ubClZ5mk4wzam/4/Cee6fX3qAX3P7jXrFJj3hcgMOuCy6+NE4HD7xF/Nn4SH3zdyyRzo6gCWtjc4FATZ2oAh8Xzo6OJ0KjvOGRn5Jyo2OuP+8lx02QGplSPGLiCtRWjLjdEnmFV7J0FHggAImrBkeh/+h6i5zcC8yrD0=
-  - PYTHON=python3
+    - secure: f/Qsj0v9bUCplwXVjM1PrDTU0Cyp1hqra4k9mwUU7JJwkX51OQO61l2PPVEixX5Q6OQzIwvYI6bxusJVLPU+WV0lQzQmTK9UPSATNmwURU8btzYNJInwZ563Q7KkTR/NuIm3CNvuj4CGgQLZS22eLdDTQsw8q41CCP3BtybWrP+bsx2kZoGY7GJ12gWkS327QY87+ZO+2vAkl+NSGghtrkbcYVLgodInq4Q6GjjhMvmJPp3WBcC/N1O3q8Q88ED+t06ok1j76xd0Ay/qQPAx0U1J2uaK0/oQbw8F978EyHOPHc3EqTKgSJLERj6zXBgWfSf7rzqtofDKkrG3qE0KT6vqU/WhMiz/wkm1/KJay0vkPKdnjhVHhw7lPbowbhm91MA4bEBKISzp7Yge3cGzLLcapa7FgiFTrCFAqiTsfWKiLLe8I+reFYvPA15PmOigf2iUXGWji2RT+HbiOLR4K14PADcmV9OheGKt0Lfanxy55RxJttAyQdJ7Bh6ICWlR185O2LV/iSmVnsDK7rAxNrjZ1TYSjp/eqlrEdt1MlawYPTZGYjMkcYP00LKynOLEFWWFBJN/XRk4wdIoUt0E1d8XBc55L8gpamFNGac9aifQxJOgEdnIHwT6Enr3mih4LXl43srbLbSyPOzifJJ7M5As0+8ZZHqbiFLAWDTTHP0=
+    - secure: fJgd4np/MzH7IkK+vEkHEQete6DsqvfmYu50ZH8DuFLaG0iXuK/8Df4dgkKHJU9vm9/aa+Xua5SlkeWhVcU/JAOHZqCUtV2fdeqtIXWQEAYY9DNj5QRg2wzs+z3V/SyhBbJwPQWKM3U7YoO5Y8Gfp642FIcTlVoURVIN24KdbV08iuSxpVXMKiN0jeOqcty8cbKm1jZ8rH0iqvruBMxZnQRwBch2flIVef65yqHnNUVkReXh9kUQadknl7aGMBYvFFGkrT5AxGrGsStV4vRFPDf1kOhLn327zrlkenLkevGnUXPym6OH2UHJJPmZr/A6XP00VZx4uRGyX+hf4AhmAnFO9Bf6155bhXX5xkryd9utN/TGWLJgZHPKdvGBynIq8ue8YA5yTNP3out6WN9SGdRdwwUMM1qmDEx4bl5UmQnghMFp4JZq4/ZF8axzopeGekNhSM8Rtlr892Hnu3sfqhKPecOR0hoDPBR0icecUO1mQLvPfl9yIQyAPBVsLPeWwr7mXp+ubClZ5mk4wzam/4/Cee6fX3qAX3P7jXrFJj3hcgMOuCy6+NE4HD7xF/Nn4SH3zdyyRzo6gCWtjc4FATZ2oAh8Xzo6OJ0KjvOGRn5Jyo2OuP+8lx02QGplSPGLiCtRWjLjdEnmFV7J0FHggAImrBkeh/+h6i5zcC8yrD0=
+    - KHAIII_RSC=$HOME/khaiii-orig/build/share/khaiii
+    - LD_LIBRARY_PATH=$HOME/khaiii-orig/build/lib:$LD_LIBRARY_PATH

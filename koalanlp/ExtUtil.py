@@ -72,7 +72,10 @@ def alphaToHangul(text: str) -> str:
     :return: 국문 발음 표기된 문자열
     """
 
-    return str(koala_class_of('ExtUtil').alphaToHangul(string(text)))
+    try:
+        return str(koala_class_of('ExtUtil').alphaToHangul(string(text)))
+    except JavaError as e:
+        error_handler(e)
 
 
 def hangulToAlpha(text: str) -> str:
@@ -84,7 +87,10 @@ def hangulToAlpha(text: str) -> str:
     :return: 영문 변환된 문자열
     """
 
-    return str(koala_class_of('ExtUtil').hangulToAlpha(string(text)))
+    try:
+        return str(koala_class_of('ExtUtil').hangulToAlpha(string(text)))
+    except JavaError as e:
+        error_handler(e)
 
 
 def isAlphaPronounced(text: str) -> bool:
@@ -96,7 +102,10 @@ def isAlphaPronounced(text: str) -> bool:
     :return: 영문 발음으로만 구성되었다면 true
     """
 
-    return koala_class_of('ExtUtil').isAlphaPronounced(string(text))
+    try:
+        return koala_class_of('ExtUtil').isAlphaPronounced(string(text))
+    except JavaError as e:
+        error_handler(e)
 
 
 def isHanja(text: str) -> List[bool]:
@@ -108,7 +117,10 @@ def isHanja(text: str) -> List[bool]:
     :return: 문자열 문자의 위치마다 한자인지 아닌지를 표기한 리스트. 한자라면 True.
     """
 
-    return [koala_class_of('ExtUtil').isHanja(ch) for ch in text]
+    try:
+        return [koala_class_of('ExtUtil').isHanja(ch) for ch in text]
+    except JavaError as e:
+        error_handler(e)
 
 
 def isCJKHanja(text: str) -> List[bool]:
@@ -121,7 +133,10 @@ def isCJKHanja(text: str) -> List[bool]:
     :return: 문자열 문자의 위치마다 한자인지 아닌지를 표기한 리스트. 한자라면 True.
     """
 
-    return [koala_class_of('ExtUtil').isCJKHanja(ch) for ch in text]
+    try:
+        return [koala_class_of('ExtUtil').isCJKHanja(ch) for ch in text]
+    except JavaError as e:
+        error_handler(e)
 
 
 def hanjaToHangul(text: str, headCorrection: bool = True) -> str:
@@ -141,7 +156,10 @@ def hanjaToHangul(text: str, headCorrection: bool = True) -> str:
     :return: 국문 표기로 전환된 문자열
     """
 
-    return str(koala_class_of('ExtUtil').hanjaToHangul(string(text), headCorrection))
+    try:
+        return str(koala_class_of('ExtUtil').hanjaToHangul(string(text), headCorrection))
+    except JavaError as e:
+        error_handler(e)
 
 
 def isCompleteHangul(text: str) -> List[bool]:
@@ -153,7 +171,10 @@ def isCompleteHangul(text: str) -> List[bool]:
     :return: 문자열 문자의 위치마다 확인여부를 표기한 리스트. 맞다면 True.
     """
 
-    return [koala_class_of('ExtUtil').isCompleteHangul(ch) for ch in text]
+    try:
+        return [koala_class_of('ExtUtil').isCompleteHangul(ch) for ch in text]
+    except JavaError as e:
+        error_handler(e)
 
 
 def isIncompleteHangul(text: str) -> List[bool]:
@@ -165,7 +186,10 @@ def isIncompleteHangul(text: str) -> List[bool]:
     :return: 문자열 문자의 위치마다 확인여부를 표기한 리스트. 맞다면 True.
     """
 
-    return [koala_class_of('ExtUtil').isIncompleteHangul(ch) for ch in text]
+    try:
+        return [koala_class_of('ExtUtil').isIncompleteHangul(ch) for ch in text]
+    except JavaError as e:
+        error_handler(e)
 
 
 def isHangul(text: str) -> List[bool]:
@@ -177,7 +201,10 @@ def isHangul(text: str) -> List[bool]:
     :return: 문자열 문자의 위치마다 확인여부를 표기한 리스트. 맞다면 True.
     """
 
-    return [koala_class_of('ExtUtil').isHangul(ch) for ch in text]
+    try:
+        return [koala_class_of('ExtUtil').isHangul(ch) for ch in text]
+    except JavaError as e:
+        error_handler(e)
 
 
 def isHangulEnding(text: str) -> bool:
@@ -189,8 +216,11 @@ def isHangulEnding(text: str) -> bool:
     :return: 맞다면 True.
     """
 
-    # Workaround... Py4J calls Character version first.
-    return koala_class_of('ExtUtil').isHangulEnding(string(text[-1]))
+    try:
+        # Workaround... Py4J calls Character version first.
+        return koala_class_of('ExtUtil').isHangulEnding(string(text[-1]))
+    except JavaError as e:
+        error_handler(e)
 
 
 def isChosungJamo(text: str) -> List[bool]:
@@ -202,7 +232,10 @@ def isChosungJamo(text: str) -> List[bool]:
     :return: 문자열 문자의 위치마다 확인여부를 표기한 리스트. 맞다면 True.
     """
 
-    return [koala_class_of('ExtUtil').isChosungJamo(ch) for ch in text]
+    try:
+        return [koala_class_of('ExtUtil').isChosungJamo(ch) for ch in text]
+    except JavaError as e:
+        error_handler(e)
 
 
 def isJungsungJamo(text: str) -> List[bool]:
@@ -214,7 +247,10 @@ def isJungsungJamo(text: str) -> List[bool]:
     :return: 문자열 문자의 위치마다 확인여부를 표기한 리스트. 맞다면 True.
     """
 
-    return [koala_class_of('ExtUtil').isJungsungJamo(ch) for ch in text]
+    try:
+        return [koala_class_of('ExtUtil').isJungsungJamo(ch) for ch in text]
+    except JavaError as e:
+        error_handler(e)
 
 
 def isJongsungJamo(text: str) -> List[bool]:
@@ -226,7 +262,10 @@ def isJongsungJamo(text: str) -> List[bool]:
     :return: 문자열 문자의 위치마다 확인여부를 표기한 리스트. 맞다면 True.
     """
 
-    return [koala_class_of('ExtUtil').isJongsungJamo(ch) for ch in text]
+    try:
+        return [koala_class_of('ExtUtil').isJongsungJamo(ch) for ch in text]
+    except JavaError as e:
+        error_handler(e)
 
 
 def isJongsungEnding(text: str) -> bool:
@@ -238,8 +277,11 @@ def isJongsungEnding(text: str) -> bool:
     :return: 맞다면 True.
     """
 
-    # Workaround... Py4J calls Character version first.
-    return koala_class_of('ExtUtil').isJongsungEnding(string(text[-1]))
+    try:
+        # Workaround... Py4J calls Character version first.
+        return koala_class_of('ExtUtil').isJongsungEnding(string(text[-1]))
+    except JavaError as e:
+        error_handler(e)
 
 
 def getChosung(text: str) -> List[Union[None, str]]:
@@ -323,13 +365,17 @@ def dissembleHangul(text: str) -> str:
     # Workaround... Py4J calls Triplet version first.
     result = ''
     for ch in text:
-        char_dissemble = py_triple(koala_class_of('ExtUtil').dissembleHangul(ch))
-        if char_dissemble is None:
-            result += ch
-        else:
-            for c in char_dissemble:
-                if c is not None:
-                    result += c
+        try:
+            char_dissemble = py_triple(koala_class_of('ExtUtil').dissembleHangul(ch))
+
+            if char_dissemble is None:
+                result += ch
+            else:
+                for c in char_dissemble:
+                    if c is not None:
+                        result += c
+        except JavaError as e:
+            error_handler(e)
 
     return result
 
@@ -353,7 +399,10 @@ def assembleHangulTriple(cho: Union[str, None] = None, jung: Union[str, None] = 
     jung = jung if jung is not None else HanSecondList[18]
     jong = jong if jong is not None else ''
 
-    return str(koala_class_of('ExtUtil').assembleHangulString(string(cho + jung + jong)))
+    try:
+        return str(koala_class_of('ExtUtil').assembleHangulString(string(cho + jung + jong)))
+    except JavaError as e:
+        error_handler(e)
 
 
 def assembleHangul(text: str) -> str:
@@ -365,8 +414,11 @@ def assembleHangul(text: str) -> str:
     :return: 조합형 문자들이 조합된 문자열. 조합이 불가능한 문자는 그대로 남습니다.
     """
 
-    # This is an bypass...
-    return str(koala_class_of('ExtUtil').assembleHangulString(string(text)))
+    try:
+        # This is an bypass...
+        return str(koala_class_of('ExtUtil').assembleHangulString(string(text)))
+    except JavaError as e:
+        error_handler(e)
 
 
 def correctVerbApply(verb: str, isVerb: bool, rest: str) -> str:
@@ -380,7 +432,10 @@ def correctVerbApply(verb: str, isVerb: bool, rest: str) -> str:
     :return: 모음조화나 불규칙 활용이 교정된 원형+어미 결합
     """
 
-    return str(koala_class_of('ExtUtil').correctVerbApply(string(verb), isVerb, string(rest)))
+    try:
+        return str(koala_class_of('ExtUtil').correctVerbApply(string(verb), isVerb, string(rest)))
+    except JavaError as e:
+        error_handler(e)
 
 
 # ----- Define members exported -----

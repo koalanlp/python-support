@@ -37,8 +37,8 @@ class IndexManager(object):
 
         # Initialize index manager
         self.committed = False
-        if Path(basepath, '.jip').exists():
-            for jarname in Path(basepath, '.jip').glob('**/*.jar'):
+        if Path(basepath, '.java').exists():
+            for jarname in Path(basepath, '.java').glob('**/*.jar'):
                 group_id = jarname.parent.parent.name
                 artifact_id = jarname.parent.name
 

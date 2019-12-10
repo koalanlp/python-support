@@ -31,7 +31,7 @@ class CacheRepository(MavenRepos):
         if basepath is None:
             basepath = os.getcwd()
 
-        uri = os.path.expanduser(os.path.join(basepath, '.jip', 'cache'))
+        uri = os.path.expanduser(os.path.join(basepath, '.java', 'cache'))
         if not os.path.exists(uri):
             os.makedirs(uri)
 

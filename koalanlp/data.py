@@ -178,11 +178,15 @@ class Entity(_PyListWrap):
 
     def getReference(self):
         if self.reference is None:
-            self.reference = koala_class_of('data.Entity')(string(self.surface),
-                                                           koala_enum_of('CoarseEntityType', self.label),
-                                                           string(self.fineLabel),
-                                                           java_list([m.getReference() for m in self]),
-                                                           string(self.originalLabel))
+            try:
+                self.reference = koala_class_of('data.Entity')(string(self.surface),
+                                                               koala_enum_of('CoarseEntityType', self.label),
+                                                               string(self.fineLabel),
+                                                               java_list([m.getReference() for m in self]),
+                                                               string(self.originalLabel))
+            except JavaError as e:
+                error_handler(e)
+
         return self.reference
 
     def getSurface(self) -> str:
@@ -295,7 +299,10 @@ class CoreferenceGroup(_PyListWrap):
 
     def getReference(self):
         if self.reference is None:
-            self.reference = koala_class_of('data.CoreferenceGroup')(java_list([e.getReference() for e in self]))
+            try:
+                self.reference = koala_class_of('data.CoreferenceGroup')(java_list([e.getReference() for e in self]))
+            except JavaError as e:
+                error_handler(e)
         return self.reference
 
 
@@ -506,10 +513,14 @@ class SyntaxTree(Tree):
 
     def getReference(self):
         if self.reference is None:
-            self.reference = koala_class_of('data.SyntaxTree')(koala_enum_of('PhraseTag', self.label),
-                                                               self.terminal.getReference() if self.terminal is not None else None,
-                                                               java_list([t.getReference() for t in self]),
-                                                               string(self.originalLabel))
+            try:
+                self.reference = koala_class_of('data.SyntaxTree')(koala_enum_of('PhraseTag', self.label),
+                                                                   self.terminal.getReference() if self.terminal is not None else None,
+                                                                   java_list([t.getReference() for t in self]),
+                                                                   string(self.originalLabel))
+            except JavaError as e:
+                error_handler(e)
+
         return self.reference
 
     def getOriginalLabel(self) -> Optional[str]:
@@ -662,12 +673,16 @@ class DepEdge(DAGEdge):
 
     def getReference(self):
         if self.reference is None:
-            self.reference = koala_class_of('data.DepEdge')(
-                self.governor.getReference() if self.governor is not None else None,
-                self.dependent.getReference(),
-                koala_enum_of('PhraseTag', self.type),
-                koala_enum_of('DependencyTag', self.depType),
-                string(self.originalLabel))
+            try:
+                self.reference = koala_class_of('data.DepEdge')(
+                    self.governor.getReference() if self.governor is not None else None,
+                    self.dependent.getReference(),
+                    koala_enum_of('PhraseTag', self.type),
+                    koala_enum_of('DependencyTag', self.depType),
+                    string(self.originalLabel))
+            except JavaError as e:
+                error_handler(e)
+
         return self.reference
 
     def getGovernor(self):
@@ -801,12 +816,16 @@ class RoleEdge(DAGEdge):
 
     def getReference(self):
         if self.reference is None:
-            self.reference = koala_class_of('data.RoleEdge')(
-                self.predicate.getReference() if self.predicate is not None else None,
-                self.argument.getReference(),
-                koala_enum_of('RoleType', self.label),
-                java_list([w.getReference() for w in self.modifiers]),
-                string(self.originalLabel))
+            try:
+                self.reference = koala_class_of('data.RoleEdge')(
+                    self.predicate.getReference() if self.predicate is not None else None,
+                    self.argument.getReference(),
+                    koala_enum_of('RoleType', self.label),
+                    java_list([w.getReference() for w in self.modifiers]),
+                    string(self.originalLabel))
+            except JavaError as e:
+                error_handler(e)
+
         return self.reference
 
     def getPredicate(self):
@@ -909,8 +928,11 @@ class Morpheme(object):
         self.wordSense = None
         self.entities = []
 
-        if self.reference is not None and self.reference.getWordSense() is not None:
-            self.wordSense = self.reference.getWordSense()
+        try:
+            if self.reference is not None and self.reference.getWordSense() is not None:
+                self.wordSense = self.reference.getWordSense()
+        except JavaError as e:
+            error_handler(e)
 
     def __setattr__(self, name, value):
         if getattr(self, name) is None:
@@ -926,10 +948,14 @@ class Morpheme(object):
 
     def getReference(self):
         if self.reference is None:
-            self.reference = koala_class_of('data.Morpheme')(
-                string(self.surface),
-                koala_enum_of('POS', self.tag),
-                string(self.originalTag))
+            try:
+                self.reference = koala_class_of('data.Morpheme')(
+                    string(self.surface),
+                    koala_enum_of('POS', self.tag),
+                    string(self.originalTag))
+            except JavaError as e:
+                error_handler(e)
+
         return self.reference
 
     def getSurface(self) -> str:
@@ -968,14 +994,14 @@ class Morpheme(object):
         """
         return self.id
 
-    def getWordSense(self) -> Optional[int]:
+    def getWordSense(self) -> Optional[str]:
         """
         다의어 분석 결과인, 이 형태소의 사전 속 의미/어깨번호 값을 돌려줍니다.
 
         다의어 분석을 한 적이 없다면 None을 돌려줍니다.
 
 
-        :rtype: int
+        :rtype: str
 
         :return: 의미/어깨번호 값
         """
@@ -1218,9 +1244,13 @@ class Word(_PyListWrap):
 
     def getReference(self):
         if self.reference is None:
-            self.reference = koala_class_of('data.Word')(
-                string(self.surface),
-                java_list([m.getReference() for m in self]))
+            try:
+                self.reference = koala_class_of('data.Word')(
+                    string(self.surface),
+                    java_list([m.getReference() for m in self]))
+            except JavaError as e:
+                error_handler(e)
+
         return self.reference
 
     def getSurface(self) -> str:
@@ -1489,22 +1519,25 @@ class Sentence(_PyListWrap):
             "words가 list이거나 reference가 None이 아니어야 합니다."
 
         if reference is not None:
-            self.words = py_list(reference,
-                                 lambda w: Word(surface=w.getSurface(),
-                                                morphemes=py_list(w,
-                                                                  lambda m: Morpheme(surface=m.getSurface(),
-                                                                                     tag=m.getTag().name(),
-                                                                                     originalTag=m.getOriginalTag(),
-                                                                                     reference=m)),
-                                                reference=w))
-            super().__init__(self.words)
+            try:
+                self.words = py_list(reference,
+                                     lambda w: Word(surface=w.getSurface(),
+                                                    morphemes=py_list(w,
+                                                                      lambda m: Morpheme(surface=m.getSurface(),
+                                                                                         tag=m.getTag().name(),
+                                                                                         originalTag=m.getOriginalTag(),
+                                                                                         reference=m)),
+                                                    reference=w))
+                super().__init__(self.words)
 
-            self.syntaxTree = self.__recon_syntax_tree(reference.getSyntaxTree())
-            self.dependencies = py_list(reference.getDependencies(), self.__get_dep_edge)
-            self.roles = py_list(reference.getRoles(), self.__get_role)
-            self.entities = py_list(reference.getEntities(), self.__get_entity)
-            self.corefGroups = py_list(reference.getCorefGroups(), self.__get_coref)
-            self.reference = reference
+                self.syntaxTree = self.__recon_syntax_tree(reference.getSyntaxTree())
+                self.dependencies = py_list(reference.getDependencies(), self.__get_dep_edge)
+                self.roles = py_list(reference.getRoles(), self.__get_role)
+                self.entities = py_list(reference.getEntities(), self.__get_entity)
+                self.corefGroups = py_list(reference.getCorefGroups(), self.__get_coref)
+                self.reference = reference
+            except JavaError as e:
+                error_handler(e)
         else:
             self.words = words
             self.syntaxTree = None
@@ -1546,69 +1579,88 @@ class Sentence(_PyListWrap):
         if jtree is None:
             return None
 
-        jtree = koala_cast_of(jtree, 'data.SyntaxTree')
-        term = None
-        non_terms = None
+        try:
+            jtree = koala_cast_of(jtree, 'data.SyntaxTree')
+            term = None
+            non_terms = None
 
-        if jtree.getTerminal() is not None:
-            term = self.__get_jword(jtree.getTerminal())
+            if jtree.getTerminal() is not None:
+                term = self.__get_jword(jtree.getTerminal())
 
-        if jtree.hasNonTerminals():
-            non_terms = py_list(jtree, self.__recon_syntax_tree)
+            if jtree.hasNonTerminals():
+                non_terms = py_list(jtree, self.__recon_syntax_tree)
 
-        tree = SyntaxTree(label=jtree.getLabel().name(), terminal=term,
-                          children=non_terms, originalLabel=jtree.getOriginalLabel())
-        tree.reference = jtree
-        return tree
+            tree = SyntaxTree(label=jtree.getLabel().name(), terminal=term,
+                              children=non_terms, originalLabel=jtree.getOriginalLabel())
+            tree.reference = jtree
+            return tree
+
+        except JavaError as e:
+            error_handler(e)
 
     def __get_dep_edge(self, e) -> DepEdge:
-        edge = DepEdge(governor=self.__get_jword(e.getGovernor()),
-                       dependent=self.__get_jword(e.getDependent()),
-                       type=e.getType().name(),
-                       depType=e.getDepType().name() if e.getDepType() is not None else None,
-                       originalLabel=e.getOriginalLabel())
-        edge.reference = e
-        return edge
+        try:
+            edge = DepEdge(governor=self.__get_jword(e.getGovernor()),
+                           dependent=self.__get_jword(e.getDependent()),
+                           type=e.getType().name(),
+                           depType=e.getDepType().name() if e.getDepType() is not None else None,
+                           originalLabel=e.getOriginalLabel())
+            edge.reference = e
+            return edge
+        except JavaError as e:
+            error_handler(e)
 
     def __get_role(self, e) -> RoleEdge:
-        edge = RoleEdge(predicate=self.__get_jword(e.getPredicate()),
-                        argument=self.__get_jword(e.getArgument()),
-                        label=e.getLabel().name(),
-                        modifiers=py_list(e.getModifiers(), self.__get_jword),
-                        originalLabel=e.getOriginalLabel())
-        edge.reference = e
-        return edge
+        try:
+            edge = RoleEdge(predicate=self.__get_jword(e.getPredicate()),
+                            argument=self.__get_jword(e.getArgument()),
+                            label=e.getLabel().name(),
+                            modifiers=py_list(e.getModifiers(), self.__get_jword),
+                            originalLabel=e.getOriginalLabel())
+            edge.reference = e
+            return edge
+        except JavaError as e:
+            error_handler(e)
 
     def __get_entity(self, e) -> Entity:
-        enty = Entity(surface=e.getSurface(), label=e.getLabel().name(),
-                      fineLabel=e.getFineLabel(), morphemes=py_list(e, self.__get_jmorph),
-                      originalLabel=e.getOriginalLabel())
-        enty.reference = e
-        return enty
+        try:
+            enty = Entity(surface=e.getSurface(), label=e.getLabel().name(),
+                          fineLabel=e.getFineLabel(), morphemes=py_list(e, self.__get_jmorph),
+                          originalLabel=e.getOriginalLabel())
+            enty.reference = e
+            return enty
+        except JavaError as e:
+            error_handler(e)
 
     def __get_coref(self, c) -> CoreferenceGroup:
-        coref = CoreferenceGroup(py_list(c, lambda e: self.entities[self.entities.index(self.__get_entity(e))]))
-        coref.reference = c
-        return coref
+        try:
+            coref = CoreferenceGroup(py_list(c, lambda e: self.entities[self.entities.index(self.__get_entity(e))]))
+            coref.reference = c
+            return coref
+        except JavaError as e:
+            error_handler(e)
 
     def getReference(self):
-        if self.reference is None:
-            self.reference = koala_class_of('data.Sentence')(java_list([w.getReference() for w in self]))
+        try:
+            if self.reference is None:
+                self.reference = koala_class_of('data.Sentence')(java_list([w.getReference() for w in self]))
 
-        if self.getSyntaxTree() is not None and self.reference.getSyntaxTree() is None:
-            self.reference.setSyntaxTree(self.getSyntaxTree().getReference())
+            if self.getSyntaxTree() is not None and self.reference.getSyntaxTree() is None:
+                self.reference.setSyntaxTree(self.getSyntaxTree().getReference())
 
-        if len(self.getRoles()) > 0 and self.reference.getRoles() is None:
-            self.reference.setRoleEdges(java_list([e.getReference() for e in self.getRoles()]))
+            if len(self.getRoles()) > 0 and self.reference.getRoles() is None:
+                self.reference.setRoleEdges(java_list([e.getReference() for e in self.getRoles()]))
 
-        if len(self.getDependencies()) > 0 and self.reference.getDependencies() is None:
-            self.reference.setDepEdges(java_list([e.getReference() for e in self.getDependencies()]))
+            if len(self.getDependencies()) > 0 and self.reference.getDependencies() is None:
+                self.reference.setDepEdges(java_list([e.getReference() for e in self.getDependencies()]))
 
-        if len(self.getEntities()) > 0 and self.reference.getEntities() is None:
-            self.reference.setEntities(java_list([e.getReference() for e in self.getEntities()]))
+            if len(self.getEntities()) > 0 and self.reference.getEntities() is None:
+                self.reference.setEntities(java_list([e.getReference() for e in self.getEntities()]))
 
-        if len(self.getCorefGroups()) > 0 and self.reference.getCorefGroups() is None:
-            self.reference.setCorefGroups(java_list([e.getReference() for e in self.getCorefGroups()]))
+            if len(self.getCorefGroups()) > 0 and self.reference.getCorefGroups() is None:
+                self.reference.setCorefGroups(java_list([e.getReference() for e in self.getCorefGroups()]))
+        except JavaError as e:
+            error_handler(e)
 
         return self.reference
 

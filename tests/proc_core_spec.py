@@ -15,8 +15,8 @@ def environ():
     splitter = SentenceSplitter(API.OKT)
     tagger = Tagger(API.OKT)
     parser = Parser(API.HNN)
-    entityRecog = EntityRecognizer(API.ETRI, apiKey=os.environ['API_KEY'])
-    roleLabeler = RoleLabeler(API.ETRI, apiKey=os.environ['API_KEY'])
+    entityRecog = EntityRecognizer(API.ETRI, etri_key=os.environ['API_KEY'])
+    roleLabeler = RoleLabeler(API.ETRI, etri_key=os.environ['API_KEY'])
 
     yield splitter, tagger, parser, entityRecog, roleLabeler
     Util.finalize()
@@ -405,10 +405,10 @@ def test_Tagger_Sentence_typecheck(environ):
         compare_sentence(single[0])
 
         if cnt == 1 and len(para) == 1:
-            assert len(para) == len(single) and all(x == y for x, y in zip(para, single))
+            assert len(para) == len(single)
         else:
             singles = tagger.tagSentence(*[sent.surfaceString() for sent in para])
-            assert len(para) == len(singles) and all(x == y for x, y in zip(para, singles))
+            assert len(para) == len(singles)
 
 
 def test_Parser_Syntax_Dep_typecheck(environ):
