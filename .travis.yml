@@ -12,17 +12,26 @@ matrix:
           - $HOME/.hunter
       env:
         - PYTHON=python
+        - PYPIFLAG=
     - name: "Python 3.7 on macOS 11.2 (JDK13)"
       os: osx
       osx_image: xcode11.2
       language: shell
       jdk: openjdk12
+      before_install:
+        - eval "$(pyenv init -)"
+        - pyenv install 3.7.3
+        - pyenv shell 3.7.3
+        - $PYTHON --version
+        - wget https://bootstrap.pypa.io/get-pip.py
+        - PYTHON_CONFIGURE_OPTS=--enable-unicode=ucs2 $PYTHON get-pip.py $PYPIFLAG
       env:
         - LDFLAGS="${LDFLAGS} -L$(brew --prefix zlib)/lib -L$(brew --prefix readline)/lib -L$(brew --prefix openssl)/lib"
         - CPPFLAGS="${CPPFLAGS} -I$(brew --prefix zlib)/include -I$(brew --prefix readline)/include -I$(brew --prefix openssl)/include -I$(xcrun --show-sdk-path)/include"
         - PKG_CONFIG_PATH="${PKG_CONFIG_PATH} $(brew --prefix zlib)/lib/pkgconfig"
         - PATH="$HOME/.pyenv:$PATH"
-        - PYTHON=python
+        - PYTHON=python3.7
+        - PYPIFLAG=--user
       cache:
         directories:
           - $HOME/utagger
@@ -41,6 +50,7 @@ matrix:
         - JAVA_HOME="/c/Progra~1/OpenJDK/jdk-12"
         - PATH=/c/Python37:/c/Python37/Scripts:$JAVA_HOME/bin:$PATH
         - PYTHON=python
+        - PYPIFLAG=--user
       cache:
         directories:
           - $HOME/utagger
@@ -48,8 +58,8 @@ matrix:
           - $HOME/.hunter
 install:
   - $PYTHON --version
-  - $PYTHON -m pip install py4j --user
-  - $PYTHON -m pip install pytest codecov pytest-cov --upgrade --user
+  - $PYTHON -m pip install py4j $PYPIFLAG
+  - $PYTHON -m pip install pytest codecov pytest-cov --upgrade $PYPIFLAG
   - bash ./scripts/khaiii_install.sh
   - bash ./scripts/utagger_install.sh
 script:
