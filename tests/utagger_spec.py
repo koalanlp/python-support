@@ -1,5 +1,4 @@
 import os
-import platform
 import pytest
 from pathlib import Path
 
@@ -12,10 +11,15 @@ from tests.proc_core_spec import compare_sentence, EXAMPLES
 def tagger():
     Util.initialize(UTAGGER="LATEST")
 
+    travis_os = os.environ.get('TRAVIS_OS_NAME', 'linux')
+    travis_dist = os.environ.get('TRAVIS_DIST', 'ubuntu')
+
+    print(f'Recognized ${travis_os} ${travis_dist}.')
+
     utagger_path = Path(os.environ['HOME'], 'utagger').absolute()
     bin_path = os.path.join(utagger_path, 'bin')
-    lib_path = "utagger-win64.dll" if platform.system() == 'Windows' else \
-        'utagger-ubuntu1804.so' if 'ubuntu' in platform.platform().lower() else 'utagger-centos7.so'
+    lib_path = "utagger-win64.dll" if travis_os == 'windows' else \
+        ('utagger-ubuntu1804.so' if 'ubuntu' in travis_dist else 'utagger-centos7.so')
 
     lib_path = os.path.join(bin_path, lib_path)
     config_path = os.path.join(utagger_path, "Hlxcfg.txt")
@@ -27,6 +31,7 @@ def tagger():
     Path(config_path).open('w+t', encoding='euc-kr').writelines(lines)
     tagger = Tagger(API.UTAGGER)
     yield tagger
+    del tagger
     Util.finalize()
 
 

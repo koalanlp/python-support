@@ -1,7 +1,5 @@
 import os
-import platform
 import pytest
-from pathlib import Path
 
 from koalanlp import *
 from koalanlp.proc import *
@@ -13,6 +11,7 @@ def environ():
     Util.initialize(KHAIII="LATEST")
     tagger = Tagger(API.KHAIII, kha_resource=os.environ['KHAIII_RSC'])
     yield None, tagger, None, None, None
+    del tagger
     Util.finalize()
 
 
