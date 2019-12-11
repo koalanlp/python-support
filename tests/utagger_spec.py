@@ -12,14 +12,10 @@ def tagger():
     Util.initialize(UTAGGER="LATEST")
 
     travis_os = os.environ.get('TRAVIS_OS_NAME', 'linux')
-    travis_dist = os.environ.get('TRAVIS_DIST', 'ubuntu')
-
-    print(f'Recognized ${travis_os} ${travis_dist}.')
 
     utagger_path = Path(os.environ['HOME'], 'utagger').absolute()
     bin_path = os.path.join(utagger_path, 'bin')
-    lib_path = "utagger-win64.dll" if travis_os == 'windows' else \
-        ('utagger-ubuntu1804.so' if 'ubuntu' in travis_dist else 'utagger-centos7.so')
+    lib_path = "utagger-win64.dll" if travis_os == 'windows' else 'utagger-ubuntu1804.so'  # No CentOS in travis CI.
 
     lib_path = os.path.join(bin_path, lib_path)
     config_path = os.path.join(utagger_path, "Hlxcfg.txt")
