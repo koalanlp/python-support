@@ -36,9 +36,9 @@ __동일한 인터페이스__ 아래에서 사용할 수 있도록 하는 것이
 
 * KAIST의 [한나눔 형태소 분석기](http://kldp.net/projects/hannanum/)와 [NLP_HUB 구문분석기](http://semanticweb.kaist.ac.kr/home/index.php/NLP_HUB)
 
-* Kakao의 [카이(Khaiii) v0.4](https://github.com/kakao/khaiii) <sup>(별도설치 필요: [설치법](https://github.com/kakao/khaiii/wiki/빌드-및-설치))</sup>
+* Kakao의 [카이(Khaiii) v0.4](https://github.com/kakao/khaiii) (별도설치 필요: [설치법](https://github.com/kakao/khaiii/wiki/빌드-및-설치))
 
-* 울산대학교의 [UTagger 2018년 10월 31일자](http://nlplab.ulsan.ac.kr/doku.php?id=start) <sup>1-2, (별도설치 필요: [설치법](https://koalanlp.github.io/usage/Install-UTagger.md))</sup>
+* 울산대학교의 [UTagger 2018년 10월 31일자](http://nlplab.ulsan.ac.kr/doku.php?id=start) (별도설치 필요: [설치법](https://koalanlp.github.io/usage/Install-UTagger.md)) <sup>1-2</sup>
 
 > <sup>주1-1</sup> Arirang 분석기의 출력을 형태소분석에 적합하게 조금 다듬었으므로, 원본과 약간 다른 결과를 낼 수도 있습니다.
 >
