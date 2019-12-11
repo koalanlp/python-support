@@ -17,7 +17,7 @@ setup(
     install_requires=[
         "py4j~=0.10", "jip~=0.9.13"
     ],
-    packages=find_packages(exclude=["docs", "tests", "doc_source"]),
+    packages=find_packages(exclude=["docs", "tests", "doc_source", "scripts"]),
     keywords=['korean', 'natural language processing', 'koalanlp', '한국어 처리', '한국어 분석',
               '형태소', '의존구문', '구문구조', '개체명', '의미역'],
     python_requires='>=3.5',

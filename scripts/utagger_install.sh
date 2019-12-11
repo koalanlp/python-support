@@ -7,6 +7,12 @@ then
     exit 0
 fi
 
+if [ -f "utagger/Hlxcfg.txt" ]
+then
+    echo "UTagger already installed."
+    exit 0
+fi
+
 ### UTagger 파일 다운로드
 cd $HOME
 if [ -z "$TRAVIS_OS_NAME" ]
@@ -19,4 +25,4 @@ else
 fi
 
 ### 압축 풀기
-unzip utagger.zip -d utagger
+unzip -o utagger.zip -d utagger
