@@ -44,11 +44,11 @@ ask_proceed()
 
 pip_upgrade()
 {
-    read -p "Require superuser privileges?" SUDO
+    read -p "Does this system requires superuser privileges for upgrade Pypi packages [y/N]? " SUDO
     if [ "${SUDO,,}" = "y" ]; then
-        sudo -H pip3 install --upgrade sphinx sphinx_rtd_theme twine pytest pypandoc
+        sudo -H pip3 install --upgrade sphinx sphinx_rtd_theme twine pytest pypandoc wheel
     else
-        pip3 install --upgrade sphinx sphinx_rtd_theme twine pytest pypandoc
+        pip3 install --upgrade sphinx sphinx_rtd_theme twine pytest pypandoc wheel
     fi
 }
 

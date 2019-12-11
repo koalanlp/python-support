@@ -1,10 +1,11 @@
+.java/
+.pytest_cache/
 build/
 dist/
 koalanlp.egg-info/
+py36/
 venv/
 .idea/
-.jip/
-.pytest_cache/
 .coverage
 coverage.xml
 
