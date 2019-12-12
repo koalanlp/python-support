@@ -20,6 +20,8 @@ from koalanlp.jip.util import wait_until_download_finished
 # Logging setup
 logging.basicConfig(level=logging.INFO, format="[%(name)s] %(message)s")
 logging.getLogger("requests").setLevel(logging.WARNING)
+logging.getLogger("py4j").setLevel(logging.WARNING)
+logger = logging.getLogger('koalanlp.jip')
 
 # ------- Repository Setup --------
 repos_manager = RepositoryManager()
@@ -87,7 +89,7 @@ def _resolve_artifacts_modified(artifacts, exclusions=None):
         pominfo = _find_pom(artifact)
         if pominfo is None:
             if not any(artifact.is_same_artifact(a) for a in exclusions):
-                logging.warning("[Warning] Artifact is not found: %s", artifact)
+                logger.warning("[Warning] Artifact is not found: %s", artifact)
             # Ignore this unknown pom.
             continue
 
@@ -129,7 +131,7 @@ def initialize(java_options="-Xmx1g -Dfile.encoding=utf-8", lib_path=None, force
         packages = {
             API.KMR: "LATEST"
         }
-        logging.info("[Warning] Since no package names are specified, I'll load packages by default: %s" %
+        logger.info("[Warning] Since no package names are specified, I'll load packages by default: %s" %
                      str(packages))
 
     if not lib_path:
@@ -182,7 +184,7 @@ def initialize(java_options="-Xmx1g -Dfile.encoding=utf-8", lib_path=None, force
         RoleType.values()
         CoarseEntityType.values()
 
-        logging.info("JVM initialization procedure is completed.")
+        logger.info("JVM initialization procedure is completed.")
     else:
         raise Exception("JVM cannot be initialized more than once."
                         "Please call koalanlp.Util.finalize() when you want to re-init the JVM with other options.")

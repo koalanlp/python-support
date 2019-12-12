@@ -20,13 +20,11 @@
 # SOFTWARE.
 #
 
-import logging
 import sys
 import re
 from xml.etree import ElementTree
 from string import Template, whitespace
-
-logger = logging.getLogger('MavenArtifactManagement')
+from koalanlp.jip.util import logger
 
 
 def _parse_version_string(version: str):
@@ -55,7 +53,7 @@ def _retrieve_latest_version(group, artifact) -> str:
               for line in re.findall('%s/(\\d+\\.\\d+\\.\\d+(-[A-Za-z]+(\\.\\d+)?)?)/' % url, result)]
     version = max(result, key=_parse_version_string)
 
-    logging.info('[INFO] Latest version of %s:%s (%s) will be used.', group, artifact, version)
+    logger.info('[INFO] Latest version of %s:%s (%s) will be used.', group, artifact, version)
     return version
 
 
@@ -346,7 +344,7 @@ class Pom(object):
     @staticmethod
     def __resolve_placeholder(text, properties):
         def subfunc(matchobj):
-            key = matchobj.group(1)
+            key = matchobj.group(1).strip()
             if key in properties:
                 return properties[key]
             else:

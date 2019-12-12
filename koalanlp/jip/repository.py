@@ -27,13 +27,12 @@ import stat
 import time
 import hashlib
 import sys
-import logging
 
 import urllib.error as urlerror
 import urllib.request as urlrequest
 from xml.etree import ElementTree
 
-from koalanlp.jip.util import DownloadException, download, download_string
+from koalanlp.jip.util import DownloadException, download, download_string, logger
 
 
 class RepositoryManager(object):
@@ -42,7 +41,6 @@ class RepositoryManager(object):
 
     def __init__(self):
         self.repos = []
-        self.logger = logging.getLogger(self.__class__.__name__)
 
         for repo in [self.MAVEN_LOCAL_REPOS, self.MAVEN_PUBLIC_REPOS]:
             # create repos in order
@@ -55,7 +53,7 @@ class RepositoryManager(object):
         elif repos_type == 'remote':
             repo = MavenHttpRemoteRepos(name, uri)
         else:
-            self.logger.warning('[Error] Unknown repository type.')
+            logger.warning('[Error] Unknown repository type.')
             sys.exit(1)
 
         if repo not in self.repos:
@@ -63,14 +61,13 @@ class RepositoryManager(object):
                 self.repos.insert(order, repo)
             else:
                 self.repos.append(repo)
-            self.logger.debug('[Repository] Added: %s' % repo.name)
+            logger.debug('[Repository] Added: %s' % repo.name)
 
 
 class MavenRepos(object):
     def __init__(self, name, uri):
         self.name = name
         self.uri = uri
-        self.logger = logging.getLogger(self.__class__.__name__)
 
     def __eq__(self, other):
         if isinstance(other, MavenRepos):
@@ -109,26 +106,26 @@ class MavenFileSystemRepos(MavenRepos):
 
     def download_jar(self, artifact, local_path):
         maven_file_path = self.get_artifact_uri(artifact, 'jar')
-        self.logger.info("[Checking] jar package from %s" % self.name)
+        logger.info("[Checking] jar package from %s" % self.name)
         if os.path.exists(maven_file_path):
             local_jip_path = os.path.join(local_path, artifact.to_jip_name())
-            self.logger.info("[Downloading] %s" % maven_file_path)
+            logger.info("[Downloading] %s" % maven_file_path)
             shutil.copy(maven_file_path, local_jip_path)
-            self.logger.info("[Finished] %s completed" % local_jip_path)
+            logger.info("[Finished] %s completed" % local_jip_path)
         else:
-            self.logger.error("[Error] File not found %s" % maven_file_path)
+            logger.error("[Error] File not found %s" % maven_file_path)
             raise IOError('File not found:' + maven_file_path)
 
     def download_pom(self, artifact):
         maven_file_path = self.get_artifact_uri(artifact, 'pom')
-        self.logger.info('[Checking] pom file %s' % maven_file_path)
+        logger.info('[Checking] pom file %s' % maven_file_path)
         if os.path.exists(maven_file_path):
             pom_file = open(maven_file_path, 'r')
             data = pom_file.read()
             pom_file.close()
             return data
         else:
-            self.logger.info('[Skipped] pom file not found at %s' % maven_file_path)
+            logger.info('[Skipped] pom file not found at %s' % maven_file_path)
             return None
 
     def last_modified(self, artifact):
@@ -148,7 +145,7 @@ class MavenHttpRemoteRepos(MavenRepos):
 
     def download_jar(self, artifact, local_path):
         maven_path = self.get_artifact_uri(artifact, 'jar')
-        self.logger.info('[Downloading] jar from %s' % maven_path)
+        logger.info('[Downloading] jar from %s' % maven_path)
         local_jip_path = os.path.join(local_path, artifact.to_jip_name())
         local_f = open(local_jip_path, 'wb')
         # download jar asyncly
@@ -171,7 +168,7 @@ class MavenHttpRemoteRepos(MavenRepos):
 
         maven_path = self.get_artifact_uri(artifact, 'pom')
         try:
-            self.logger.info('[Checking] pom file %s' % maven_path)
+            logger.info('[Checking] pom file %s' % maven_path)
             data = download_string(maven_path)
             # cache
             self.pom_cache[artifact] = data
@@ -179,7 +176,7 @@ class MavenHttpRemoteRepos(MavenRepos):
             return data
         except DownloadException:
             self.pom_not_found_cache.append(artifact)
-            self.logger.info('[Skipped] Pom file not found at %s' % maven_path)
+            logger.info('[Skipped] Pom file not found at %s' % maven_path)
             return None
 
     def get_artifact_uri(self, artifact, ext):

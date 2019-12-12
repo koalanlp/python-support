@@ -29,6 +29,12 @@ import logging
 JIP_USER_AGENT = 'jip-koalanlp/1.0'
 BUF_SIZE = 4096
 
+# Logging setup
+logging.basicConfig(level=logging.INFO, format="[%(name)s] %(message)s")
+logging.getLogger("requests").setLevel(logging.WARNING)
+logging.getLogger("py4j").setLevel(logging.WARNING)
+logger = logging.getLogger('koalanlp.jip')
+
 
 class DownloadException(Exception):
     pass
@@ -47,7 +53,7 @@ def download(url, target, asynchronous=False, close_target=False, quiet=True):
             source.raise_for_status()
             size = source.headers['Content-Length']
             if not quiet:
-                logging.info('[Downloading] %s %s bytes to download' % (url, size))
+                logger.info('[Downloading] %s %s bytes to download' % (url, size))
             for buf in source.iter_content(BUF_SIZE):
                 target.write(buf)
             source.close()
@@ -55,7 +61,7 @@ def download(url, target, asynchronous=False, close_target=False, quiet=True):
                 target.close()
             t1 = time.time()
             if not quiet:
-                logging.info('[Downloading] Download %s completed in %f secs' % (url, (t1 - t0)))
+                logger.info('[Downloading] Download %s completed in %f secs' % (url, (t1 - t0)))
         except requests.exceptions.RequestException:
             _, e, _ = sys.exc_info()
             raise DownloadException(url, e)
@@ -106,4 +112,4 @@ class DownloadThreadPool(object):
 pool = DownloadThreadPool(3)
 
 
-__all__ = ['DownloadException', 'download', 'download_string', 'wait_until_download_finished']
+__all__ = ['DownloadException', 'download', 'download_string', 'wait_until_download_finished', 'logger']
