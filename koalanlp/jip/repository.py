@@ -37,7 +37,7 @@ from koalanlp.jip.util import DownloadException, download, download_string, logg
 
 class RepositoryManager(object):
     MAVEN_LOCAL_REPOS = ('local', os.path.expanduser(os.path.join('~', '.m2', 'repository')), 'local')
-    MAVEN_PUBLIC_REPOS = ('public', "http://repo1.maven.org/maven2/", 'remote')
+    MAVEN_PUBLIC_REPOS = ('public', "https://repo1.maven.org/maven2/", 'remote')
 
     def __init__(self):
         self.repos = []

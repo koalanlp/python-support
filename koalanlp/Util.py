@@ -39,9 +39,9 @@ repos_manager.add_repos('jcenter', 'http://jcenter.bintray.com/', 'remote', orde
 # Jitpack for Komoran v3
 repos_manager.add_repos('jitpack.io', 'https://jitpack.io/', 'remote', order=4)
 
-# Maven Central & its mirror
-repos_manager.add_repos('central1', 'http://repo1.maven.org/maven2/', 'remote', order=5)
-repos_manager.add_repos('central2', 'http://central.maven.org/maven2/', 'remote', order=6)
+# Maven Central
+repos_manager.add_repos('central1', 'https://repo1.maven.org/maven2/', 'remote', order=5)
+repos_manager.add_repos('central2', 'http://insecure.repo1.maven.org/maven2/', 'remote', order=6)
 
 
 # JIP 코드 참조하여 변경함.
