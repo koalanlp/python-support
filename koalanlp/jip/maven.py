@@ -47,10 +47,10 @@ def _retrieve_latest_version(group, artifact) -> str:
     import requests
     import re
 
-    url = 'https://oss.sonatype.org/content/repositories/public/%s/%s' % (group.replace('.', '/'), artifact)
+    url = 'https://repo1.maven.org/maven2/%s/%s' % (group.replace('.', '/'), artifact)
     result = requests.get(url).text
     result = [line[0].split('/')[-1]
-              for line in re.findall('%s/(\\d+\\.\\d+\\.\\d+(-[A-Za-z]+(\\.\\d+)?)?)/' % url, result)]
+              for line in re.findall('href="(\\d+\\.\\d+\\.\\d+(-[A-Za-z]+(\\.\\d+)?)?)/"', result)]
     version = max(result, key=_parse_version_string)
 
     logger.info('[INFO] Latest version of %s:%s (%s) will be used.', group, artifact, version)
