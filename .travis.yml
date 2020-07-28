@@ -1,10 +1,10 @@
 language: python
 matrix:
   include:
-    - name: "Python 3 on Ubuntu Bionic (JDK12)"
-      python: 3.7
+    - name: "Python 3.8 on Ubuntu Bionic (JDK12)"
+      python: 3.8
       dist: bionic
-      jdk: openjdk12
+      jdk: openjdk14
       env:
         - PYTHON=python
         - PYPIFLAG=
@@ -14,15 +14,15 @@ matrix:
           - $HOME/khaiii-orig
           - $HOME/.hunter
           - ./.java
-    - name: "Python 3.7 on macOS 11.2 (JDK13)"
+    - name: "Python 3.8 on macOS 11.2 (JDK14.0.1)"
       os: osx
-      osx_image: xcode11.2
+      osx_image: xcode12u
       language: shell
-      jdk: openjdk12
+      jdk: openjdk14
       before_install:
         - eval "$(pyenv init -)"
-        - pyenv install 3.7.3
-        - pyenv shell 3.7.3
+        - pyenv install 3.8.3
+        - pyenv shell 3.8.3
         - $PYTHON --version
         - wget https://bootstrap.pypa.io/get-pip.py
         - PYTHON_CONFIGURE_OPTS=--enable-unicode=ucs2 $PYTHON get-pip.py $PYPIFLAG
@@ -31,7 +31,7 @@ matrix:
         - CPPFLAGS="${CPPFLAGS} -I$(brew --prefix zlib)/include -I$(brew --prefix readline)/include -I$(brew --prefix openssl)/include -I$(xcrun --show-sdk-path)/include"
         - PKG_CONFIG_PATH="${PKG_CONFIG_PATH} $(brew --prefix zlib)/lib/pkgconfig"
         - PATH="$HOME/.pyenv:$PATH"
-        - PYTHON=python3.7
+        - PYTHON=python3.8
         - PYPIFLAG=--user
       cache:
         directories:
@@ -39,18 +39,18 @@ matrix:
           - $HOME/khaiii-orig
           - $HOME/.hunter
           - ./.java
-    - name: "Python 3.7 on Windows (JDK12)"
+    - name: "Python 3.8 on Windows (JDK14)"
       os: windows
       language: shell
       filter_secrets: false
       before_install:
-        - choco install openjdk --version 12.0.0 -y
-        - choco install python --version 3.7.3 -y
+        - choco install openjdk --version 14.0.1 -y
+        - choco install python --version 3.8.3 -y
         - wget https://bootstrap.pypa.io/get-pip.py
         - $PYTHON get-pip.py --user
       env:
-        - JAVA_HOME="/c/Progra~1/OpenJDK/jdk-12"
-        - PATH=/c/Python37:/c/Python37/Scripts:$JAVA_HOME/bin:$PATH
+        - JAVA_HOME="/c/Progra~1/OpenJDK/jdk-14"
+        - PATH=/c/Python38:/c/Python38/Scripts:$JAVA_HOME/bin:$PATH
         - PYTHON=python
         - PYPIFLAG=--user
       cache:

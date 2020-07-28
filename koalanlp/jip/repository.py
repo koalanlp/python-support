@@ -101,6 +101,9 @@ class MavenFileSystemRepos(MavenRepos):
 
     def get_artifact_uri(self, artifact, ext):
         maven_name = artifact.to_maven_name(ext)
+        if sys.platform in ('dos', 'win16', 'win32'):
+            maven_name = maven_name.replace('/', os.sep)
+
         maven_file_path = os.path.join(self.uri, maven_name)
         return maven_file_path
 

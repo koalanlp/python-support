@@ -348,9 +348,10 @@ class Pom(object):
             if key in properties:
                 return properties[key]
             else:
+                logger.error("[Error] can not find property %s from %s" % (key, properties))
                 return matchobj.group(0)
 
-        return re.sub(r'\$\\{(.*?)\\}', subfunc, text)
+        return re.sub(r'\$\{(.*?)\}', subfunc, text)
 
     def get_repositories(self):
         eletree = self.get_element_tree()
