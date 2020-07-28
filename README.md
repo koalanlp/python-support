@@ -5,7 +5,7 @@
 [![MIT License](https://img.shields.io/badge/license-MIT-green.svg?style=flat-square)](https://tldrlegal.com/license/mit-license)
 [![Sphinx doc](https://img.shields.io/badge/Python-Doc-blue.svg?style=flat-square)](https://koalanlp.github.io/python-support/html/)
 
-[![Build Status](https://img.shields.io/travis/koalanlp/python-support.svg?style=flat-square&branch=master)](https://travis-ci.org/koalanlp/python-support)
+[![Build Status](https://img.shields.io/travis/koalanlp/python-support.svg?style=flat-square&branch=master)](https://travis-ci.com/koalanlp/python-support)
 [![codecov](https://codecov.io/gh/koalanlp/python-support/branch/master/graph/badge.svg)](https://codecov.io/gh/koalanlp/python-support)
 
 [![java-koalanlp](https://img.shields.io/badge/Java,Kotlin-KoalaNLP-red.svg?style=flat-square)](https://koalanlp.github.io/koalanlp)
