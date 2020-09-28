@@ -60,6 +60,7 @@ fi
 ask_proceed "Test"
 if [ "${YN,,}" != "p" ]; then
     python3 -m pytest tests/finalize_test.py
+    python3 -m pytest tests/multi_processing_test.py
     python3 -m pytest tests/data_test.py
     python3 -m pytest tests/dictionary_test.py
     python3 -m pytest tests/extension_core_spec.py

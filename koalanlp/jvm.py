@@ -16,7 +16,7 @@ def is_jvm_running():
     return GATEWAY is not None
 
 
-def start_jvm(option, classpath):
+def start_jvm(option, classpath, port: int = 0):
     import os
     global GATEWAY
 
@@ -26,9 +26,12 @@ def start_jvm(option, classpath):
             jarpath = path
             break
 
-    port = launch_gateway(jarpath=jarpath, classpath=os.pathsep.join(classpath), javaopts=option)
-    GATEWAY = JavaGateway(gateway_parameters=GatewayParameters(port=port, auto_close=True),
-                          callback_server_parameters=CallbackServerParameters())
+    gateway_port = launch_gateway(jarpath=jarpath, classpath=os.pathsep.join(classpath), javaopts=option)
+    logging.info("Java gateway started with port number %s", gateway_port)
+
+    logging.info("Callback server will use port number %s", port)
+    GATEWAY = JavaGateway(gateway_parameters=GatewayParameters(port=gateway_port, auto_close=True),
+                          callback_server_parameters=CallbackServerParameters(port=port))
     return is_jvm_running()
 
 
