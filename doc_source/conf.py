@@ -24,7 +24,7 @@ copyright = '2018, KoalaNLP'
 author = 'KoalaNLP'
 
 # The full version, including alpha/beta/rc tags
-release = '2.1.6'
+release = '2.1.7-SNAPSHOT'
 # The short X.Y version
 version = '.'.join(release.split('.')[:2])
 
