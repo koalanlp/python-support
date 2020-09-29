@@ -3,7 +3,8 @@
 
 import logging
 from typing import List, Dict, Tuple, Optional
-from py4j.java_gateway import JavaGateway, GatewayParameters, CallbackServerParameters, launch_gateway
+from py4j.java_gateway import JavaGateway, GatewayParameters, CallbackServerParameters, launch_gateway, \
+    DEFAULT_PYTHON_PROXY_PORT
 from py4j.java_collections import JavaArray
 from py4j.protocol import Py4JJavaError as JavaError
 
@@ -16,7 +17,7 @@ def is_jvm_running():
     return GATEWAY is not None
 
 
-def start_jvm(option, classpath, port: int = 0):
+def start_jvm(option, classpath, port: int = None):
     import os
     global GATEWAY
 
@@ -29,6 +30,8 @@ def start_jvm(option, classpath, port: int = 0):
     gateway_port = launch_gateway(jarpath=jarpath, classpath=os.pathsep.join(classpath), javaopts=option)
     logging.info("Java gateway started with port number %s", gateway_port)
 
+    if port is None:
+        port = DEFAULT_PYTHON_PROXY_PORT
     logging.info("Callback server will use port number %s", port)
     GATEWAY = JavaGateway(gateway_parameters=GatewayParameters(port=gateway_port, auto_close=True),
                           callback_server_parameters=CallbackServerParameters(port=port))

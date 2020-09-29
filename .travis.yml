@@ -67,6 +67,7 @@ install:
   - bash ./scripts/utagger_install.sh
 script:
   - $PYTHON -m pytest --cov=./ tests/finalize_test.py
+  - $PYTHON -m pytest --cov=./ --cov-append tests/multi_processing_test.py
   - $PYTHON -m pytest --cov=./ --cov-append tests/dictionary_test.py
   - $PYTHON -m pytest --cov=./ --cov-append tests/extension_core_spec.py
   - $PYTHON -m pytest --cov=./ --cov-append tests/proc_core_spec.py
