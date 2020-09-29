@@ -26,7 +26,7 @@ KoalaNLP
    분석기 <http://kkma.snu.ac.kr/documents/index.jsp>`__
 
 -  KOMORAN: Junsoo
-   Shin님의 `코모란 v3.x <https://github.com/shin285/KOMORAN>`__
+   Shin님의 `코모란 v3.3.9 <https://github.com/shin285/KOMORAN>`__
 
 -  OKT: OpenKoreanText의 `오픈 소스 한국어
    처리기 <http://openkoreantext.org>`__
@@ -38,7 +38,7 @@ KoalaNLP
    Analyzer <http://cafe.naver.com/korlucene>`__ 1-1
 
 -  RHINO: 최석재님의
-   `RHINO v2.5.4 <https://github.com/SukjaeChoi/RHINO>`__
+   `RHINO v3.7.8 <https://github.com/SukjaeChoi/RHINO>`__
 
 -  Daon: 김상준님의 `Daon 분석기 <https://github.com/rasoio/daon/tree/master/daon-core>`__
 

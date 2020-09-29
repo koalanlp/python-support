@@ -20,7 +20,7 @@ __동일한 인터페이스__ 아래에서 사용할 수 있도록 하는 것이
 
 * 김상준님의 [Daon 분석기](https://github.com/rasoio/daon/tree/master/daon-core)
 
-* Shineware의 [코모란 v3.3.8](https://github.com/shin285/KOMORAN)
+* Shineware의 [코모란 v3.3.9](https://github.com/shin285/KOMORAN)
 
 * 서울대의 [꼬꼬마 형태소/구문 분석기 v2.1](http://kkma.snu.ac.kr/documents/index.jsp)
 
@@ -32,7 +32,7 @@ __동일한 인터페이스__ 아래에서 사용할 수 있도록 하는 것이
 
 * 이수명님의 [Arirang Morpheme Analyzer](http://cafe.naver.com/korlucene) <sup>1-1</sup>
 
-* 최석재님의 [RHINO v2.5.4](https://github.com/SukjaeChoi/RHINO)
+* 최석재님의 [RHINO v3.7.8](https://github.com/SukjaeChoi/RHINO)
 
 * KAIST의 [한나눔 형태소 분석기](http://kldp.net/projects/hannanum/)와 [NLP_HUB 구문분석기](http://semanticweb.kaist.ac.kr/home/index.php/NLP_HUB)
 
