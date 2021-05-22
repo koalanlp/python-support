@@ -11,4 +11,7 @@ class SentenceSplitter:
             raise Exception('KSS Python package를 설치해야 합니다. 다음 명령을 실행하세요:\n pip install kss')
 
     def invoke(self, paragraph) -> List[str]:
-        return self._call(paragraph)
+        if paragraph:
+            return self._call(paragraph)
+        else:
+            return []

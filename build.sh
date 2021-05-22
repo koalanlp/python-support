@@ -68,6 +68,7 @@ if [ "${YN,,}" != "p" ]; then
     python3 -m pytest tests/type_core_spec.py
     python3 -m pytest tests/khaiii_spec.py
     python3 -m pytest tests/utagger_spec.py
+    python3 -m pytest tests/native_spec.py
 fi
 
 extract_version

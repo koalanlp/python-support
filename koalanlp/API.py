@@ -17,10 +17,11 @@ KHAIII = 'khaiii'  #: Khaiii. 현재 |ver_khaiii| 버전이 최신입니다. 품
 UTAGGER = 'utagger'  #: UTagger. 현재 |ver_utagger| 버전이 최신입니다.
 ETRI = 'etri'  #: ETRI Open API. 현재 |ver_etri| 버전이 최신입니다.
 KSS = 'kss'  #: Korean Sentence Splitter. Python KoalaNLP는 KSS에 의존하므로, 버전 지정은 무의미합니다.
+KIWI = 'kiwi'  #: Kiwi. 파이썬 환경에서 `https://github.com/bab2min/kiwipiepy` 설치가 필요합니다.
 CORE = 'core'  #: 분석기 Interface 정의 라이브러리. 현재 |ver_core| 버전이 최신입니다. 편의기능을 제공하며 타 분석기 참조시 함께 참조됩니다.
 
 _REQUIRE_ASSEMBLY_ = [HNN, KKMA, ARIRANG, RHINO, DAON]  #: 'assembly' classifier 필요 여부
-_REQUIRE_PYTHON_ = [KSS]  #: Python package 의존 여부
+_REQUIRE_PYTHON_ = [KSS, KIWI]  #: Python package 의존 여부
 
 
 def is_python_native(api):

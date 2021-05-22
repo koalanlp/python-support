@@ -131,10 +131,18 @@ def initialize(java_options="-Xmx1g -Dfile.encoding=utf-8", lib_path=None, force
     """
     if len(packages) == 0:
         packages = {
-            API.KMR: "LATEST"
+            'KMR': "LATEST"
         }
         logger.info("[Warning] Since no package names are specified, I'll load packages by default: %s" %
                      str(packages))
+
+    key_set = set(packages.keys())
+    if key_set.issubset({'KSS', 'KIWI'}):
+        # KSS나 KIWI만 포함한 경우는 CORE만 불러들입니다.
+        packages = {
+            'CORE': "LATEST"
+        }
+        logger.info("[Warning] KSS나 KIWI만 사용하고 있어, CORE 모듈만 자바로 초기화합니다.")
 
     if not lib_path:
         lib_path = Path.cwd()

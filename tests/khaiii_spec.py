@@ -3,7 +3,7 @@ import pytest
 
 from koalanlp import *
 from koalanlp.proc import *
-from tests.proc_core_spec import test_Tagger_Sentence_typecheck
+from tests.proc_core_spec import test_Tagger_Sentence_typecheck as typecheck
 
 
 @pytest.fixture(scope="session")
@@ -17,4 +17,4 @@ def environ():
 
 
 def test_khaiii(environ):
-    test_Tagger_Sentence_typecheck(environ)
+    typecheck(environ)
