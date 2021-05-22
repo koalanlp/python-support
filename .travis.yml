@@ -61,7 +61,8 @@ matrix:
           - ./.java
 install:
   - $PYTHON --version
-  - $PYTHON -m pip install py4j kss requests $PYPIFLAG
+  - $PYTHON -m pip install py4j requests $PYPIFLAG
+  - $PYTHON -m pip install kss kiwipiepy $PYPIFLAG
   - $PYTHON -m pip install pytest codecov pytest-cov --upgrade $PYPIFLAG
   - bash ./scripts/khaiii_install.sh
   - bash ./scripts/utagger_install.sh
