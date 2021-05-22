@@ -40,6 +40,8 @@ __동일한 인터페이스__ 아래에서 사용할 수 있도록 하는 것이
 
 * 울산대학교의 [UTagger 2018년 10월 31일자](http://nlplab.ulsan.ac.kr/doku.php?id=start) (별도설치 필요: [설치법](https://koalanlp.github.io/usage/Install-UTagger.md)) <sup>1-2</sup>
 
+* 고현웅님의 [Korean Sentence Splitter v2.5.1](https://github.com/hyunwoongko/kss)
+
 > <sup>주1-1</sup> Arirang 분석기의 출력을 형태소분석에 적합하게 조금 다듬었으므로, 원본과 약간 다른 결과를 낼 수도 있습니다.
 >
 > <sup>주1-2</sup> UTagger의 2019-7 버전도 공개되어 있지만, 리눅스 개발환경을 위한 라이브러리 파일이 공개되어있지 않아 지원하지 않습니다.
@@ -102,6 +104,8 @@ KoalaNLP는 다음과 같은 특징을 가지고 있습니다.
 
 * UTagger: 교육 및 연구용으로 사용시 제한 없음. 상업용인 경우 울산대와 기술이전 등의 유료 협약 필요
 
+* Korean Sentence Splitter(KSS): [BSD 3-Clause (Revised)](https://tldrlegal.com/license/bsd-3-clause-license-(revised))
+
 # 사용법
 
 ## Dependency 추가
@@ -131,6 +135,7 @@ $ pip install koalanlp
 | API.KKMA         | 꼬꼬마 Wrapper, 분석범위: 형태소, 의존구문                               | [![Ver-KKM](https://img.shields.io/maven-central/v/kr.bydelta/koalanlp-kkma.svg?style=flat-square&label=r)](http://search.maven.org/#search%7Cga%7C1%7Ca%3A%22koalanlp-kkma%22)       | GPL v2    |
 | API.HNN          | 한나눔 Wrapper, 분석범위: 문장분리, 형태소, 구문분석, 의존구문               | [![Ver-HNN](https://img.shields.io/maven-central/v/kr.bydelta/koalanlp-hnn.svg?style=flat-square&label=r)](http://search.maven.org/#search%7Cga%7C1%7Ca%3A%22koalanlp-hnn%22)        | GPL v3    |
 | API.ETRI         | ETRI Open API Wrapper, 분석범위: 형태소, 구문분석, 의존구문, 개체명, 의미역 | [![Ver-ETR](https://img.shields.io/maven-central/v/kr.bydelta/koalanlp-etri.svg?style=flat-square&label=r)](http://search.maven.org/#search%7Cga%7C1%7Ca%3A%22koalanlp-etri%22)      | MIT<sup>2-2</sup> |
+| API.KSS          | Korean Sentence Splitter Wrapper, 분석범위: 문장분리                    | 버전무관 | BSD 3-Clause (Revised) |
 
 > <sup>주2-2</sup> ETRI의 경우 Open API를 접근하기 위한 코드 부분은 KoalaNLP의 License 정책에 귀속되지만, Open API 접근 이후의 사용권에 관한 조항은 ETRI에서 별도로 정한 바를 따릅니다.
 > 따라서, ETRI의 사용권 조항에 동의하시고 키를 발급하셔야 하며, 다음 위치에서 발급을 신청할 수 있습니다: [키 발급 신청](http://aiopen.etri.re.kr/key_main.php)
@@ -142,6 +147,8 @@ $ pip install koalanlp
 ### 초기화
 초기화 과정에서 KoalaNLP는 필요한 Java Library를 자동으로 다운로드하여 설치합니다. 설치에는 시간이 다소 소요됩니다.
 때문에, 프로그램 실행시 최초 1회에 한하여 초기화 작업이 필요합니다.
+
+> *참고*: KSS만 사용하는 경우, 초기화 과정이 필요하지 않습니다.
 
 ```python
 from koalanlp.Util import initialize, finalize

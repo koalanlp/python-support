@@ -17,8 +17,9 @@ class SentenceSplitter(object):
     """
 
     def __init__(self, api: str):
+        self.__is_native = API.is_python_native(api)
         try:
-            self.__api = API._query(api, __class__.__name__)()
+            self.__api = API.query(api, __class__.__name__)()
         except JavaError as e:
             error_handler(e)
 
@@ -35,10 +36,13 @@ class SentenceSplitter(object):
             if type(paragraph) is list:
                 result += self.sentences(*paragraph)
             elif type(paragraph) is str:
-                try:
-                    result += py_list(self.__api.invoke(string(paragraph)), lambda x: x)
-                except JavaError as e:
-                    error_handler(e)
+                if self.__is_native:
+                    result += self.__api.invoke(paragraph)
+                else:
+                    try:
+                        result += py_list(self.__api.invoke(string(paragraph)), lambda x: x)
+                    except JavaError as e:
+                        error_handler(e)
             else:
                 raise TypeError('%s type은 문단 분리를 수행할 수 없습니다.' % (type(paragraph)))
 
@@ -61,7 +65,7 @@ class SentenceSplitter(object):
 
         :param Union[List[Word],Sentence] text: 분석할 문단(들). 각 인자는 품사표기가 되어있는 Word의 list 또는 Sentence 혼용 가능. (가변인자)
         :rtype: List[Sentence]
-        :return: 분리된 문장들. (flattened list)
+        :return: 분리된 문장들. (flattened lis)
         """
         result = []
         for paragraph in text:
@@ -98,26 +102,27 @@ class Tagger(object):
     """
 
     def __init__(self, api: str, **kwargs):
+        self.__is_native = API.is_python_native(api)
         try:
             if api == API.ETRI:
                 if 'apiKey' in kwargs:
                     logging.warning('2.2.0부터 %s의 키워드 인자 "apiKey"가 삭제될 예정입니다. '
                                     '2.1.0부터 추가된 인자인 "etri_key"를 사용해주세요.', __class__.__name__)
                     kwargs['etri_key'] = kwargs['apiKey']
-                self.__api = API._query(api, __class__.__name__)(kwargs['etri_key'])
+                self.__api = API.query(api, __class__.__name__)(kwargs['etri_key'])
             elif api == API.KMR:
                 if 'useLightTagger' in kwargs:
                     logging.warning('2.2.0부터 %s의 키워드 인자 "useLightTagger"가 삭제될 예정입니다. '
                                     '2.1.0부터 추가된 인자인 "kmr_light"를 사용해주세요.', __class__.__name__)
                     kwargs['kmr_light'] = kwargs['useLightTagger']
-                self.__api = API._query(api, __class__.__name__)(kwargs.get('kmr_light', False))
+                self.__api = API.query(api, __class__.__name__)(kwargs.get('kmr_light', False))
             elif api == API.KHAIII:
                 config = koala_class_of('khaiii', 'KhaiiiConfig')(kwargs.get('kha_preanal', True),
                                                                   kwargs.get('kha_errorpatch', True),
                                                                   kwargs.get('kha_restore', True))
-                self.__api = API._query(api, __class__.__name__)(kwargs['kha_resource'], config)
+                self.__api = API.query(api, __class__.__name__)(kwargs['kha_resource'], config)
             else:
-                self.__api = API._query(api, __class__.__name__)()
+                self.__api = API.query(api, __class__.__name__)()
         except JavaError as e:
             error_handler(e)
 
@@ -134,10 +139,13 @@ class Tagger(object):
             if type(paragraph) is list:
                 result += self.tag(*paragraph)
             elif type(paragraph) is str:
-                try:
-                    result += py_list(self.__api.tag(string(paragraph)), item_converter=Sentence.fromJava)
-                except JavaError as e:
-                    error_handler(e)
+                if self.__is_native:
+                    result += self.__api.tag(paragraph)
+                else:
+                    try:
+                        result += py_list(self.__api.tag(string(paragraph)), item_converter=Sentence.fromJava)
+                    except JavaError as e:
+                        error_handler(e)
             else:
                 raise TypeError('%s type은 품사 분석을 수행할 수 없습니다.' % (type(paragraph)))
 
@@ -154,10 +162,13 @@ class Tagger(object):
         result = []
         for sentence in text:
             if type(sentence) is str:
-                try:
-                    result.append(Sentence.fromJava(self.__api.tagSentence(string(sentence))))
-                except JavaError as e:
-                    error_handler(e)
+                if self.__is_native:
+                    result.append(self.__api.tagSentence(sentence))
+                else:
+                    try:
+                        result.append(Sentence.fromJava(self.__api.tagSentence(string(sentence))))
+                    except JavaError as e:
+                        error_handler(e)
             else:
                 raise TypeError('%s type은 품사 분석을 수행할 수 없습니다.' % (type(sentence)))
 
@@ -185,15 +196,16 @@ class __CanAnalyzeProperty(object):
     """
 
     def __init__(self, api: str, cls: str, **kwargs):
+        self.__is_native = API.is_python_native(api)
         try:
             if api == API.ETRI:
                 if 'apiKey' in kwargs:
                     logging.warning('2.2.0부터 %s의 키워드 인자 "apiKey"가 삭제될 예정입니다. '
                                     '2.1.0부터 추가된 인자인 "etri_key"를 사용해주세요.', __class__.__name__)
                     kwargs['etri_key'] = kwargs['apiKey']
-                self.__api = API._query(api, cls)(kwargs['etri_key'])
+                self.__api = API.query(api, cls)(kwargs['etri_key'])
             else:
-                self.__api = API._query(api, cls)()
+                self.__api = API.query(api, cls)()
         except JavaError as e:
             error_handler(e)
 
@@ -209,16 +221,22 @@ class __CanAnalyzeProperty(object):
         result = []
         for paragraph in text:
             if type(paragraph) is str:
-                try:
-                    result += py_list(self.__api.analyze(string(paragraph)), item_converter=Sentence.fromJava)
-                except JavaError as e:
-                    error_handler(e)
+                if self.__is_native:
+                    result += self.__api.analyze(paragraph)
+                else:
+                    try:
+                        result += py_list(self.__api.analyze(string(paragraph)), item_converter=Sentence.fromJava)
+                    except JavaError as e:
+                        error_handler(e)
             elif type(paragraph) is Sentence:
-                ref = paragraph.getReference()
-                try:
-                    result.append(Sentence.fromJava(self.__api.analyze(ref)))
-                except JavaError as e:
-                    error_handler(e)
+                if self.__is_native:
+                    result += self.__api.analyze(paragraph)
+                else:
+                    ref = paragraph.getReference()
+                    try:
+                        result.append(Sentence.fromJava(self.__api.analyze(ref)))
+                    except JavaError as e:
+                        error_handler(e)
             elif type(paragraph) is list:
                 result += self.analyze(*paragraph)
             else:
@@ -285,8 +303,9 @@ class Dictionary(object):
     """
 
     def __init__(self, api: API):
+        self.__is_native = API.is_python_native(api)
         try:
-            self.__api = API._query(api, __class__.__name__).INSTANCE
+            self.__api = API.query(api, __class__.__name__).INSTANCE
         except JavaError as e:
             error_handler(e)
 
@@ -296,12 +315,15 @@ class Dictionary(object):
 
         :param Tuple[str,POS] pairs: (표면형, 품사)의 가변형 인자
         """
-        surface_list = [string(t[0]) for t in pairs]
-        tag_list = [t[1].reference for t in pairs]
-        try:
-            self.__api.addUserDictionary(java_list(surface_list), java_list(tag_list))
-        except JavaError as e:
-            error_handler(e)
+        if self.__is_native:
+            self.__api.addUserDictionary(*pairs)
+        else:
+            surface_list = [string(t[0]) for t in pairs]
+            tag_list = [t[1].reference for t in pairs]
+            try:
+                self.__api.addUserDictionary(java_list(surface_list), java_list(tag_list))
+            except JavaError as e:
+                error_handler(e)
 
     def contains(self, word: str, *pos_tags: POS) -> bool:
         """
@@ -318,11 +340,14 @@ class Dictionary(object):
             tags = [POS.NNP, POS.NNG]
 
         try:
-            if len(tags) == 1:
-                tag = tags[0]
-                return self.__api.contains(java_tuple(string(word), tag.reference))
+            if self.__is_native:
+                return self.__api.contains(word, *tags)
             else:
-                return self.__api.contains(string(word), java_set([tag.reference for tag in tags]))
+                if len(tags) == 1:
+                    tag = tags[0]
+                    return self.__api.contains(java_tuple(string(word), tag.reference))
+                else:
+                    return self.__api.contains(string(word), java_set([tag.reference for tag in tags]))
         except JavaError as e:
             error_handler(e)
 
@@ -349,10 +374,13 @@ class Dictionary(object):
         else:
             filter = {tag.name for tag in filter}
 
-        try:
-            self.__api.importFrom(other.__api, fastAppend, java_pos_filter(filter))
-        except JavaError as e:
-            error_handler(e)
+        if self.__is_native:
+            self.__api.importFrom(other.__api, fastAppend, filter)
+        else:
+            try:
+                self.__api.importFrom(other.__api, fastAppend, java_pos_filter(filter))
+            except JavaError as e:
+                error_handler(e)
 
     def getBaseEntries(self, filter=lambda t: t.isNoun()):
         """
@@ -367,14 +395,18 @@ class Dictionary(object):
         else:
             filter = {tag.name for tag in filter}
 
-        try:
-            entries = self.__api.getBaseEntries(java_pos_filter(filter))
+        if self.__is_native:
+            for item in self.__api.getBaseEntries(filter):
+                yield item
+        else:
+            try:
+                entries = self.__api.getBaseEntries(java_pos_filter(filter))
 
-            while entries.hasNext():
-                item = entries.next()
-                yield (item.getFirst(), POS.valueOf(item.getSecond().name()))
-        except JavaError as e:
-            error_handler(e)
+                while entries.hasNext():
+                    item = entries.next()
+                    yield (item.getFirst(), POS.valueOf(item.getSecond().name()))
+            except JavaError as e:
+                error_handler(e)
 
     def getItems(self) -> List[Tuple[str, POS]]:
         """
@@ -383,12 +415,14 @@ class Dictionary(object):
         :rtype: List[(str,POS)]
         :return: (형태소, 품사)의 set
         """
-
-        try:
-            return py_list(self.__api.getItems(),
-                           item_converter=lambda t: (t.getFirst(), POS.valueOf(t.getSecond().name())))
-        except JavaError as e:
-            error_handler(e)
+        if self.__is_native:
+            return self.__api.getItems()
+        else:
+            try:
+                return py_list(self.__api.getItems(),
+                               item_converter=lambda t: (t.getFirst(), POS.valueOf(t.getSecond().name())))
+            except JavaError as e:
+                error_handler(e)
 
     def getNotExists(self, onlySystemDic: bool, *word: Tuple[str, POS]) -> List[Tuple[str, POS]]:
         """
@@ -399,14 +433,16 @@ class Dictionary(object):
         :rtype: List[(str,POS)]
         :return: 사전에 없는 단어들.
         """
+        if self.__is_native:
+            return self.__api.getNotExists(onlySystemDic, *word)
+        else:
+            zipped = [java_tuple(string(t[0]), t[1].reference) for t in word]
 
-        zipped = [java_tuple(string(t[0]), t[1].reference) for t in word]
-
-        try:
-            return py_list(self.__api.getNotExists(onlySystemDic, java_varargs(zipped, class_of('kotlin.Pair'))),
-                           item_converter=lambda t: (t.getFirst(), POS.valueOf(t.getSecond().name())))
-        except JavaError as e:
-            error_handler(e)
+            try:
+                return py_list(self.__api.getNotExists(onlySystemDic, java_varargs(zipped, class_of('kotlin.Pair'))),
+                               item_converter=lambda t: (t.getFirst(), POS.valueOf(t.getSecond().name())))
+            except JavaError as e:
+                error_handler(e)
 
 
 class UTagger:
