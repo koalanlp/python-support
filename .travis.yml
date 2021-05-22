@@ -1,30 +1,38 @@
 language: python
 matrix:
   include:
-    - name: "Python 3.8 on Ubuntu Bionic (JDK14)"
-      python: 3.8
-      dist: bionic
-      jdk: openjdk14
+    - name: "Python 3.8 on Windows (JDK16)"
+      os: windows
+      language: shell
+      filter_secrets: false
+      before_install:
+        - choco install openjdk --version 16.0.1 -y
+        - choco install python --version 3.8.3 -y
+        - export PATH=$(cmd.exe //c "refreshenv > nul & C:\Progra~1\Git\bin\bash -c 'echo \$PATH' ")
+        - export JAVA_HOME=$(cmd.exe //c "refreshenv > nul & C:\Progra~1\Git\bin\bash -c 'echo \$JAVA_HOME' ")
+        - java --version
+        - wget https://bootstrap.pypa.io/get-pip.py --no-check-certificate
+        - $PYTHON get-pip.py --user
       env:
         - PYTHON=python
-        - PYPIFLAG=
+        - PYPIFLAG=--user
       cache:
         directories:
           - $HOME/utagger
           - $HOME/khaiii-orig
           - $HOME/.hunter
           - ./.java
-    - name: "Python 3.8 on macOS 11.2 (JDK14.0.1)"
+    - name: "Python 3.8 on macOS 11.2 (JDK16.0.1)"
       os: osx
-      osx_image: xcode12u
+      osx_image: xcode12.5
       language: shell
-      jdk: openjdk14
+      jdk: openjdk16.0.1
       before_install:
         - eval "$(pyenv init -)"
         - pyenv install 3.8.3
         - pyenv shell 3.8.3
         - $PYTHON --version
-        - wget https://bootstrap.pypa.io/get-pip.py
+        - wget https://bootstrap.pypa.io/get-pip.py --no-check-certificate
         - PYTHON_CONFIGURE_OPTS=--enable-unicode=ucs2 $PYTHON get-pip.py $PYPIFLAG
       env:
         - LDFLAGS="${LDFLAGS} -L$(brew --prefix zlib)/lib -L$(brew --prefix readline)/lib -L$(brew --prefix openssl)/lib"
@@ -39,20 +47,13 @@ matrix:
           - $HOME/khaiii-orig
           - $HOME/.hunter
           - ./.java
-    - name: "Python 3.8 on Windows (JDK14)"
-      os: windows
-      language: shell
-      filter_secrets: false
-      before_install:
-        - choco install openjdk --version 14.0.1 -y
-        - choco install python --version 3.8.3 -y
-        - wget https://bootstrap.pypa.io/get-pip.py
-        - $PYTHON get-pip.py --user
+    - name: "Python 3.8 on Ubuntu Focal (JDK16)"
+      python: 3.8
+      dist: focal
+      jdk: openjdk16
       env:
-        - JAVA_HOME="/c/Progra~1/OpenJDK/jdk-14.0.1"
-        - PATH=/c/Python38:/c/Python38/Scripts:/c/Users/travis/AppData/Roaming/Python/Python38/Scripts:$JAVA_HOME/bin:$PATH
         - PYTHON=python
-        - PYPIFLAG=--user
+        - PYPIFLAG=
       cache:
         directories:
           - $HOME/utagger
