@@ -55,6 +55,9 @@ KoalaNLP
 
 -  고현웅님의 `Korean Sentence Splitter v2.5.1 <https://github.com/hyunwoongko/kss>`__
 
+-  bab2min님의 `Kiwi <https://github.com/bab2min/kiwipiepy>`__ (별도설치 필요: ``pip install kiwipiepy``)
+
+
 문서
 ====
 

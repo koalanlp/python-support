@@ -2,14 +2,14 @@ from setuptools import setup, find_packages
 
 try:
     import pypandoc
-    long_description = pypandoc.convert('README.md', 'rst')
+    long_description = pypandoc.convert_file('README.md', 'rst', extra_args=['--wrap=none'])
 except(IOError, ImportError):
     long_description = open('README.md', encoding='UTF-8').read()
 
 
 setup(
     name='koalanlp',
-    version='2.1.7-SNAPSHOT',
+    version='2.1.7',
     description='Python wrapper for KoalaNLP',
     long_description=long_description,
     author='koalanlp',
