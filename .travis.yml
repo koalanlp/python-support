@@ -9,13 +9,13 @@ matrix:
         - choco install openjdk --version 16.0.1 -y
         - choco install python --version 3.8.3 -y
         - export PATH=$(cmd.exe //c "refreshenv > nul & C:\Progra~1\Git\bin\bash -c 'echo \$PATH' ")
-        - export JAVA_HOME=$(cmd.exe //c "refreshenv > nul & C:\Progra~1\Git\bin\bash -c 'echo \$JAVA_HOME' ")
         - java --version
         - wget https://bootstrap.pypa.io/get-pip.py --no-check-certificate
         - $PYTHON get-pip.py --user
       env:
         - PYTHON=python
         - PYPIFLAG=--user
+        - JAVA_HOME="/c/Progra~1/OpenJDK/jdk-16.0.1"
       cache:
         directories:
           - $HOME/utagger

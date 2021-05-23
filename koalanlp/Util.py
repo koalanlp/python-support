@@ -17,6 +17,9 @@ from koalanlp.jip.cache import CacheManager
 from koalanlp.jip.maven import Artifact, Pom
 from koalanlp.jip.util import wait_until_download_finished
 
+# Fix for JAVA 9 encapsulation
+_JAVA9_FIX = '--add-opens java.base/java.lang=ALL-UNNAMED'
+
 # Logging setup
 logging.basicConfig(level=logging.INFO, format="[%(name)s] %(message)s")
 logging.getLogger("requests").setLevel(logging.WARNING)
@@ -116,13 +119,13 @@ def _resolve_artifacts_modified(artifacts, exclusions=None):
     return download_list
 
 
-def initialize(java_options="-Xmx1g -Dfile.encoding=utf-8", lib_path=None, force_download=False,
-               port=None, **packages):
+def initialize(java_options="--add-opens java.base/java.lang=ALL-UNNAMED -Xmx1g -Dfile.encoding=utf-8", lib_path=None,
+               force_download=False, port=None, **packages):
     """
     초기화 함수. 필요한 Java library를 다운받습니다.
     한번 초기화 된 다음에는 :py:func:`koalanlp.Util.finalize` 을 사용해 종료하지 않으면 다시 초기화 할 수 없습니다.
 
-    :param str java_options: 자바 JVM option (기본값: "-Xmx1g -Dfile.encoding=utf-8")
+    :param str java_options: 자바 JVM option (기본값: "--add-opens java.base/java.lang=ALL-UNNAMED -Xmx1g -Dfile.encoding=utf-8")
     :param Optional[str] lib_path: 자바 라이브러리를 저장할 '.java' 디렉터리/폴더가 위치할 곳. (기본값: None = os.cwd())
     :param bool force_download: 자바 라이브러리를 모두 다 다시 다운로드할 지의 여부. (기본값: False)
     :param int port: Multiprocessing을 사용하는 경우에, Java 분석기와 소통하는 Python proxy를 어떤 port에서 열 것인지 결정합니다. (기본값: None = 25334)
@@ -156,6 +159,9 @@ def initialize(java_options="-Xmx1g -Dfile.encoding=utf-8", lib_path=None, force
     index_manager = IndexManager(lib_path)
 
     if not is_jvm_running():
+        if _JAVA9_FIX not in java_options:
+            java_options += ' ' + _JAVA9_FIX
+
         java_options = java_options.split(" ")
         packages = {getattr(API, k.upper()): v for k, v in packages.items()}
 
