@@ -1,12 +1,12 @@
 language: python
 matrix:
   include:
-    - name: "Python 3.8 on Windows (JDK16)"
+    - name: "Python 3.8 on Windows (JDK11 LTS)"
       os: windows
       language: shell
       filter_secrets: false
       before_install:
-        - choco install openjdk --version 16.0.1 -y
+        - choco install openjdk11 -y
         - choco install python --version 3.8.3 -y
         - export PATH=$(cmd.exe //c "refreshenv > nul & C:\Progra~1\Git\bin\bash -c 'echo \$PATH' ")
         - java --version
@@ -15,18 +15,18 @@ matrix:
       env:
         - PYTHON=python
         - PYPIFLAG=--user
-        - JAVA_HOME="/c/Progra~1/OpenJDK/jdk-16.0.1"
+        - JAVA_HOME="/c/Progra~1/OpenJDK/jdk-11.0.11_9"
       cache:
         directories:
           - $HOME/utagger
           - $HOME/khaiii-orig
           - $HOME/.hunter
           - ./.java
-    - name: "Python 3.8 on macOS 11.2 (JDK16.0.1)"
+    - name: "Python 3.8 on macOS 11.2 (JDK11 LTS)"
       os: osx
       osx_image: xcode12.5
       language: shell
-      jdk: openjdk16.0.1
+      jdk: openjdk11
       before_install:
         - eval "$(pyenv init -)"
         - pyenv install 3.8.3
@@ -47,10 +47,10 @@ matrix:
           - $HOME/khaiii-orig
           - $HOME/.hunter
           - ./.java
-    - name: "Python 3.8 on Ubuntu Focal (JDK16)"
+    - name: "Python 3.8 on Ubuntu Focal (JDK11 LTS)"
       python: 3.8
       dist: focal
-      jdk: openjdk16
+      jdk: openjdk11
       env:
         - PYTHON=python
         - PYPIFLAG=

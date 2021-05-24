@@ -49,7 +49,7 @@ KoalaNLP
 
 -  Kakao의 `카이(Khaiii) v0.4 <https://github.com/kakao/khaiii>`__ (별도설치 필요: `설치법 <https://github.com/kakao/khaiii/wiki/빌드-및-설치>`__)
 
--  울산대학교의 `UTagger 2018년 10월 31일자 <http://nlplab.ulsan.ac.kr/doku.php?id=start>`__ (별도설치 필요: `설치법 <https://koalanlp.github.io/usage/Install-UTagger.md>`__)
+-  울산대학교의 `UTagger 2018년 10월 31일자 <http://nlplab.ulsan.ac.kr/doku.php?id=start>`__ (별도설치 필요: `설치법 <https://koalanlp.github.io/koalnlp/usage/Install-UTagger.md>`__)
 
     주1-2 UTagger의 2019-7 버전도 공개되어 있지만, 리눅스 개발환경을 위한 라이브러리 파일이 공개되어있지 않아 지원하지 않습니다.
 
