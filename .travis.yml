@@ -15,7 +15,7 @@ matrix:
       env:
         - PYTHON=python
         - PYPIFLAG=--user
-        - JAVA_HOME="/c/Progra~1/OpenJDK/jdk-11.0.11_9"
+        - JAVA_HOME="/c/Progra~1/OpenJDK/openjdk-11.0.11_9"
       cache:
         directories:
           - $HOME/utagger
@@ -77,7 +77,7 @@ script:
   - $PYTHON -m pytest --cov=./ --cov-append tests/data_test.py
   - $PYTHON -m pytest --cov=./ --cov-append tests/native_spec.py
   - if [ $TRAVIS_OS_NAME != 'windows' ]; then $PYTHON -m pytest --cov=./ --cov-append tests/khaiii_spec.py; fi
-  - if [ $TRAVIS_OS_NAME != 'osx' ]; then $PYTHON -m pytest --cov=./ --cov-append tests/utagger_spec.py; fi
+  - if [ $TRAVIS_OS_NAME == 'windows' ]; then $PYTHON -m pytest --cov=./ --cov-append tests/utagger_spec.py; fi
 after_success:
   - if [ $TRAVIS_OS_NAME == 'linux' ]; then codecov; fi
 env:
