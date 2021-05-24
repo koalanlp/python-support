@@ -24,7 +24,7 @@ matrix:
           - ./.java
     - name: "Python 3.8 on macOS 11.2 (JDK11 LTS)"
       os: osx
-      osx_image: xcode12.5
+      osx_image: xcode12u
       language: shell
       jdk: openjdk11
       before_install:
