@@ -1,3 +1,4 @@
 py4j~=0.10.9
 requests~=2.24.0
 kss~=2.5.1
+urllib3>=1.26.17 # not directly required, pinned by Snyk to avoid a vulnerability
